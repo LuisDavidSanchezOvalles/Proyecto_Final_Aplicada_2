@@ -8,7 +8,6 @@
   <ItemGroup>
     <Folder Include="BLL\" />
     <Folder Include="DALL\" />
-    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
