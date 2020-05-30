@@ -6,8 +6,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DALL\**" />
+    <Content Remove="DALL\**" />
+    <EmbeddedResource Remove="DALL\**" />
+    <None Remove="DALL\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="BLL\" />
-    <Folder Include="DALL\" />
   </ItemGroup>
 
   <ItemGroup>
