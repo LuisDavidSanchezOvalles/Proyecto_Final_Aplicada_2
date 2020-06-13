@@ -1,0 +1,171 @@
+﻿@page "/Usuarios"
+@page "/Usuarios/{UsuarioId:int}"
+
+@using Models
+@using BLL
+
+@inject IToastService toast
+
+<EditForm Model="Usuario" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header">
+            <h3>Registro de Usuarios</h3>
+        </div>
+        <div class="card-body">
+            <form>
+
+                @*UsuarioId*@
+                <div class="form-row align-items-center">
+                    <div class="col">
+                        <div class="form-group">
+                            <label>UsuarioId</label>
+                            <div class="input-group">
+                                <InputNumber @bind-Value="Usuario.UsuarioId" class="form-control col-4" />
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" />Buscar</button>
+                                </div>
+                            </div>
+                            <ValidationMessage For="@(() => Usuario.UsuarioId)" />
+                        </div>
+                    </div>
+                </div>
+
+                @*Fecha*@
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <InputDate @bind-Value="Usuario.Fecha" class="form-control" />
+                    <ValidationMessage For="@(() => Usuario.Fecha)" />
+                </div>
+
+                @*Nombres*@
+                <div class="form-group">
+                    <label>Nombres</label>
+                    <InputText @bind-Value="Usuario.Nombres" class="form-control" />
+                    <ValidationMessage For="@(() => Usuario.Nombres)" />
+                </div>
+
+                @*Nombre Usuario*@
+                <div class="form-group">
+                    <label>Nombre Usuario</label>
+                    <InputText @bind-Value="Usuario.NombreUsuario" class="form-control" />
+                    <ValidationMessage For="@(() => Usuario.NombreUsuario)" />
+                </div>
+
+                @*Clave*@
+                <div class="form-group">
+                    <label>Clave</label>
+                    <InputText @bind-Value="Usuario.Clave" class="form-control" />
+                    <ValidationMessage For="@(() => Usuario.Clave)" />
+                </div>
+
+                @*Email*@
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="row">
+                        <div class="col">
+                            <InputText @bind-Value="Usuario.Email" class="form-control" />
+                        </div>
+                        <div class="col-2">
+                            <div class="row">
+                                <label>Fecha Creación</label>
+                            </div>
+                            <div class="row">
+                                <label >@DateTime.Now.ToString("dd/MM/yyyy")</label>
+                            </div>
+                        </div>
+                    </div>
+                    <ValidationMessage For="@(() => Usuario.Email)" />
+                </div>
+
+                @*Creado por*@
+                <div class="form-group">
+                    <label>Creado Por</label>
+                    <div class="row">
+                        <div class="col">
+                            <label>Sujeto</label>
+                        </div>
+                        <div class="col-2">
+                            <div class="row">
+                                <label>Fecha Modificación</label>
+                            </div>
+                            <div class="row">
+                                <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="card-footer">
+            <div class="form-group text-center" display: inline-block>
+                <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo"><i class="oi oi-plus" />Nuevo</button>
+                <button type="submit" class="btn btn-lg btn-success"><i class="oi oi-hard-drive" />Guardar</button>
+                <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar"><i class="oi oi-trash" />Eliminar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int UsuarioId { get; set; }
+
+    private Usuarios Usuario = new Usuarios();
+
+    protected override void OnInitialized()
+    {
+        Nuevo();
+        Buscar();
+    }
+
+    public void Nuevo()
+    {
+        Usuario = new Usuarios();
+    }
+
+
+    private void Buscar()
+    {
+        if (Usuario.UsuarioId > 0)
+        {
+            var encontrado = UsuariosBLL.Buscar(Usuario.UsuarioId);
+
+            if (encontrado != null)
+                this.Usuario = encontrado;
+            else
+                toast.ShowWarning("No encontrado");
+        }
+    }
+
+    public void Guardar()
+    {
+        bool guardo;
+
+        guardo = UsuariosBLL.Guardar(Usuario);
+
+        if (guardo)
+        {
+            Nuevo();
+            toast.ShowSuccess("Guardado correctamente");
+        }
+        else
+            toast.ShowError("No fue posible guardar");
+    }
+
+    public void Eliminar()
+    {
+        bool elimino;
+
+        elimino = UsuariosBLL.Eliminar(Usuario.UsuarioId);
+
+        if (elimino)
+        {
+            Nuevo();
+            toast.ShowSuccess("Eliminado correctamente");
+        }
+        else
+            toast.ShowError("No fue posible eliminar");
+    }
+}

@@ -65,12 +65,12 @@ namespace ProyectoFinalAplicada2.BLL
             Contexto db = new Contexto();
             try
             {
-                List<Entradas> entradas = EntradasBLL.GetList(e => e.CacaoId == id);
+                /*List<Entradas> entradas = EntradasBLL.GetList(e => e.CacaoId == id);
 
                 foreach (var item in entradas)
                 {
                     EntradasBLL.Eliminar(item.EntradaId);
-                }
+                }*/
 
                 var cacao = db.Cacaos.Find(id);
                 db.Cacaos.Remove(cacao);
