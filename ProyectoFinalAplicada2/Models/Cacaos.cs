@@ -20,12 +20,8 @@ namespace ProyectoFinalAplicada2.Models
         [Required(ErrorMessage = "Es obligatorio introducir un tipo")]
         public string Tipo { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir una cantidad")]
-        [CantidadValidacion]
         public decimal Cantidad { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir un costo")]
-        [CostoValidacion]
         public decimal Costo { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir un precio")]

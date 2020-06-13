@@ -1,0 +1,182 @@
+﻿@page "/Cacaos"
+@page "/Cacaos/{CacaoId:int}"
+
+@using Models
+@using BLL
+
+@inject IToastService toast
+
+<EditForm Model="Cacao" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header">
+            <h3>Registro de Cacaos</h3>
+        </div>
+        <div class="card-body">
+            <form>
+
+                @*CacaoId*@
+                <div class="form-row align-items-center">
+                    <div class="col">
+                        <div class="form-group">
+                            <label>CacaoId</label>
+                            <div class="input-group">
+                                <InputNumber @bind-Value="Cacao.CacaoId" class="form-control col-4" />
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" />Buscar</button>
+                                </div>
+                            </div>
+                            <ValidationMessage For="@(() => Cacao.CacaoId)" />
+                        </div>
+                    </div>
+                </div>
+
+                @*Fecha*@
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <InputDate @bind-Value="Cacao.Fecha" class="form-control" />
+                    <ValidationMessage For="@(() => Cacao.Fecha)" />
+                </div>
+
+                @*Tipo*@
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <InputText @bind-Value="Cacao.Tipo" class="form-control" />
+                    <ValidationMessage For="@(() => Cacao.Tipo)" />
+                </div>
+
+                @*Cantidad*@
+                <div class="form-group">
+                    <label>Cantidad</label>
+                    <InputNumber readonly @bind-Value="Cacao.Cantidad" class="form-control" />
+                </div>
+
+                @*Costo*@
+                <div class="form-group">
+                    <label>Costo</label>
+                    <InputNumber readonly @bind-Value="Cacao.Costo" class="form-control" />
+                </div>
+
+                @*Precio*@
+                <div class="form-group">
+                    <label>Precio</label>
+                    <div class="row">
+                        <div class="col">
+                            <InputNumber @bind-Value="Cacao.Precio" class="form-control" />
+                        </div>
+                        <div class="col-2">
+                            <div class="row">
+                                <label>Fecha Creación</label>
+                            </div>
+                            <div class="row">
+                                <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
+                            </div>
+                        </div>
+                    </div>
+                    <ValidationMessage For="@(() => Cacao.Precio)" />
+                </div>
+
+                @*Creado por*@
+                <div class="form-group">
+                    <label>Creado Por</label>
+                    <div class="row">
+                        <div class="col">
+                            <label>Sujeto</label>
+                        </div>
+                        <div class="col-2">
+                            <div class="row">
+                                <label>Fecha Modificación</label>
+                            </div>
+                            <div class="row">
+                                <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <div class="card-footer">
+            <div class="form-group text-center" display: inline-block>
+                <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo"><i class="oi oi-plus" />Nuevo</button>
+                <button type="submit" class="btn btn-lg btn-success"><i class="oi oi-hard-drive" />Guardar</button>
+                <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar"><i class="oi oi-trash" />Eliminar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int CacaoId { get; set; }
+
+    private Cacaos Cacao = new Cacaos();
+
+    protected override void OnInitialized()
+    {
+        Nuevo();
+        BuscarParametro();
+    }
+
+    public void Nuevo()
+    {
+        Cacao = new Cacaos();
+    }
+
+    private void BuscarParametro()
+    {
+        if (CacaoId > 0)
+        {
+            var encontrado = CacaosBLL.Buscar(CacaoId);
+
+            if (encontrado != null)
+                this.Cacao = encontrado;
+            else
+                toast.ShowWarning("No encontrado");
+        }
+    }
+
+    private void Buscar()
+    {
+        if (Cacao.CacaoId > 0)
+        {
+            var encontrado = CacaosBLL.Buscar(Cacao.CacaoId);
+
+            if (encontrado != null)
+                this.Cacao = encontrado;
+            else
+                toast.ShowWarning("No encontrado");
+        }
+    }
+
+    public void Guardar()
+    {
+        bool guardo;
+
+        guardo = CacaosBLL.Guardar(Cacao);
+
+        if (guardo)
+        {
+            Nuevo();
+            toast.ShowSuccess("Guardado correctamente");
+        }
+        else
+            toast.ShowError("No fue posible guardar");
+    }
+
+    public void Eliminar()
+    {
+        bool elimino;
+
+        elimino = CacaosBLL.Eliminar(Cacao.CacaoId);
+
+        if (elimino)
+        {
+            Nuevo();
+            toast.ShowSuccess("Eliminado correctamente");
+        }
+        else
+            toast.ShowError("No fue posible eliminar");
+    }
+}
+
