@@ -117,12 +117,25 @@
     protected override void OnInitialized()
     {
         Nuevo();
-        Buscar();
+        BuscarParametro();
     }
 
     public void Nuevo()
     {
         Usuario = new Usuarios();
+    }
+
+    private void BuscarParametro()
+    {
+        if (UsuarioId > 0)
+        {
+            var encontrado = UsuariosBLL.Buscar(UsuarioId);
+
+            if (encontrado != null)
+                this.Usuario = encontrado;
+            else
+                toast.ShowWarning("No encontrado");
+        }
     }
 
 
