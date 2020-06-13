@@ -30,5 +30,18 @@ namespace ProyectoFinalAplicada2.Models
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaModificacion { get; set; }
         public int UsuarioId { get; set; }
+
+        public Cacaos()
+        {
+            CacaoId = 0;
+            Fecha = DateTime.Now;
+            Tipo = string.Empty;
+            Cantidad = 0.0m;
+            Costo = 0.0m;
+            Precio = 0.0m;
+            FechaCreacion = DateTime.Now;
+            FechaModificacion = DateTime.Now;
+            UsuarioId = 0;
+        }
     }
 }

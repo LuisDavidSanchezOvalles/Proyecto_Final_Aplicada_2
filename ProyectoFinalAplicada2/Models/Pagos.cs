@@ -25,5 +25,18 @@ namespace ProyectoFinalAplicada2.Models
 
         [ForeignKey("PagoId")]
         public virtual List<PagosDetalle> PagoDetalle { get; set; }
+
+        public Pagos()
+        {
+            PagoId = 0;
+            Fecha = DateTime.Now;
+            ClienteId = 0;
+            Total = 0.0m;
+            FechaCreacion = DateTime.Now;
+            FechaModificacion = DateTime.Now;
+            UsuarioId = 0;
+
+            PagoDetalle = new List<PagosDetalle>();
+        }
     }
 }

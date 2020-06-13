@@ -42,5 +42,20 @@ namespace ProyectoFinalAplicada2.Models
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaModificacion { get; set; }
         public int UsuarioId { get; set; }
+
+        public Clientes()
+        {
+            ClienteId = 0;
+            Fecha = DateTime.Now;
+            Nombres = string.Empty;
+            Cedula = string.Empty;
+            Telefono = string.Empty;
+            Celular = string.Empty;
+            Direccion = string.Empty;
+            Email = string.Empty;
+            FechaCreacion = DateTime.Now;
+            FechaModificacion = DateTime.Now;
+            UsuarioId = 0;
+        }
     }
 }

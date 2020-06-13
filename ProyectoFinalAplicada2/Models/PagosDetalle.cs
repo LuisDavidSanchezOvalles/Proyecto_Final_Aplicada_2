@@ -14,5 +14,14 @@ namespace ProyectoFinalAplicada2.Models
         public int VentaId { get; set; }
         public decimal Monto { get; set; }
         public decimal Saldo { get; set; }
+
+        public PagosDetalle()
+        {
+            PagoDetalleId = 0;
+            PagoId = 0;
+            VentaId = 0;
+            Monto = 0.0m;
+            Saldo = 0.0m;
+        }
     }
 }

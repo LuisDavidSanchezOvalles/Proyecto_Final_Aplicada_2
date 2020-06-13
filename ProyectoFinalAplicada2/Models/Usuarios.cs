@@ -34,5 +34,18 @@ namespace ProyectoFinalAplicada2.Models
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaModificacion { get; set; }
         public int UsuarioIdCreacion { get; set; }
+
+        public Usuarios()
+        {
+            UsuarioId = 0;
+            Fecha = DateTime.Now;
+            Nombres = string.Empty;
+            NombreUsuario = string.Empty;
+            Clave = string.Empty;
+            Email = string.Empty;
+            FechaCreacion = DateTime.Now;
+            FechaModificacion = DateTime.Now;
+            UsuarioIdCreacion = 0;
+        }
     }
 }
