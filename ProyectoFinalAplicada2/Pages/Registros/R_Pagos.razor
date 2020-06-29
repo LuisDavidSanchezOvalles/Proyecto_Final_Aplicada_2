@@ -1,0 +1,274 @@
+﻿@page "/Pagos"
+@page "/Pagos/{PagoId:int}"
+
+@using Models
+@using BLL
+
+@inject IToastService toast
+
+<EditForm Model="Pago" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header">
+            <h3>Registro de Pagos</h3>
+        </div>
+
+        <div class="card-body">
+            <form>
+
+                @*PagoId*@
+                <div class="form-row align-items-center">
+                    <div class="col">
+                        <div class="form-group">
+                            <label>PagoId</label>
+                            <div class="input-group">
+                                <InputNumber @bind-Value="Pago.PagoId" class="form-control col-4" />
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" />Buscar</button>
+                                </div>
+                            </div>
+                            <ValidationMessage For="@(() => Pago.PagoId)" />
+                        </div>
+                    </div>
+                </div>
+
+                @*Fecha*@
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <InputDate @bind-Value="Pago.Fecha" class="form-control" />
+                    <ValidationMessage For="@(() => Pago.Fecha)" />
+                </div>
+
+                @*Clientes*@
+                <div class="form-group">
+                    <label>Cliente</label>
+                    <InputSelect @bind-Value="ClienteSeleccionado" class="form-control">
+                        @*@foreach (var cliente in Clientes)
+                        {
+                            <option value="@Convert.ToString(cliente.ClienteId)">@cliente.Nombres</option>
+                        }*@
+                    </InputSelect>
+                </div>
+
+                @*VentaId*@
+                @*<div class="form-group">
+                    <label>VentaId</label>
+                    <InputSelect @bind-Value="VentaIdSeleccionado" class="form-control">
+                        @foreach (var venta in Ventas)
+                        {
+                            <option value="@Convert.ToString(venta.VentaId)">@venta.VentaId</option>
+                        }
+                    </InputSelect>
+                </div>*@
+
+                @*Balance*@
+                <div class="form-group">
+                    <label>Balance</label>
+                    <InputNumber readonly @bind-Value="Balance" class="form-control" />
+                </div>
+
+                @*Total*@
+                <div class="form-group">
+                    <label>Total</label>
+                    <div class="row">
+                        <div class="col">
+                            <InputNumber readonly @bind-Value="Pago.Total" class="form-control" />
+                        </div>
+                        <div class="col-2">
+                            <div class="row">
+                                <label>Fecha Creación</label>
+                            </div>
+                            <div class="row">
+                                <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*PagoDetalle*@
+                <div class="form-group">
+                    <label>-Agregar Pago-</label>
+                </div>
+                <div class="row">
+                    <div class="form-group col-4">
+                        <label>Monto</label>
+                        <div class="input-group">
+                            <InputNumber @bind-Value="Monto" class="form-control" />
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-primary input-group-text" @onclick="AgregarPago"><i class="oi oi-plus" /> Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-2 offset-6">
+                        <div class="row">
+                            <label>Fecha Modificación</label>
+                        </div>
+                        <div class="row">
+                            <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" id="tabla">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>PagoId</th>
+                                <th>VentaId</th>
+                                <th>Monto</th>
+                                <th>Saldo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @for (int i = 0; i < Pago.PagoDetalle.Count; i++)
+                            {
+                                int index = i;
+                                <tr>
+                                    <td>@Pago.PagoDetalle[i].PagoId</td>
+                                    <td>@Pago.PagoDetalle[i].VentaId</td>
+                                    <td>@Pago.PagoDetalle[i].Monto</td>
+                                    <td>@Pago.PagoDetalle[i].Saldo</td>
+                                    <td><button type="button" class="btn btn-lg btn-danger" @onclick="@((args) => RemoverFila(index))"><i class="oi oi-minus" /> Remover</button></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                @*Creado por*@
+                <div class="form-group">
+                    <label>Creado Por</label>
+                    <label>Sujeto</label>
+                </div>
+
+            </form>
+        </div>
+        <div class="card-footer">
+            <div class="form-group text-center" display: inline-block>
+                <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo"><i class="oi oi-plus" />Nuevo</button>
+                <button type="submit" class="btn btn-lg btn-success"><i class="oi oi-hard-drive" />Guardar</button>
+                <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar"><i class="oi oi-trash" />Eliminar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int PagoId { get; set; }
+
+    public Pagos Pago { get; set; }
+
+    public List<Clientes> Clientes { get; set; }
+
+    //public List<Ventas> Ventas { get; set; }
+
+    public string ClienteSeleccionado { get; set; }
+
+    public string VentaIdSeleccionado { get; set; }
+
+    public decimal Balance { get; set; }
+
+    public decimal Monto { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Nuevo();
+        BuscarParametro();
+    }
+
+    public void Nuevo()
+    {
+        Pago = new Pagos();
+    }
+
+    private void BuscarParametro()
+    {
+        if (PagoId > 0)
+        {
+            var encontrado = PagosBLL.Buscar(PagoId);
+
+            if (encontrado != null)
+                this.Pago = encontrado;
+            else
+                toast.ShowWarning("No encontrado");
+        }
+    }
+
+    private void Buscar()
+    {
+        if (Pago.PagoId > 0)
+        {
+            var encontrado = PagosBLL.Buscar(Pago.PagoId);
+
+            if (encontrado != null)
+            {
+                this.Pago = encontrado;
+                AsignarCliente();
+            }
+            else
+                toast.ShowWarning("No encontrado");
+        }
+    }
+
+    private void AsignarCliente()
+    {
+        //Clientes.Clear();
+        //var cliente = ClientesBLL.Buscar(Pago.ClienteId);
+        //Clientes.Add(cliente);
+        //ClienteSeleccionado = Convert.ToString(cliente.ClienteId);
+    }
+
+    public void AgregarPago()
+    {
+        int ventaId = Convert.ToInt32(VentaIdSeleccionado);
+
+        if (ventaId < 0 || Monto <= 0)
+            return;
+
+        Pago.PagoDetalle.Add(new PagosDetalle
+        {
+            PagoDetalleId = 0,
+            PagoId = Pago.PagoId,
+            VentaId = ventaId,
+            Monto = Monto,
+            Saldo = 0
+        });
+
+        Monto = 0.0m;
+    }
+
+    public void RemoverFila(int index)
+    {
+        Pago.PagoDetalle.RemoveAt(index);
+    }
+
+    public void Guardar()
+    {
+        bool guardo;
+
+        guardo = PagosBLL.Guardar(Pago);
+
+        if (guardo)
+        {
+            Nuevo();
+            toast.ShowSuccess("Guardado correctamente");
+        }
+        else
+            toast.ShowError("No fue posible guardar");
+    }
+
+    public void Eliminar()
+    {
+        bool elimino;
+
+        elimino = PagosBLL.Eliminar(Pago.PagoId);
+
+        if (elimino)
+        {
+            Nuevo();
+            toast.ShowSuccess("Eliminado correctamente");
+        }
+        else
+            toast.ShowError("No fue posible eliminar");
+    }
+}
