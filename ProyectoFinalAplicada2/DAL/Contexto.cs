@@ -11,8 +11,12 @@ namespace ProyectoFinalAplicada2.DAL
     {
         public DbSet<Cacaos> Cacaos { get; set; }
         public DbSet<Clientes> Clientes { get; set; }
+        public DbSet<Contratos> Contratos { get; set; }
+        public DbSet<Entradas> Entradas { get; set; }
         public DbSet<Pagos> Pagos { get; set; }
+        public DbSet<Suplidores> Suplidores { get; set; }
         public DbSet<Usuarios> Usuarios { get; set; }
+        public DbSet<Ventas> Ventas { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

@@ -2,30 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using ProyectoFinalAplicada2.Models;
 using ProyectoFinalAplicada2.DAL;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace ProyectoFinalAplicada2.BLL
 {
-    public class PagosBLL
+    public class VentasBLL
     {
-        public static bool Guardar(Pagos pago)
+        public static bool Guardar(Ventas venta)
         {
-            if (!Existe(pago.PagoId))
-                return Insertar(pago);
+            if (!Existe(venta.VentaId))
+                return Insertar(venta);
             else
-                return Modificar(pago);
+                return Modificar(venta);
         }
 
-        public static bool Insertar(Pagos pago)
+        public static bool Insertar(Ventas venta)
         {
             bool paso = false;
             Contexto db = new Contexto();
             try
             {
-                if (db.Pagos.Add(pago) != null)
+                if (db.Ventas.Add(venta) != null)
                     paso = db.SaveChanges() > 0;
             }
             catch (Exception)
@@ -39,19 +39,19 @@ namespace ProyectoFinalAplicada2.BLL
             return paso;
         }
 
-        public static bool Modificar(Pagos pago)
+        public static bool Modificar(Ventas venta)
         {
             bool paso = false;
             Contexto db = new Contexto();
             try
             {
-                db.Database.ExecuteSqlRaw($"Delete FROM PagosDetalle Where PagoId = {pago.PagoId}");
+                db.Database.ExecuteSqlRaw($"Delete FROM VentasDetalle Where VentaId = {venta.VentaId}");
 
-                foreach (var item in pago.PagoDetalle)
+                foreach (var item in venta.VentaDetalle)
                 {
                     db.Entry(item).State = EntityState.Added;
                 }
-                db.Entry(pago).State = EntityState.Modified;
+                db.Entry(venta).State = EntityState.Modified;
                 paso = db.SaveChanges() > 0;
             }
             catch (Exception)
@@ -71,9 +71,8 @@ namespace ProyectoFinalAplicada2.BLL
             Contexto db = new Contexto();
             try
             {
-                //Verificar por que? dice cliente
-                var cliente = db.Clientes.Find(id);
-                db.Clientes.Remove(cliente);
+                var venta = db.Ventas.Find(id);
+                db.Ventas.Remove(venta);
                 paso = db.SaveChanges() > 0;
             }
             catch (Exception)
@@ -86,13 +85,13 @@ namespace ProyectoFinalAplicada2.BLL
             }
             return paso;
         }
-        public static Pagos Buscar(int id)
+        public static Ventas Buscar(int id)
         {
-            Pagos pago = new Pagos();
+            Ventas venta = new Ventas();
             Contexto db = new Contexto();
             try
             {
-                pago = db.Pagos.Where(p => p.PagoId == id).Include(p => p.PagoDetalle).FirstOrDefault();
+                venta = db.Ventas.Where(v => v.VentaId == id).Include(v => v.VentaDetalle).FirstOrDefault();
             }
             catch (Exception)
             {
@@ -102,7 +101,7 @@ namespace ProyectoFinalAplicada2.BLL
             {
                 db.Dispose();
             }
-            return pago;
+            return venta;
         }
 
         public static bool Existe(int id)
@@ -112,7 +111,7 @@ namespace ProyectoFinalAplicada2.BLL
 
             try
             {
-                encontrado = db.Pagos.Any(p => p.PagoId == id);
+                encontrado = db.Ventas.Any(v => v.VentaId == id);
             }
             catch (Exception)
             {
@@ -126,13 +125,13 @@ namespace ProyectoFinalAplicada2.BLL
             return encontrado;
         }
 
-        public static List<Pagos> GetList(Expression<Func<Pagos, bool>> pago)
+        public static List<Ventas> GetList(Expression<Func<Ventas, bool>> venta)
         {
-            List<Pagos> Lista = new List<Pagos>();
+            List<Ventas> Lista = new List<Ventas>();
             Contexto db = new Contexto();
             try
             {
-                Lista = db.Pagos.Where(pago).ToList();
+                Lista = db.Ventas.Where(venta).ToList();
             }
             catch (Exception)
             {
@@ -145,49 +144,47 @@ namespace ProyectoFinalAplicada2.BLL
             return Lista;
         }
 
-        public static Pagos PagoDeVenta(int id)
+        public static bool ExisteVenta()
         {
-            Pagos pago = new Pagos();
-            Contexto db = new Contexto();
+            List<Ventas> ventas = GetList(c => true);
 
-            try
-            {
-                pago = db.Pagos.Include(p => p.PagoDetalle).Where(p => p.PagoDetalle[0].VentaId == id).SingleOrDefault();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                db.Dispose();
-            }
-            return pago;
-        }
-
-        public static bool ExistePago()
-        {
-            List<Pagos> pagos = GetList(c => true);
-
-            if (pagos.Count > 0)
+            if (ventas.Count > 0)
                 return true;
             else
                 return false;
         }
 
-        public static bool EntradaValida(Pagos pagos)
+        public static bool EntradaValida(Ventas ventas)
         {
             //verifica si el contrato ya esta utilizado
-            List<Pagos> lista = GetList(c => true);
+            List<Ventas> lista = GetList(c => true);
 
             foreach (var item in lista)
             {
 
-                if (item.PagoDetalle[0].VentaId == pagos.PagoDetalle[0].VentaId)
+                if (item.VentaDetalle[0].ContratoId == ventas.VentaDetalle[0].ContratoId)
                     return false;
             }
 
             return true;
+        }
+
+        public static void RestarBalance(int id, decimal balance)
+        {
+            Ventas venta = Buscar(id);
+
+            venta.Balance = balance;
+
+            Modificar(venta);
+        }
+
+        public static void RestablecerBalance(int id)
+        {
+            Ventas venta = Buscar(id);
+
+            venta.Balance = venta.Total;
+
+            Modificar(venta);
         }
     }
 }

@@ -2,30 +2,30 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using ProyectoFinalAplicada2.Models;
 using ProyectoFinalAplicada2.DAL;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace ProyectoFinalAplicada2.BLL
 {
-    public class PagosBLL
+    public class SuplidoresBLL
     {
-        public static bool Guardar(Pagos pago)
+        public static bool Guardar(Suplidores suplidor)
         {
-            if (!Existe(pago.PagoId))
-                return Insertar(pago);
+            if (!Existe(suplidor.SuplidorId))
+                return Insertar(suplidor);
             else
-                return Modificar(pago);
+                return Modificar(suplidor);
         }
 
-        public static bool Insertar(Pagos pago)
+        public static bool Insertar(Suplidores suplidor)
         {
             bool paso = false;
             Contexto db = new Contexto();
             try
             {
-                if (db.Pagos.Add(pago) != null)
+                if (db.Suplidores.Add(suplidor) != null)
                     paso = db.SaveChanges() > 0;
             }
             catch (Exception)
@@ -39,20 +39,14 @@ namespace ProyectoFinalAplicada2.BLL
             return paso;
         }
 
-        public static bool Modificar(Pagos pago)
+        public static bool Modificar(Suplidores suplidor)
         {
             bool paso = false;
             Contexto db = new Contexto();
             try
             {
-                db.Database.ExecuteSqlRaw($"Delete FROM PagosDetalle Where PagoId = {pago.PagoId}");
-
-                foreach (var item in pago.PagoDetalle)
-                {
-                    db.Entry(item).State = EntityState.Added;
-                }
-                db.Entry(pago).State = EntityState.Modified;
-                paso = db.SaveChanges() > 0;
+                db.Entry(suplidor).State = EntityState.Modified;
+                paso = (db.SaveChanges() > 0);
             }
             catch (Exception)
             {
@@ -71,9 +65,8 @@ namespace ProyectoFinalAplicada2.BLL
             Contexto db = new Contexto();
             try
             {
-                //Verificar por que? dice cliente
-                var cliente = db.Clientes.Find(id);
-                db.Clientes.Remove(cliente);
+                var suplidor = db.Suplidores.Find(id);
+                db.Suplidores.Remove(suplidor);
                 paso = db.SaveChanges() > 0;
             }
             catch (Exception)
@@ -86,13 +79,13 @@ namespace ProyectoFinalAplicada2.BLL
             }
             return paso;
         }
-        public static Pagos Buscar(int id)
+        public static Suplidores Buscar(int id)
         {
-            Pagos pago = new Pagos();
+            Suplidores suplidor = new Suplidores();
             Contexto db = new Contexto();
             try
             {
-                pago = db.Pagos.Where(p => p.PagoId == id).Include(p => p.PagoDetalle).FirstOrDefault();
+                suplidor = db.Suplidores.Find(id);
             }
             catch (Exception)
             {
@@ -102,7 +95,7 @@ namespace ProyectoFinalAplicada2.BLL
             {
                 db.Dispose();
             }
-            return pago;
+            return suplidor;
         }
 
         public static bool Existe(int id)
@@ -112,7 +105,7 @@ namespace ProyectoFinalAplicada2.BLL
 
             try
             {
-                encontrado = db.Pagos.Any(p => p.PagoId == id);
+                encontrado = db.Suplidores.Any(s => s.SuplidorId == id);
             }
             catch (Exception)
             {
@@ -126,13 +119,13 @@ namespace ProyectoFinalAplicada2.BLL
             return encontrado;
         }
 
-        public static List<Pagos> GetList(Expression<Func<Pagos, bool>> pago)
+        public static List<Suplidores> GetList(Expression<Func<Suplidores, bool>> suplidor)
         {
-            List<Pagos> Lista = new List<Pagos>();
+            List<Suplidores> Lista = new List<Suplidores>();
             Contexto db = new Contexto();
             try
             {
-                Lista = db.Pagos.Where(pago).ToList();
+                Lista = db.Suplidores.Where(suplidor).ToList();
             }
             catch (Exception)
             {
@@ -145,49 +138,14 @@ namespace ProyectoFinalAplicada2.BLL
             return Lista;
         }
 
-        public static Pagos PagoDeVenta(int id)
+        public static bool ExisteSuplidor()
         {
-            Pagos pago = new Pagos();
-            Contexto db = new Contexto();
+            List<Suplidores> suplidores = GetList(s => true);
 
-            try
-            {
-                pago = db.Pagos.Include(p => p.PagoDetalle).Where(p => p.PagoDetalle[0].VentaId == id).SingleOrDefault();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                db.Dispose();
-            }
-            return pago;
-        }
-
-        public static bool ExistePago()
-        {
-            List<Pagos> pagos = GetList(c => true);
-
-            if (pagos.Count > 0)
+            if (suplidores.Count > 0)
                 return true;
             else
                 return false;
-        }
-
-        public static bool EntradaValida(Pagos pagos)
-        {
-            //verifica si el contrato ya esta utilizado
-            List<Pagos> lista = GetList(c => true);
-
-            foreach (var item in lista)
-            {
-
-                if (item.PagoDetalle[0].VentaId == pagos.PagoDetalle[0].VentaId)
-                    return false;
-            }
-
-            return true;
         }
     }
 }
