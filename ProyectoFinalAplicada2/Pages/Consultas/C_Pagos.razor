@@ -1,0 +1,165 @@
+﻿@page "/consultaPagos"
+
+@using BLL;
+@using Models;
+
+@inject IToastService toast
+
+<div class="card">
+    <div class="card-header">
+        <h1>Consulta de Pagos</h1>
+    </div>
+
+    <div class="card-body">
+        <form>
+            <label>Filtro</label>
+            <div class="col">
+                <select class="form-control" @bind="Filtro">
+                    <option value="0">Todos</option>
+                    <option value="1">Id</option>
+                    <option value="2">ClienteId</option>
+                    <option value="3">Total</option>
+                    <option value="4">UsuarioId</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <div class="form-group">
+                    <label>Criterio</label>
+                    <div class="input-group">
+                        <input type="text" @bind="Criterio" class="form-control">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-primary input-group-text" @onclick="Consultar">Consultar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>UsuarioId</th>
+                            <th>Cliente</th>
+                            <th>Total</th>
+                            <th>UsuarioId</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var pago in ListaPagos)
+                        {
+                            <tr>
+                                <td>@pago.UsuarioId</td>
+                                <td>@pago.ClienteId</td>
+                                <td>@pago.Total</td>
+                                <td>@pago.UsuarioId</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@code {
+    public List<Pagos> ListaPagos { get; set; }
+
+    public string Filtro { get; set; }
+
+    public string Criterio { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Nuevo();
+    }
+
+    private void Nuevo()
+    {
+        ListaPagos = new List<Pagos>();
+        Filtro = "0";
+        Criterio = string.Empty;
+    }
+
+    public void Consultar()
+    {
+        switch (Filtro)
+        {
+            case "0": //Todo
+                ListaPagos = PagosBLL.GetList(p => true);
+                break;
+            case "1": //PagoId
+                if (Criterio.Trim().Length > 0)
+                {
+                    try
+                    {
+                        int id = Convert.ToInt32(Criterio);
+                        ListaPagos = PagosBLL.GetList(p => p.PagoId == id);
+                    }
+                    catch (FormatException)
+                    {
+                        toast.ShowWarning("Ingrese un numero");
+                    }
+                }
+                else
+                {
+                    ListaPagos = PagosBLL.GetList(p => true).OrderBy(p => p.PagoId).ToList();
+                }
+                break;
+            case "2": //ClienteId
+                if (Criterio.Trim().Length > 0)
+                {
+                    try
+                    {
+                        int clienteId = Convert.ToInt32(Criterio);
+                        ListaPagos = PagosBLL.GetList(p => p.ClienteId == clienteId);
+                    }
+                    catch (FormatException)
+                    {
+                        toast.ShowWarning("Ingrese un numero");
+                    }
+                }
+                else
+                {
+                    ListaPagos = PagosBLL.GetList(p => true).OrderBy(p => p.ClienteId).ToList();
+                }
+                break;
+            case "3": //Total
+                if (Criterio.Trim().Length > 0)
+                {
+                    try
+                    {
+                        decimal total = Convert.ToInt32(Criterio);
+                        ListaPagos = PagosBLL.GetList(p => p.Total == total);
+                    }
+                    catch (FormatException)
+                    {
+                        toast.ShowWarning("Ingrese un numero");
+                    }
+                }
+                else
+                {
+                    ListaPagos = PagosBLL.GetList(p => true).OrderBy(p => p.Total).ToList();
+                }
+                break;
+            case "4": //UsuarioId
+                if (Criterio.Trim().Length > 0)
+                {
+                    try
+                    {
+                        int usuarioId = Convert.ToInt32(Criterio);
+                        ListaPagos = PagosBLL.GetList(p => p.UsuarioId == usuarioId);
+                    }
+                    catch (FormatException)
+                    {
+                        toast.ShowWarning("Ingrese un numero");
+                    }
+                }
+                else
+                {
+                    ListaPagos = PagosBLL.GetList(p => true).OrderBy(p => p.UsuarioId).ToList();
+                }
+                break;
+        }
+    }
+}
