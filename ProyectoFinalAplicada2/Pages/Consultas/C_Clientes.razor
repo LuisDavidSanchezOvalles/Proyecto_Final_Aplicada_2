@@ -1,0 +1,177 @@
+﻿@page "/consultaClientes"
+
+@using BLL;
+@using Models;
+
+@inject IToastService toast
+
+<div class="card">
+    <div class="card-header">
+        <h1>Consulta de Clientes</h1>
+    </div>
+
+    <div class="card-body">
+        <form>
+            <label>Filtro</label>
+            <div class="col">
+                <select class="form-control" @bind="Filtro">
+                    <option value="0">Todos</option>
+                    <option value="1">Id</option>
+                    <option value="2">Nombres</option>
+                    <option value="3">Cedula</option>
+                    <option value="4">Telefono</option>
+                    <option value="5">Celular</option>
+                    <option value="6">Dirección</option>
+                    <option value="7">Email</option>
+                    <option value="8">UsuarioId</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <div class="form-group">
+                    <label>Criterio</label>
+                    <div class="input-group">
+                        <input type="text" @bind="Criterio" class="form-control">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-primary input-group-text" @onclick="Consultar">Consultar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>UsuarioId</th>
+                            <th>Nombres</th>
+                            <th>Cedula</th>
+                            <th>Telefono</th>
+                            <th>Celular</th>
+                            <th>Dirección</th>
+                            <th>Email</th>
+                            <th>UsuarioId</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cliente in ListaClientes)
+                        {
+                            <tr>
+                                <td>@cliente.UsuarioId</td>
+                                <td>@cliente.Nombres</td>
+                                <td>@cliente.Cedula</td>
+                                <td>@cliente.Telefono</td>
+                                <td>@cliente.Celular</td>
+                                <td>@cliente.Direccion</td>
+                                <td>@cliente.Email</td>
+                                <td>@cliente.UsuarioId</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@code {
+    public List<Clientes> ListaClientes { get; set; }
+
+    public string Filtro { get; set; }
+
+    public string Criterio { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Nuevo();
+    }
+
+    private void Nuevo()
+    {
+        ListaClientes = new List<Clientes>();
+        Filtro = "0";
+        Criterio = string.Empty;
+    }
+
+    public void Consultar()
+    {
+        switch (Filtro)
+        {
+            case "0": //Todo
+                ListaClientes = ClientesBLL.GetList(c => true);
+                break;
+            case "1": //ClienteId
+                if (Criterio.Trim().Length > 0)
+                {
+                    try
+                    {
+                        int id = Convert.ToInt32(Criterio);
+                        ListaClientes = ClientesBLL.GetList(c => c.ClienteId == id);
+                    }
+                    catch (FormatException)
+                    {
+                        toast.ShowWarning("Ingrese un numero");
+                    }
+                }
+                else
+                {
+                    ListaClientes = ClientesBLL.GetList(c => true).OrderBy(c => c.ClienteId).ToList();
+                }
+                break;
+            case "2": //Nombres
+                if (Criterio.Trim().Length > 0)
+                    ListaClientes = ClientesBLL.GetList(c => c.Nombres.Contains(Criterio));
+                else
+                    ListaClientes = ClientesBLL.GetList(c => true).OrderBy(c => c.Nombres).ToList();
+                break;
+            case "3": //Cedula
+                if (Criterio.Trim().Length > 0)
+                    ListaClientes = ClientesBLL.GetList(c => c.Cedula.Contains(Criterio));
+                else
+                    ListaClientes = ClientesBLL.GetList(c => true).OrderBy(c => c.Cedula).ToList();
+                break;
+            case "4": //Telefono
+                if (Criterio.Trim().Length > 0)
+                    ListaClientes = ClientesBLL.GetList(c => c.Telefono.Contains(Criterio));
+                else
+                    ListaClientes = ClientesBLL.GetList(c => true).OrderBy(c => c.Telefono).ToList();
+                break;
+            case "5": //Celular
+                if (Criterio.Trim().Length > 0)
+                    ListaClientes = ClientesBLL.GetList(c => c.Celular.Contains(Criterio));
+                else
+                    ListaClientes = ClientesBLL.GetList(c => true).OrderBy(c => c.Celular).ToList();
+                break;
+            case "6": //Direccion
+                if (Criterio.Trim().Length > 0)
+                    ListaClientes = ClientesBLL.GetList(c => c.Direccion.Contains(Criterio));
+                else
+                    ListaClientes = ClientesBLL.GetList(c => true).OrderBy(c => c.Direccion).ToList();
+                break;
+            case "7": //Email
+                if (Criterio.Trim().Length > 0)
+                    ListaClientes = ClientesBLL.GetList(c => c.Email.Contains(Criterio));
+                else
+                    ListaClientes = ClientesBLL.GetList(c => true).OrderBy(c => c.Email).ToList();
+                break;
+            case "8": //UsuarioId
+                if (Criterio.Trim().Length > 0)
+                {
+                    try
+                    {
+                        int usuarioId = Convert.ToInt32(Criterio);
+                        ListaClientes = ClientesBLL.GetList(c => c.UsuarioId == usuarioId);
+                    }
+                    catch (FormatException)
+                    {
+                        toast.ShowWarning("Ingrese un numero");
+                    }
+                }
+                else
+                {
+                    ListaClientes = ClientesBLL.GetList(c => true).OrderBy(c => c.UsuarioId).ToList();
+                }
+                break;
+        }
+    }
+}
