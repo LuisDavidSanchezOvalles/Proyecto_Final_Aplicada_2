@@ -13,6 +13,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Data\Cacao.db" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Data\Cacao.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Blazored.Toast" Version="3.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.Authorization" Version="3.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />

@@ -87,8 +87,11 @@ namespace ProyectoFinalAplicada2.BLL
             try
             {
                 var usuario = db.Usuarios.Find(id);
-                db.Usuarios.Remove(usuario);
-                paso = db.SaveChanges() > 0;
+                if(usuario != null)
+                {
+                    db.Usuarios.Remove(usuario);
+                    paso = db.SaveChanges() > 0;
+                }
             }
             catch (Exception)
             {
