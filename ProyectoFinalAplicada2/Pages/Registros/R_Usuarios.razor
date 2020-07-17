@@ -222,6 +222,12 @@
     {
         bool elimino;
 
+        if (Usuario.UsuarioId == Convert.ToInt32(usuarioIdCreacion))
+        {
+            toast.ShowInfo("No se puede eliminar a si mismo");
+            return;
+        }
+
         elimino = UsuariosBLL.Eliminar(Usuario.UsuarioId);
 
         if (elimino)
