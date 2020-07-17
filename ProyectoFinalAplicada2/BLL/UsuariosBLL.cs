@@ -6,6 +6,7 @@ using ProyectoFinalAplicada2.Models;
 using ProyectoFinalAplicada2.DAL;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
+using System.Text;
 
 namespace ProyectoFinalAplicada2.BLL
 {
@@ -19,12 +20,17 @@ namespace ProyectoFinalAplicada2.BLL
                 return Modificar(usuario);
         }
 
-        public static bool Insertar(Usuarios usuario)
+        private static bool Insertar(Usuarios usuario)
         {
+            if (usuario.UsuarioId != 0)
+                return false;
+
             bool paso = false;
             Contexto db = new Contexto();
             try
             {
+                usuario.Clave = Encriptar(usuario.Clave);
+
                 if (db.Usuarios.Add(usuario) != null)
                     paso = db.SaveChanges() > 0;
             }
@@ -39,12 +45,14 @@ namespace ProyectoFinalAplicada2.BLL
             return paso;
         }
 
-        public static bool Modificar(Usuarios usuario)
+        private static bool Modificar(Usuarios usuario)
         {
             bool paso = false;
             Contexto db = new Contexto();
             try
             {
+                usuario.Clave = Encriptar(usuario.Clave);
+
                 db.Entry(usuario).State = EntityState.Modified;
                 paso = (db.SaveChanges() > 0);
             }
@@ -57,6 +65,19 @@ namespace ProyectoFinalAplicada2.BLL
                 db.Dispose();
             }
             return paso;
+        }
+
+        public static string Encriptar(string cadenaEncriptada)
+        {
+            if (!string.IsNullOrEmpty(cadenaEncriptada))
+            {
+                string resultado = string.Empty;
+                byte[] encryted = Encoding.Unicode.GetBytes(cadenaEncriptada);
+                resultado = Convert.ToBase64String(encryted);
+
+                return resultado;
+            }
+            return string.Empty;
         }
 
         public static bool Eliminar(int id)
@@ -86,6 +107,8 @@ namespace ProyectoFinalAplicada2.BLL
             try
             {
                 usuario = db.Usuarios.Find(id);
+                if(usuario != null)
+                    usuario.Clave = DesEncriptar(usuario.Clave);
             }
             catch (Exception)
             {
@@ -96,6 +119,19 @@ namespace ProyectoFinalAplicada2.BLL
                 db.Dispose();
             }
             return usuario;
+        }
+
+        public static string DesEncriptar(string cadenaDesencriptada)
+        {
+            if (!string.IsNullOrEmpty(cadenaDesencriptada))
+            {
+                string resultado = string.Empty;
+                byte[] decryted = Convert.FromBase64String(cadenaDesencriptada);
+                resultado = System.Text.Encoding.Unicode.GetString(decryted);
+
+                return resultado;
+            }
+            return string.Empty;
         }
 
         public static bool Existe(int id)
@@ -138,13 +174,15 @@ namespace ProyectoFinalAplicada2.BLL
             return Lista;
         }
 
-        public static bool Existe(string usuario, string clave)
+        public static bool ExisteUsuario(string usuario, string clave)
         {
             bool paso = false;
             Contexto db = new Contexto();
 
             try
             {
+                clave = Encriptar(clave);
+
                 if (db.Usuarios.Where(u => u.NombreUsuario == usuario && u.Clave == clave).SingleOrDefault() != null)
                     paso = true;
             }
@@ -160,13 +198,15 @@ namespace ProyectoFinalAplicada2.BLL
             return paso;
         }
 
-        public static int ObtenerId(string usuario, string clave)
+        public static string ObtenerUsuarioId(string usuario, string clave)
         {
             Contexto db = new Contexto();
-            int id;
+            string id;
             try
             {
-                id = db.Usuarios.Where(u => u.NombreUsuario == usuario && u.Clave == clave).SingleOrDefault().UsuarioId;
+                clave = Encriptar(clave);
+
+                id = db.Usuarios.Where(u => u.NombreUsuario == usuario && u.Clave == clave).FirstOrDefault().UsuarioId.ToString();
             }
             catch (Exception)
             {
