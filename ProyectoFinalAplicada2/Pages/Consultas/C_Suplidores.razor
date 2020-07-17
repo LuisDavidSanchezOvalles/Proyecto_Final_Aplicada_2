@@ -1,0 +1,182 @@
+﻿@page "/consultaSuplidores"
+
+@using BLL;
+@using Models;
+
+@inject IToastService toast
+
+<div class="card">
+    <div class="card-header">
+        <h1>Consulta de Suplidores</h1>
+    </div>
+
+    <div class="card-body">
+        <form>
+            <label>Filtro</label>
+            <div class="col">
+                <select class="form-control" @bind="Filtro">
+                    <option value="0">Todos</option>
+                    <option value="1">Id</option>
+                    <option value="2">Nombres</option>
+                    <option value="3">Cedula</option>
+                    <option value="4">Telefono</option>
+                    <option value="5">Celular</option>
+                    <option value="6">Direccion</option>
+                    <option value="7">Email</option>
+                    <option value="8">UsuarioId</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <div class="form-group">
+                    <label>Criterio</label>
+                    <div class="input-group">
+                        <input type="text" @bind="Criterio" class="form-control">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-primary input-group-text oi oi-list-rich" @onclick="Consultar"> Consultar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @*La Tabla*@
+            <div class="table-responsive text-nowrap" style="position: relative; height:200px; overflow: auto; display: block;">
+                <table class="table table-striped">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>UsuarioId</th>
+                            <th>SuplidorId</th>
+                            <th>Nombres</th>
+                            <th>Cedula</th>
+                            <th>Telefono</th>
+                            <th>Celular</th>
+                            <th>Dirección</th>
+                            <th>Email</th>
+                        </tr>
+                    </thead>
+                    @*Asignacion de Datos*@
+                    <tbody class="bg-white">
+                        @foreach (var item in ListaSuplidores)
+                        {
+                            <tr>
+                                <td>@item.UsuarioId</td>
+                                <td>@item.SuplidorId</td>
+                                <td>@item.Nombres</td>
+                                <td>@item.Cedula</td>
+                                <td>@item.Telefono</td>
+                                <td>@item.Celular</td>
+                                <td>@item.Direccion</td>
+                                <td>@item.Email</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@code {
+    public List<Suplidores> ListaSuplidores { get; set; }
+
+    public string Filtro { get; set; }
+
+    public string Criterio { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Nuevo();
+    }
+
+    private void Nuevo()
+    {
+        ListaSuplidores = new List<Suplidores>();
+        Filtro = "0";
+        Criterio = string.Empty;
+    }
+
+    public void Consultar()
+    {
+        switch (Filtro)
+        {
+            case "0": //Todo
+                ListaSuplidores = SuplidoresBLL.GetList(s => true);
+                break;
+            case "1": //SuplidorId
+                if (Criterio.Trim().Length > 0)
+                {
+                    try
+                    {
+                        int id = Convert.ToInt32(Criterio);
+                        ListaSuplidores = SuplidoresBLL.GetList(s => s.SuplidorId == id);
+                    }
+                    catch (FormatException)
+                    {
+                        toast.ShowWarning("Ingrese un numero");
+                    }
+                }
+                else
+                {
+                    ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.SuplidorId).ToList();
+                }
+                break;
+            case "2": //Nombres
+                if (Criterio.Trim().Length > 0)
+                    ListaSuplidores = SuplidoresBLL.GetList(s => s.Nombres.Contains(Criterio));
+                else
+                    ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Nombres).ToList();
+                break;
+            case "3": //Cedula
+                if (Criterio.Trim().Length > 0)
+                    ListaSuplidores = SuplidoresBLL.GetList(s => s.Cedula.Contains(Criterio));
+                else
+                    ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Cedula).ToList();
+                break;
+            case "4": //Telefono
+                if (Criterio.Trim().Length > 0)
+                    ListaSuplidores = SuplidoresBLL.GetList(s => s.Telefono.Contains(Criterio));
+                else
+                    ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Telefono).ToList();
+                break;
+            case "5": //Celular
+                if (Criterio.Trim().Length > 0)
+                    ListaSuplidores = SuplidoresBLL.GetList(s => s.Celular.Contains(Criterio));
+                else
+                    ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Celular).ToList();
+                break;
+            case "6": //Direccion
+                if (Criterio.Trim().Length > 0)
+                    ListaSuplidores = SuplidoresBLL.GetList(s => s.Direccion.Contains(Criterio));
+                else
+                    ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Direccion).ToList();
+                break;
+            case "7": //Email
+                if (Criterio.Trim().Length > 0)
+                    ListaSuplidores = SuplidoresBLL.GetList(s => s.Email.Contains(Criterio));
+                else
+                    ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Email).ToList();
+                break;
+            case "8": //UsuarioId
+                if (Criterio.Trim().Length > 0)
+                {
+                    try
+                    {
+                        int usuarioId = Convert.ToInt32(Criterio);
+                        ListaSuplidores = SuplidoresBLL.GetList(s => s.UsuarioId == usuarioId);
+                    }
+                    catch (FormatException)
+                    {
+                        toast.ShowWarning("Ingrese un número");
+                    }
+                }
+                else
+                {
+                    ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.UsuarioId).ToList();
+                }
+                break;
+            default:
+                ListaSuplidores = SuplidoresBLL.GetList(s => true);
+                break;
+        }
+    }
+}

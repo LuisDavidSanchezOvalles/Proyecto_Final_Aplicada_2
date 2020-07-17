@@ -1,0 +1,242 @@
+﻿@page "/Entradas"
+@page "/Entradas/{EntradaId:int}"
+
+@using Models
+@using BLL
+
+@inject IToastService toast
+
+<EditForm Model="Contrato" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    <div class="card">
+        <div class="card-header">
+            <h3>Registro de Contratos</h3>
+        </div>
+
+        <div class="card-body">
+            <form>
+
+                @*ContratoId*@
+                <div class="form-row align-items-center">
+                    <div class="col">
+                        <div class="form-group">
+                            <label>ContratoId</label>
+                            <div class="input-group">
+                                <InputNumber @bind-Value="Contrato.ContratoId" class="form-control col-4" />
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" /> Buscar</button>
+                                </div>
+                            </div>
+                            <ValidationMessage For="@(() => Contrato.ContratoId)" />
+                        </div>
+                    </div>
+                </div>
+
+                @*Fecha*@
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <InputDate @bind-Value="Contrato.Fecha" class="form-control" />
+                    <ValidationMessage For="@(() => Contrato.Fecha)" />
+                </div>
+
+                @*Clientes Existentes*@
+                @*<div class="form-group">
+            <div class="form-row">
+                <div class="col">
+                    <label>ClienteId</label>
+                    <select class="form-control" @bind="SeleccionCliente">
+                        <option value="" disabled selected>Clientes Disponibles</option>
+                        @foreach (var item in ListaClientes)
+                        {
+                            <option value="@item.ClienteId">Id: @item.ClienteId a Nombre de: @item.Nombres</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>*@
+
+                @*FechaVencimiento*@
+                <div class="form-group">
+                    <label>Fecha de Vencimiento</label>
+                    <InputDate @bind-Value="Contrato.FechaVencimiento" class="form-control" />
+                    <ValidationMessage For="@(() => Contrato.FechaVencimiento)" />
+                </div>
+
+                @*Cacaos Existentes*@
+                @*<div class="form-group">
+            <div class="form-row">
+                <div class="col">
+                    <label>CacaoId</label>
+                    <select class="form-control" @bind="SeleccionCacao" @onfocusout="BuscarPrecioEInventario">
+                        <option value="" disabled selected>Tipos de Cacaos Disponibles</option>
+                        @foreach (var item in ListaCacaos)
+                        {
+                            <option value="@item.CacaoId">Id:@item.CacaoId Tipo: @item.Tipo</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>*@
+
+                @*Inventario*@
+                <div class="form-group">
+                    <label>Inventario</label>
+                    <InputNumber @bind-Value="Inventario" class="form-control" readonly="true" />
+                </div>
+
+                @*Cantidad*@
+                <div class="form-group">
+                    <label>Cantidad</label>
+                    <InputNumber @bind-Value="Contrato.Cantidad" class="form-control" @onfocusout="CalcularTotal" />
+                    <ValidationMessage For="@(() => Contrato.Cantidad)" />
+                </div>
+
+                @*Precio*@
+                <div class="form-group">
+                    <label>Precio</label>
+                    <InputNumber @bind-Value="Contrato.Precio" class="form-control" readonly="true"/>
+                </div>
+
+                @*Total*@
+                <div class="form-group">
+                    <label>Total</label>
+                    <div class="row">
+                        <div class="col">
+                            <InputNumber @bind-Value="Contrato.Total" class="form-control" readonly="true" />
+                        </div>
+                        <div class="col-2">
+                            <div class="row">
+                                <label>Fecha Creación</label>
+                            </div>
+                            <div class="row">
+                                <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @*Creado por*@
+                <div class="form-group">
+                    <label>Creado Por</label>
+                    <div class="row">
+                        <div class="col">
+                            <label>Sujeto</label>
+                        </div>
+                        <div class="col-2">
+                            <div class="row">
+                                <label>Fecha Modificación</label>
+                            </div>
+                            <div class="row">
+                                <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="card-footer">
+            <div class="form-group text-center" display: inline-block>
+                <button type="button" class="btn btn-lg btn-primary oi oi-file" @onclick="Nuevo"> Nuevo</button>
+                <button type="submit" class="btn btn-lg btn-success oi oi-cloud-upload"> Guardar</button>
+                <button type="button" class="btn btn-lg btn-danger oi oi-trash" @onclick="Eliminar"> Eliminar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int ContratoId { get; set; }
+    private int SeleccionCliente { get; set; }
+    private int SeleccionCacao { get; set; }
+    private List<Clientes> ListaClientes = new List<Clientes>();
+    private List<Cacaos> ListaCacaos = new List<Cacaos>();
+    private decimal Inventario { get; set; }
+
+    private Contratos Contrato = new Contratos();
+
+    protected override void OnInitialized()
+    {
+        Nuevo();
+        BuscarParametro();
+        //ListaClientes = ClientesBLL.GetList(c => true);
+        //ListaCacaos = CacaosBLL.GetList(c => true);
+    }
+
+    public void Nuevo()
+    {
+        Contrato = new Contratos();
+        SeleccionCliente = 0;
+        SeleccionCacao = 0;
+    }
+
+    private void BuscarParametro()
+    {
+        if (ContratoId > 0)
+        {
+            var encontrado = ContratosBLL.Buscar(ContratoId);
+
+            if (encontrado != null)
+                this.Contrato = encontrado;
+            else
+                toast.ShowWarning("No encontrado");
+        }
+    }
+
+    private void BuscarPrecioEInventario()
+    {
+        Cacaos cacao = CacaosBLL.Buscar(SeleccionCacao);
+        Inventario = cacao.Cantidad;
+        Contrato.Precio = cacao.Precio;
+    }
+
+    private void CalcularTotal()
+    {
+        Contrato.Total = Contrato.Cantidad * Contrato.Precio;
+    }
+
+    private void Buscar()
+    {
+        if (Contrato.ContratoId > 0)
+        {
+            var encontrado = ContratosBLL.Buscar(Contrato.ContratoId);
+
+            if (encontrado != null)
+                this.Contrato = encontrado;
+            else
+                toast.ShowWarning("No encontrado");
+        }
+    }
+
+    public void Guardar()
+    {
+        bool guardo;
+
+        guardo = ContratosBLL.Guardar(Contrato);
+
+        if (guardo)
+        {
+            Nuevo();
+            toast.ShowSuccess("Guardado correctamente");
+        }
+        else
+            toast.ShowError("No fue posible guardar");
+    }
+
+    public void Eliminar()
+    {
+        bool elimino;
+
+        elimino = ContratosBLL.Eliminar(Contrato.ContratoId);
+
+        if (elimino)
+        {
+            Nuevo();
+            toast.ShowSuccess("Eliminado correctamente");
+        }
+        else
+            toast.ShowError("No fue posible eliminar");
+    }
+}
