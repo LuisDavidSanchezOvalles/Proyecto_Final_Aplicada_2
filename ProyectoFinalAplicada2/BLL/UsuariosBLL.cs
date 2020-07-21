@@ -26,13 +26,14 @@ namespace ProyectoFinalAplicada2.BLL
                 return false;
 
             bool paso = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
+
             try
             {
                 usuario.Clave = Encriptar(usuario.Clave);
 
-                if (db.Usuarios.Add(usuario) != null)
-                    paso = db.SaveChanges() > 0;
+                if (contexto.Usuarios.Add(usuario) != null)
+                    paso = contexto.SaveChanges() > 0;
             }
             catch (Exception)
             {
@@ -40,7 +41,7 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return paso;
         }
@@ -48,13 +49,13 @@ namespace ProyectoFinalAplicada2.BLL
         private static bool Modificar(Usuarios usuario)
         {
             bool paso = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
             try
             {
                 usuario.Clave = Encriptar(usuario.Clave);
 
-                db.Entry(usuario).State = EntityState.Modified;
-                paso = (db.SaveChanges() > 0);
+                contexto.Entry(usuario).State = EntityState.Modified;
+                paso = (contexto.SaveChanges() > 0);
             }
             catch (Exception)
             {
@@ -62,7 +63,7 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return paso;
         }
@@ -83,14 +84,14 @@ namespace ProyectoFinalAplicada2.BLL
         public static bool Eliminar(int id)
         {
             bool paso = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
             try
             {
-                var usuario = db.Usuarios.Find(id);
+                var usuario = contexto.Usuarios.Find(id);
                 if(usuario != null)
                 {
-                    db.Usuarios.Remove(usuario);
-                    paso = db.SaveChanges() > 0;
+                    contexto.Usuarios.Remove(usuario);
+                    paso = contexto.SaveChanges() > 0;
                 }
             }
             catch (Exception)
@@ -99,17 +100,17 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return paso;
         }
         public static Usuarios Buscar(int id)
         {
             Usuarios usuario = new Usuarios();
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
             try
             {
-                usuario = db.Usuarios.Find(id);
+                usuario = contexto.Usuarios.Find(id);
                 if(usuario != null)
                     usuario.Clave = DesEncriptar(usuario.Clave);
             }
@@ -119,7 +120,7 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return usuario;
         }
@@ -137,14 +138,14 @@ namespace ProyectoFinalAplicada2.BLL
             return string.Empty;
         }
 
-        public static bool Existe(int id)
+        private static bool Existe(int id)
         {
             bool encontrado = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
 
             try
             {
-                encontrado = db.Usuarios.Any(u => u.UsuarioId == id);
+                encontrado = contexto.Usuarios.Any(u => u.UsuarioId == id);
             }
             catch (Exception)
             {
@@ -152,7 +153,7 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
 
             return encontrado;
@@ -161,10 +162,10 @@ namespace ProyectoFinalAplicada2.BLL
         public static List<Usuarios> GetList(Expression<Func<Usuarios, bool>> usuario)
         {
             List<Usuarios> Lista = new List<Usuarios>();
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
             try
             {
-                Lista = db.Usuarios.Where(usuario).ToList();
+                Lista = contexto.Usuarios.Where(usuario).ToList();
             }
             catch (Exception)
             {
@@ -172,7 +173,7 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return Lista;
         }
@@ -180,13 +181,13 @@ namespace ProyectoFinalAplicada2.BLL
         public static bool ExisteUsuario(string usuario, string clave)
         {
             bool paso = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
 
             try
             {
                 clave = Encriptar(clave);
 
-                if (db.Usuarios.Where(u => u.NombreUsuario == usuario && u.Clave == clave).SingleOrDefault() != null)
+                if (contexto.Usuarios.Where(u => u.NombreUsuario == usuario && u.Clave == clave).SingleOrDefault() != null)
                     paso = true;
             }
             catch (Exception)
@@ -195,7 +196,7 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
 
             return paso;
@@ -203,13 +204,14 @@ namespace ProyectoFinalAplicada2.BLL
 
         public static string ObtenerUsuarioId(string usuario, string clave)
         {
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
             string id;
+
             try
             {
                 clave = Encriptar(clave);
 
-                id = db.Usuarios.Where(u => u.NombreUsuario == usuario && u.Clave == clave).FirstOrDefault().UsuarioId.ToString();
+                id = contexto.Usuarios.Where(u => u.NombreUsuario == usuario && u.Clave == clave).FirstOrDefault().UsuarioId.ToString();
             }
             catch (Exception)
             {
@@ -217,7 +219,7 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
 
             return id;

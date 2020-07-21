@@ -19,14 +19,18 @@ namespace ProyectoFinalAplicada2.BLL
                 return Modificar(cliente);
         }
 
-        public static bool Insertar(Clientes cliente)
+        private static bool Insertar(Clientes cliente)
         {
+            if (cliente.ClienteId != 0)
+                return false;
+
             bool paso = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
+
             try
             {
-                if (db.Clientes.Add(cliente) != null)
-                    paso = db.SaveChanges() > 0;
+                if (contexto.Clientes.Add(cliente) != null)
+                    paso = contexto.SaveChanges() > 0;
             }
             catch (Exception)
             {
@@ -34,19 +38,20 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return paso;
         }
 
-        public static bool Modificar(Clientes cliente)
+        private static bool Modificar(Clientes cliente)
         {
             bool paso = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
+
             try
             {
-                db.Entry(cliente).State = EntityState.Modified;
-                paso = (db.SaveChanges() > 0);
+                contexto.Entry(cliente).State = EntityState.Modified;
+                paso = (contexto.SaveChanges() > 0);
             }
             catch (Exception)
             {
@@ -54,7 +59,7 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return paso;
         }
@@ -62,12 +67,16 @@ namespace ProyectoFinalAplicada2.BLL
         public static bool Eliminar(int id)
         {
             bool paso = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
+
             try
             {
-                var cliente = db.Clientes.Find(id);
-                db.Clientes.Remove(cliente);
-                paso = db.SaveChanges() > 0;
+                var cliente = contexto.Clientes.Find(id);
+                if(cliente != null)
+                {
+                    contexto.Clientes.Remove(cliente);
+                    paso = contexto.SaveChanges() > 0;
+                }
             }
             catch (Exception)
             {
@@ -75,17 +84,19 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return paso;
         }
+
         public static Clientes Buscar(int id)
         {
             Clientes cliente = new Clientes();
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
+
             try
             {
-                cliente = db.Clientes.Find(id);
+                cliente = contexto.Clientes.Find(id);
             }
             catch (Exception)
             {
@@ -93,19 +104,19 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return cliente;
         }
 
-        public static bool Existe(int id)
+        private static bool Existe(int id)
         {
             bool encontrado = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
 
             try
             {
-                encontrado = db.Clientes.Any(c => c.ClienteId == id);
+                encontrado = contexto.Clientes.Any(c => c.ClienteId == id);
             }
             catch (Exception)
             {
@@ -113,7 +124,7 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
 
             return encontrado;
@@ -122,10 +133,10 @@ namespace ProyectoFinalAplicada2.BLL
         public static List<Clientes> GetList(Expression<Func<Clientes, bool>> cliente)
         {
             List<Clientes> Lista = new List<Clientes>();
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
             try
             {
-                Lista = db.Clientes.Where(cliente).ToList();
+                Lista = contexto.Clientes.Where(cliente).ToList();
             }
             catch (Exception)
             {
@@ -133,12 +144,12 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return Lista;
         }
 
-        public static bool ExisteCliente()
+        public static bool ExisteAlgunCliente()
         {
             List<Clientes> clientes = GetList(c => true);
 

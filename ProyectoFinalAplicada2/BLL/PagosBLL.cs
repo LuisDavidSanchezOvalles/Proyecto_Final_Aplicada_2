@@ -19,14 +19,18 @@ namespace ProyectoFinalAplicada2.BLL
                 return Modificar(pago);
         }
 
-        public static bool Insertar(Pagos pago)
+        private static bool Insertar(Pagos pago)
         {
+            if (pago.PagoId != 0)
+                return false;
+
             bool paso = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
+
             try
             {
-                if (db.Pagos.Add(pago) != null)
-                    paso = db.SaveChanges() > 0;
+                if (contexto.Pagos.Add(pago) != null)
+                    paso = contexto.SaveChanges() > 0;
             }
             catch (Exception)
             {
@@ -34,25 +38,26 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return paso;
         }
 
-        public static bool Modificar(Pagos pago)
+        private static bool Modificar(Pagos pago)
         {
             bool paso = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
+
             try
             {
-                db.Database.ExecuteSqlRaw($"Delete FROM PagosDetalle Where PagoId = {pago.PagoId}");
+                contexto.Database.ExecuteSqlRaw($"Delete FROM PagosDetalle Where PagoId = {pago.PagoId}");
 
                 foreach (var item in pago.PagoDetalle)
                 {
-                    db.Entry(item).State = EntityState.Added;
+                    contexto.Entry(item).State = EntityState.Added;
                 }
-                db.Entry(pago).State = EntityState.Modified;
-                paso = db.SaveChanges() > 0;
+                contexto.Entry(pago).State = EntityState.Modified;
+                paso = contexto.SaveChanges() > 0;
             }
             catch (Exception)
             {
@@ -60,7 +65,7 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return paso;
         }
@@ -68,13 +73,16 @@ namespace ProyectoFinalAplicada2.BLL
         public static bool Eliminar(int id)
         {
             bool paso = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
+
             try
             {
-                //Verificar por que? dice cliente
-                var cliente = db.Clientes.Find(id);
-                db.Clientes.Remove(cliente);
-                paso = db.SaveChanges() > 0;
+                var pago = Buscar(id);
+                if(pago != null)
+                {
+                    contexto.Pagos.Remove(pago);
+                    paso = contexto.SaveChanges() > 0;
+                }
             }
             catch (Exception)
             {
@@ -82,17 +90,19 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return paso;
         }
+
         public static Pagos Buscar(int id)
         {
             Pagos pago = new Pagos();
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
+
             try
             {
-                pago = db.Pagos.Where(p => p.PagoId == id).Include(p => p.PagoDetalle).FirstOrDefault();
+                pago = contexto.Pagos.Where(p => p.PagoId == id).Include(p => p.PagoDetalle).FirstOrDefault();
             }
             catch (Exception)
             {
@@ -100,19 +110,19 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return pago;
         }
 
-        public static bool Existe(int id)
+        private static bool Existe(int id)
         {
             bool encontrado = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
 
             try
             {
-                encontrado = db.Pagos.Any(p => p.PagoId == id);
+                encontrado = contexto.Pagos.Any(p => p.PagoId == id);
             }
             catch (Exception)
             {
@@ -120,7 +130,7 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
 
             return encontrado;
@@ -129,10 +139,10 @@ namespace ProyectoFinalAplicada2.BLL
         public static List<Pagos> GetList(Expression<Func<Pagos, bool>> pago)
         {
             List<Pagos> Lista = new List<Pagos>();
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
             try
             {
-                Lista = db.Pagos.Where(pago).ToList();
+                Lista = contexto.Pagos.Where(pago).ToList();
             }
             catch (Exception)
             {
@@ -140,19 +150,19 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return Lista;
         }
 
-        public static Pagos PagoDeVenta(int id)
+        public static Pagos PagoDeVenta(int ventaId)
         {
             Pagos pago = new Pagos();
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
 
             try
             {
-                pago = db.Pagos.Include(p => p.PagoDetalle).Where(p => p.PagoDetalle[0].VentaId == id).SingleOrDefault();
+                pago = contexto.Pagos.Include(p => p.PagoDetalle).Where(p => p.PagoDetalle[0].VentaId == ventaId).SingleOrDefault();
             }
             catch (Exception)
             {
@@ -160,12 +170,12 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return pago;
         }
 
-        public static bool ExistePago()
+        public static bool ExisteAlgunPago()
         {
             List<Pagos> pagos = GetList(c => true);
 
@@ -177,8 +187,8 @@ namespace ProyectoFinalAplicada2.BLL
 
         public static bool EntradaValida(Pagos pagos)
         {
-            //verifica si el contrato ya esta utilizado
-            List<Pagos> lista = GetList(c => true);
+            //verifica si la venta ya esta utilizada en algun otro pago
+            List<Pagos> lista = GetList(p => true);
 
             foreach (var item in lista)
             {

@@ -19,14 +19,18 @@ namespace ProyectoFinalAplicada2.BLL
                 return Modificar(cacao);
         }
 
-        public static bool Insertar(Cacaos cacao)
+        private static bool Insertar(Cacaos cacao)
         {
+            if (cacao.CacaoId != 0)
+                return false;
+
             bool paso = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
+
             try
             {
-                if (db.Cacaos.Add(cacao) != null)
-                    paso = db.SaveChanges() > 0;
+                if (contexto.Cacaos.Add(cacao) != null)
+                    paso = contexto.SaveChanges() > 0;
             }
             catch (Exception)
             {
@@ -34,19 +38,20 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return paso;
         }
 
-        public static bool Modificar(Cacaos cacao)
+        private static bool Modificar(Cacaos cacao)
         {
             bool paso = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
+
             try
             {
-                db.Entry(cacao).State = EntityState.Modified;
-                paso = (db.SaveChanges() > 0);
+                contexto.Entry(cacao).State = EntityState.Modified;
+                paso = (contexto.SaveChanges() > 0);
             }
             catch (Exception)
             {
@@ -54,7 +59,7 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return paso;
         }
@@ -62,19 +67,23 @@ namespace ProyectoFinalAplicada2.BLL
         public static bool Eliminar(int id)
         {
             bool paso = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
+
             try
             {
-                /*List<Entradas> entradas = EntradasBLL.GetList(e => e.CacaoId == id);
-
-                foreach (var item in entradas)
+                var cacao = contexto.Cacaos.Find(id);
+                if(cacao != null)
                 {
-                    EntradasBLL.Eliminar(item.EntradaId);
-                }*/
+                    List<Entradas> entradas = EntradasBLL.GetList(e => e.CacaoId == id);
 
-                var cacao = db.Cacaos.Find(id);
-                db.Cacaos.Remove(cacao);
-                paso = db.SaveChanges() > 0;
+                    foreach (var item in entradas)
+                    {
+                        EntradasBLL.Eliminar(item.EntradaId);
+                    }
+
+                    contexto.Cacaos.Remove(cacao);
+                    paso = contexto.SaveChanges() > 0;
+                }
             }
             catch (Exception)
             {
@@ -82,17 +91,19 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return paso;
         }
+
         public static Cacaos Buscar(int id)
         {
             Cacaos cacao = new Cacaos();
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
+
             try
             {
-                cacao = db.Cacaos.Find(id);
+                cacao = contexto.Cacaos.Find(id);
             }
             catch (Exception)
             {
@@ -100,19 +111,19 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return cacao;
         }
 
-        public static bool Existe(int id)
+        private static bool Existe(int id)
         {
             bool encontrado = false;
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
 
             try
             {
-                encontrado = db.Cacaos.Any(c => c.CacaoId == id);
+                encontrado = contexto.Cacaos.Any(c => c.CacaoId == id);
             }
             catch (Exception)
             {
@@ -120,7 +131,7 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
 
             return encontrado;
@@ -129,10 +140,11 @@ namespace ProyectoFinalAplicada2.BLL
         public static List<Cacaos> GetList(Expression<Func<Cacaos, bool>> cacao)
         {
             List<Cacaos> Lista = new List<Cacaos>();
-            Contexto db = new Contexto();
+            Contexto contexto = new Contexto();
+
             try
             {
-                Lista = db.Cacaos.Where(cacao).ToList();
+                Lista = contexto.Cacaos.Where(cacao).ToList();
             }
             catch (Exception)
             {
@@ -140,12 +152,12 @@ namespace ProyectoFinalAplicada2.BLL
             }
             finally
             {
-                db.Dispose();
+                contexto.Dispose();
             }
             return Lista;
         }
 
-        public static bool ExisteCacao()
+        public static bool ExisteAlgunCacao()
         {
             List<Cacaos> cacaos = GetList(c => true);
 
