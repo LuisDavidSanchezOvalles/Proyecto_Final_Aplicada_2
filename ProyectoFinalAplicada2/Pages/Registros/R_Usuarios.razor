@@ -163,7 +163,10 @@
             var encontrado = UsuariosBLL.Buscar(UsuarioId);
 
             if (encontrado != null)
+            {
                 this.Usuario = encontrado;
+                AsignarUsuarioCreacion();
+            }
             else
                 toast.ShowWarning("No encontrado");
         }

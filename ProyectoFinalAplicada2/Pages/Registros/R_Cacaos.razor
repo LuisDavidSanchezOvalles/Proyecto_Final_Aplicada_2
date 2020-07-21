@@ -3,114 +3,134 @@
 
 @using Models
 @using BLL
+@using System.Web;
+@using System.Security.Claims;
 
 @inject IToastService toast
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<EditForm Model="Cacao" OnValidSubmit="Guardar">
-    <DataAnnotationsValidator />
-    <div class="card">
-        <div class="card-header">
-            <h3>Registro de Cacaos</h3>
-        </div>
-        <div class="card-body">
-            <form>
+<AuthorizeView>
+    <NotAuthorized>
+        <p class="h4 text-center">Usted no esta autorizado para acceder a esta pagina</p>
 
-                @*CacaoId*@
-                <div class="form-row align-items-center">
-                    <div class="col">
-                        <div class="form-group">
-                            <label>CacaoId</label>
-                            <div class="input-group">
-                                <InputNumber @bind-Value="Cacao.CacaoId" class="form-control col-4" />
-                                <div class="input-group-append">
-                                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" />Buscar</button>
+    </NotAuthorized>
+</AuthorizeView>
+
+@if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated)
+{
+
+    <EditForm Model="Cacao" OnValidSubmit="Guardar">
+        <DataAnnotationsValidator />
+        <div class="card">
+            <div class="card-header">
+                <h3>Registro de Cacaos</h3>
+            </div>
+            <div class="card-body">
+                <form>
+
+                    @*CacaoId*@
+                    <div class="form-row align-items-center">
+                        <div class="col">
+                            <div class="form-group">
+                                <label>CacaoId</label>
+                                <div class="input-group">
+                                    <InputNumber @bind-Value="Cacao.CacaoId" class="form-control col-4" />
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" />Buscar</button>
+                                    </div>
+                                </div>
+                                <ValidationMessage For="@(() => Cacao.CacaoId)" />
+                            </div>
+                        </div>
+                    </div>
+
+                    @*Fecha*@
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <InputDate @bind-Value="Cacao.Fecha" class="form-control" />
+                        <ValidationMessage For="@(() => Cacao.Fecha)" />
+                    </div>
+
+                    @*Tipo*@
+                    <div class="form-group">
+                        <label>Tipo</label>
+                        <InputText @bind-Value="Cacao.Tipo" class="form-control" />
+                        <ValidationMessage For="@(() => Cacao.Tipo)" />
+                    </div>
+
+                    @*Cantidad*@
+                    <div class="form-group">
+                        <label>Cantidad</label>
+                        <InputNumber readonly @bind-Value="Cacao.Cantidad" class="form-control" />
+                    </div>
+
+                    @*Costo*@
+                    <div class="form-group">
+                        <label>Costo</label>
+                        <InputNumber readonly @bind-Value="Cacao.Costo" class="form-control" />
+                    </div>
+
+                    @*Precio*@
+                    <div class="form-group">
+                        <label>Precio</label>
+                        <div class="row">
+                            <div class="col">
+                                <InputNumber @bind-Value="Cacao.Precio" class="form-control" />
+                            </div>
+                            <div class="col-2">
+                                <div class="row">
+                                    <label>Fecha Creación</label>
+                                </div>
+                                <div class="row">
+                                    <label>@Cacao.FechaCreacion.ToString("dd/MM/yyyy")</label>
                                 </div>
                             </div>
-                            <ValidationMessage For="@(() => Cacao.CacaoId)" />
                         </div>
+                        <ValidationMessage For="@(() => Cacao.Precio)" />
                     </div>
-                </div>
 
-                @*Fecha*@
-                <div class="form-group">
-                    <label>Fecha</label>
-                    <InputDate @bind-Value="Cacao.Fecha" class="form-control" />
-                    <ValidationMessage For="@(() => Cacao.Fecha)" />
-                </div>
-
-                @*Tipo*@
-                <div class="form-group">
-                    <label>Tipo</label>
-                    <InputText @bind-Value="Cacao.Tipo" class="form-control" />
-                    <ValidationMessage For="@(() => Cacao.Tipo)" />
-                </div>
-
-                @*Cantidad*@
-                <div class="form-group">
-                    <label>Cantidad</label>
-                    <InputNumber readonly @bind-Value="Cacao.Cantidad" class="form-control" />
-                </div>
-
-                @*Costo*@
-                <div class="form-group">
-                    <label>Costo</label>
-                    <InputNumber readonly @bind-Value="Cacao.Costo" class="form-control" />
-                </div>
-
-                @*Precio*@
-                <div class="form-group">
-                    <label>Precio</label>
-                    <div class="row">
-                        <div class="col">
-                            <InputNumber @bind-Value="Cacao.Precio" class="form-control" />
-                        </div>
-                        <div class="col-2">
-                            <div class="row">
-                                <label>Fecha Creación</label>
+                    @*Creado por*@
+                    <div class="form-group">
+                        <label>Creado Por</label>
+                        <div class="row">
+                            <div class="col">
+                                <label>@nombreUsuarioCreacion</label>
                             </div>
-                            <div class="row">
-                                <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
+                            <div class="col-2">
+                                <div class="row">
+                                    <label>Fecha Modificación</label>
+                                </div>
+                                <div class="row">
+                                    <label>@Cacao.FechaModificacion.ToString("dd/MM/yyyy")</label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <ValidationMessage For="@(() => Cacao.Precio)" />
-                </div>
 
-                @*Creado por*@
-                <div class="form-group">
-                    <label>Creado Por</label>
-                    <div class="row">
-                        <div class="col">
-                            <label>Sujeto</label>
-                        </div>
-                        <div class="col-2">
-                            <div class="row">
-                                <label>Fecha Modificación</label>
-                            </div>
-                            <div class="row">
-                                <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
-                            </div>
-                        </div>
-                    </div>
+                </form>
+            </div>
+            <div class="card-footer">
+                <div class="form-group text-center" display: inline-block>
+                    <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo"><i class="oi oi-plus" />Nuevo</button>
+                    <button type="submit" class="btn btn-lg btn-success"><i class="oi oi-hard-drive" />Guardar</button>
+                    <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar"><i class="oi oi-trash" />Eliminar</button>
                 </div>
-
-            </form>
-        </div>
-        <div class="card-footer">
-            <div class="form-group text-center" display: inline-block>
-                <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo"><i class="oi oi-plus" />Nuevo</button>
-                <button type="submit" class="btn btn-lg btn-success"><i class="oi oi-hard-drive" />Guardar</button>
-                <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar"><i class="oi oi-trash" />Eliminar</button>
             </div>
         </div>
-    </div>
-</EditForm>
+    </EditForm>
+}
 
 @code {
     [Parameter]
     public int CacaoId { get; set; }
 
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
+
     private Cacaos Cacao = new Cacaos();
+
+    public string nombreUsuarioCreacion { get; set; } = "";
+    public string usuarioIdCreacion { get; set; } = "";
 
     protected override void OnInitialized()
     {
@@ -121,6 +141,17 @@
     public void Nuevo()
     {
         Cacao = new Cacaos();
+
+        ReiniciarUsuarioCreacion();
+    }
+
+    private async void ReiniciarUsuarioCreacion()
+    {
+        nombreUsuarioCreacion = (await authState).User.Identity.Name;
+
+        usuarioIdCreacion = (await authState).User.Claims
+            .Where(c => c.Type == ClaimTypes.NameIdentifier)
+            .Select(c => c.Value).FirstOrDefault();
     }
 
     private void BuscarParametro()
@@ -130,7 +161,10 @@
             var encontrado = CacaosBLL.Buscar(CacaoId);
 
             if (encontrado != null)
+            {
                 this.Cacao = encontrado;
+                AsignarUsuarioCreacion();
+            }
             else
                 toast.ShowWarning("No encontrado");
         }
@@ -143,15 +177,29 @@
             var encontrado = CacaosBLL.Buscar(Cacao.CacaoId);
 
             if (encontrado != null)
+            {
                 this.Cacao = encontrado;
+                AsignarUsuarioCreacion();
+            }
             else
                 toast.ShowWarning("No encontrado");
         }
     }
 
+    private void AsignarUsuarioCreacion()
+    {
+        Usuarios usuarioCreacion = UsuariosBLL.Buscar(Cacao.UsuarioId);
+
+        nombreUsuarioCreacion = usuarioCreacion.NombreUsuario;
+        usuarioIdCreacion = Cacao.UsuarioId.ToString();
+    }
+
     public void Guardar()
     {
         bool guardo;
+
+        Cacao.UsuarioId = Convert.ToInt32(usuarioIdCreacion);
+        Cacao.FechaModificacion = DateTime.Now;
 
         guardo = CacaosBLL.Guardar(Cacao);
 
@@ -178,5 +226,5 @@
         else
             toast.ShowError("No fue posible eliminar");
     }
-}
+    }
 
