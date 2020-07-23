@@ -12,8 +12,8 @@
 
     <div class="card-body">
         <form>
-            <label>Filtro</label>
             <div class="col">
+                <label>Filtro</label>
                 <select class="form-control" @bind="Filtro">
                     <option value="0">Todos</option>
                     <option value="1">Id</option>
@@ -33,15 +33,15 @@
                     <div class="input-group">
                         <input type="text" @bind="Criterio" class="form-control">
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-primary input-group-text" @onclick="Consultar">Consultar</button>
+                            <button type="button" class="btn btn-primary input-group-text oi oi-list-rich" @onclick="Consultar">Consultar</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div>
-                <table class="table">
-                    <thead>
+            <div class="table-responsive text-nowrap" style="position: relative; height:200px; overflow: auto; display: block;">
+                <table class="table table-striped">
+                    <thead class="thead-light">
                         <tr>
                             <th>UsuarioId</th>
                             <th>Nombres</th>
@@ -53,7 +53,7 @@
                             <th>UsuarioId</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white">
                         @foreach (var cliente in ListaClientes)
                         {
                             <tr>
