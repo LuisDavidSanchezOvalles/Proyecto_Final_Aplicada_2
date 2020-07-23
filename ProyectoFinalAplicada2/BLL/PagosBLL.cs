@@ -185,7 +185,7 @@ namespace ProyectoFinalAplicada2.BLL
                 return false;
         }
 
-        public static bool EntradaValida(Pagos pagos)
+        public static bool VentaDisponible(Pagos pagos)
         {
             //verifica si la venta ya esta utilizada en algun otro pago
             List<Pagos> lista = GetList(p => true);

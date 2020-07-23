@@ -55,24 +55,26 @@
                     @*Clientes*@
                     <div class="form-group">
                         <label>Cliente</label>
-                        <InputSelect @bind-Value="ClienteSeleccionado" class="form-control">
+                        <InputSelect @bind-Value="ClienteIdSeleccionado" class="form-control">
                             @*@foreach (var cliente in Clientes)
-                                {
-                                    <option value="@Convert.ToString(cliente.ClienteId)">@cliente.Nombres</option>
-                                }*@
+                            {
+                            <option value="@Convert.ToString(cliente.ClienteId)">@cliente.Nombres</option>
+                            }*@
+                            <option value="1">1</option>
+                            <option value="2">2</option>
                         </InputSelect>
                     </div>
 
                     @*VentaId*@
-                    @*<div class="form-group">
-                            <label>VentaId</label>
-                            <InputSelect @bind-Value="VentaIdSeleccionado" class="form-control">
-                                @foreach (var venta in Ventas)
-                                {
-                                    <option value="@Convert.ToString(venta.VentaId)">@venta.VentaId</option>
-                                }
-                            </InputSelect>
-                        </div>*@
+                    <div class="form-group">
+                        <label>VentaId</label>
+                        <InputSelect @bind-Value="VentaIdSeleccionado" class="form-control">
+                            @*@foreach (var venta in Ventas)
+                            {
+                                <option value="@Convert.ToString(venta.VentaId)">@venta.VentaId</option>
+                            }*@
+                        </InputSelect>
+                    </div>
 
                     @*Balance*@
                     <div class="form-group">
@@ -108,7 +110,7 @@
                             <div class="input-group">
                                 <InputNumber @bind-Value="Monto" class="form-control" />
                                 <div class="input-group-append">
-                                    <button type="button" class="btn btn-primary input-group-text" @onclick="AgregarPago"><i class="oi oi-plus" /> Agregar</button>
+                                    <button type="button" class="btn btn-primary input-group-text" @onclick="AgregarDetalle"><i class="oi oi-plus" /> Agregar</button>
                                 </div>
                             </div>
                         </div>
@@ -176,16 +178,61 @@
     public Pagos Pago { get; set; }
 
     public List<Clientes> Clientes { get; set; }
-    //public List<Ventas> Ventas { get; set; }
+    public List<Ventas> Ventas { get; set; }
 
     public string nombreUsuarioCreacion { get; set; } = "";
     public string usuarioIdCreacion { get; set; } = "";
 
-    public string ClienteSeleccionado { get; set; }
-    public string VentaIdSeleccionado { get; set; }
+    private string clienteIdSeleccionado;
+    public string ClienteIdSeleccionado
+    {
+        get
+        {
+            return clienteIdSeleccionado;
+        }
+        set
+        {
+            clienteIdSeleccionado = value;
+            obtenerVentas();
+        }
+    }
+
+    private string ventaIdSeleccionado;
+    public string VentaIdSeleccionado
+    {
+        get
+        {
+            return ventaIdSeleccionado;
+        }
+        set
+        {
+            ventaIdSeleccionado = value;
+            obtenerBalance();
+        }
+    }
 
     public decimal Balance { get; set; }
     public decimal Monto { get; set; }
+
+    private void obtenerVentas()
+    {
+        if(Pago.PagoId == 0)
+        {
+            Ventas = VentasBLL.GetList(v => v.ClienteId == Convert.ToInt32(ClienteIdSeleccionado));
+            if (Ventas.Count > 0)
+                VentaIdSeleccionado = Convert.ToString(Ventas.First().VentaId);
+        }
+    }
+
+    private void obtenerBalance()
+    {
+        if(Pago.PagoId == 0)
+        {
+            Ventas venta = VentasBLL.Buscar(Convert.ToInt32(VentaIdSeleccionado));
+            Balance = venta.Balance;
+            Pago.PagoDetalle.Clear();
+        }
+    }
 
     protected override void OnInitialized()
     {
@@ -196,6 +243,14 @@
     public void Nuevo()
     {
         Pago = new Pagos();
+
+        Clientes = ClientesBLL.GetList(c => true);
+        Ventas.Clear();
+
+        if (Clientes.Count > 0)
+            ClienteIdSeleccionado = Convert.ToString(Clientes.First().ClienteId);
+
+        VentaIdSeleccionado = "0";
 
         ReiniciarUsuarioCreacion();
     }
@@ -219,6 +274,7 @@
             {
                 this.Pago = encontrado;
                 AsignarCliente();
+                AsignarVenta();
                 AsignarUsuarioCreacion();
             }
             else
@@ -226,7 +282,7 @@
         }
     }
 
-    private void Buscar()
+    public void Buscar()
     {
         if (Pago.PagoId > 0)
         {
@@ -236,11 +292,28 @@
             {
                 this.Pago = encontrado;
                 AsignarCliente();
+                AsignarVenta();
                 AsignarUsuarioCreacion();
             }
             else
                 toast.ShowWarning("No encontrado");
         }
+    }
+
+    private void AsignarCliente()
+    {
+        Clientes.Clear();
+        var cliente = ClientesBLL.Buscar(Pago.ClienteId);
+        Clientes.Add(cliente);
+        ClienteIdSeleccionado = Convert.ToString(cliente.ClienteId);
+    }
+
+    private void AsignarVenta()
+    {
+        Ventas.Clear();
+        var venta = VentasBLL.Buscar(Pago.PagoDetalle[0].VentaId);
+        Ventas.Add(venta);
+        VentaIdSeleccionado = Convert.ToString(venta.VentaId);
     }
 
     private void AsignarUsuarioCreacion()
@@ -251,20 +324,21 @@
         usuarioIdCreacion = Pago.UsuarioId.ToString();
     }
 
-    private void AsignarCliente()
-    {
-        //Clientes.Clear();
-        //var cliente = ClientesBLL.Buscar(Pago.ClienteId);
-        //Clientes.Add(cliente);
-        //ClienteSeleccionado = Convert.ToString(cliente.ClienteId);
-    }
-
-    public void AgregarPago()
+    public void AgregarDetalle()
     {
         int ventaId = Convert.ToInt32(VentaIdSeleccionado);
 
         if (ventaId < 0 || Monto <= 0)
+        {
+            toast.ShowInfo("Ingrese valores validos");
             return;
+        }
+
+        if (Monto > Balance)
+        {
+            toast.ShowInfo("Ha excedido el pago posible");
+            return;
+        }
 
         Pago.PagoDetalle.Add(new PagosDetalle
         {
@@ -275,25 +349,58 @@
             Saldo = 0
         });
 
+        calcularPago();
+
         Monto = 0.0m;
+    }
+
+    private void calcularPago()
+    {
+        Ventas venta = VentasBLL.Buscar(Convert.ToInt32(VentaIdSeleccionado));
+
+        Pago.Total = 0.0m;
+        Balance = venta.Total;
+
+        foreach(var item in Pago.PagoDetalle)
+        {
+            Pago.Total += item.Monto;
+            Balance -= item.Monto;
+            item.Saldo = Balance;
+        }
     }
 
     public void RemoverFila(int index)
     {
         Pago.PagoDetalle.RemoveAt(index);
+        calcularPago();
     }
 
     public void Guardar()
     {
         bool guardo;
 
+        if (Pago.PagoDetalle.Count < 1)
+        {
+            toast.ShowInfo("Debe ingresar algun monto");
+            return;
+        }
+
+        if (!PagosBLL.VentaDisponible(Pago))
+        {
+            toast.ShowInfo("Ya ha sido utilizada esta VentaId");
+            return;
+        }
+
+        Pago.ClienteId = Convert.ToInt32(ClienteIdSeleccionado);
         Pago.UsuarioId = Convert.ToInt32(usuarioIdCreacion);
         Pago.FechaModificacion = DateTime.Now;
+
 
         guardo = PagosBLL.Guardar(Pago);
 
         if (guardo)
         {
+            VentasBLL.RestarBalance(Pago.PagoDetalle[0].VentaId, Balance);
             Nuevo();
             toast.ShowSuccess("Guardado correctamente");
         }
@@ -309,10 +416,11 @@
 
         if (elimino)
         {
+            VentasBLL.RestablecerBalance(Pago.PagoDetalle[0].VentaId);
             Nuevo();
             toast.ShowSuccess("Eliminado correctamente");
         }
         else
             toast.ShowError("No fue posible eliminar");
     }
-    }
+}
