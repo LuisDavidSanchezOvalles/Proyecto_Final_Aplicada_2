@@ -22,7 +22,6 @@ namespace ProyectoFinalAplicada2.Models
         public string Nombres { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Dirección'")]
-        [Range(3,30)]
         public string Direccion { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Email'")]

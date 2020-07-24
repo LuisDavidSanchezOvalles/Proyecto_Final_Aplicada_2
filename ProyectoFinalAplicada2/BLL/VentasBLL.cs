@@ -21,6 +21,9 @@ namespace ProyectoFinalAplicada2.BLL
 
         public static bool Insertar(Ventas venta)
         {
+            if (venta.VentaId != 0)
+                return false;
+
             bool paso = false;
             Contexto db = new Contexto();
             try
@@ -72,8 +75,12 @@ namespace ProyectoFinalAplicada2.BLL
             try
             {
                 var venta = db.Ventas.Find(id);
-                db.Ventas.Remove(venta);
-                paso = db.SaveChanges() > 0;
+                if(venta != null)
+                {
+                    db.Ventas.Remove(venta);
+                    paso = db.SaveChanges() > 0;
+                }
+                
             }
             catch (Exception)
             {

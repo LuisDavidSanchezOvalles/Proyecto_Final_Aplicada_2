@@ -21,6 +21,9 @@ namespace ProyectoFinalAplicada2.BLL
 
         public static bool Insertar(Contratos contrato)
         {
+            if (contrato.ContratoId != 0)
+                return false;
+
             bool paso = false;
             Contexto db = new Contexto();
             try
@@ -66,8 +69,12 @@ namespace ProyectoFinalAplicada2.BLL
             try
             {
                 var contrato = db.Contratos.Find(id);
-                db.Contratos.Remove(contrato);
-                paso = db.SaveChanges() > 0;
+                if(contrato != null)
+                {
+                    db.Contratos.Remove(contrato);
+                    paso = db.SaveChanges() > 0;
+                }
+                
             }
             catch (Exception)
             {

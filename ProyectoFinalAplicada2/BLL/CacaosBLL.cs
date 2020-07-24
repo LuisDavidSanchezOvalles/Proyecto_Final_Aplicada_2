@@ -177,11 +177,25 @@ namespace ProyectoFinalAplicada2.BLL
             Modificar(cacao);
         }
 
-        public static bool ContratarCacao(int id, decimal cantidad)
+        public static bool ContratarCacao(Contratos contrato)
         {
-            Cacaos cacao = Buscar(id);
+            Contratos AnteriorContrato = ContratosBLL.Buscar(contrato.ContratoId);
+            Cacaos cacao;
 
-            cacao.Cantidad -= cantidad;
+            if(AnteriorContrato == null)
+            {
+                cacao = Buscar(contrato.CacaoId);
+
+                cacao.Cantidad -= contrato.Cantidad;
+            }
+            else
+            {
+                decimal diferenciaCantidad = AnteriorContrato.Cantidad - contrato.Cantidad;
+
+                cacao = Buscar(contrato.CacaoId);
+
+                cacao.Cantidad += diferenciaCantidad;
+            }
 
             if (cacao.Cantidad >= 0)
             {
@@ -192,14 +206,15 @@ namespace ProyectoFinalAplicada2.BLL
                 return false;
         }
 
-        public static void DevolverCacao(int id, decimal cantidad)
+        public static void DevolverCacao(int contratoId, int cacaoId)
         {
-            Cacaos cacao = Buscar(id);
+            Contratos contrato = ContratosBLL.Buscar(contratoId);
+            Cacaos cacao = Buscar(cacaoId);
 
             if (cacao == null)
                 return;
 
-            cacao.Cantidad += cantidad;
+            cacao.Cantidad += contrato.Cantidad;
 
             Modificar(cacao);
         }

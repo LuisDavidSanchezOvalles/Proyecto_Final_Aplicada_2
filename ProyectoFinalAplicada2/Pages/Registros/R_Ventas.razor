@@ -3,117 +3,134 @@
 
 @using Models
 @using BLL
+@using System.Web;
+@using System.Security.Claims;
 
 @inject IToastService toast
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<EditForm Model="Venta" OnValidSubmit="Guardar">
-    <DataAnnotationsValidator />
-    <div class="card">
-        <div class="card-header">
-            <h3>Registro de Venta</h3>
-        </div>
+<AuthorizeView>
+    <NotAuthorized>
+        <p class="h4 text-center">Usted no esta autorizado para acceder a esta pagina</p>
 
-        <div class="card-body">
-            <form>
+    </NotAuthorized>
+</AuthorizeView>
 
-                @*VentaId*@
-                <div class="form-row align-items-center">
-                    <div class="col">
-                        <div class="form-group">
-                            <label>ContratoId</label>
-                            <div class="input-group">
-                                <InputNumber @bind-Value="Venta.VentaId" class="form-control col-4" />
-                                <div class="input-group-append">
-                                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" /> Buscar</button>
+@if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated)
+{
+
+    <EditForm Model="Venta" OnValidSubmit="Guardar">
+        <DataAnnotationsValidator />
+        <div class="card">
+            <div class="card-header">
+                <h3>Registro de Venta</h3>
+            </div>
+
+            <div class="card-body">
+                <form>
+
+                    @*VentaId*@
+                    <div class="form-row align-items-center">
+                        <div class="col">
+                            <div class="form-group">
+                                <label>ContratoId</label>
+                                <div class="input-group">
+                                    <InputNumber @bind-Value="Venta.VentaId" class="form-control col-4" />
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" /> Buscar</button>
+                                    </div>
                                 </div>
+                                <ValidationMessage For="@(() => Venta.VentaId)" />
                             </div>
-                            <ValidationMessage For="@(() => Venta.VentaId)" />
                         </div>
                     </div>
-                </div>
 
-                @*Fecha*@
-                <div class="form-group">
-                    <label>Fecha</label>
-                    <InputDate @bind-Value="Venta.Fecha" class="form-control" />
-                    <ValidationMessage For="@(() => Venta.Fecha)" />
-                </div>
+                    @*Fecha*@
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <InputDate @bind-Value="Venta.Fecha" class="form-control" />
+                        <ValidationMessage For="@(() => Venta.Fecha)" />
+                    </div>
 
-                @*Clientes Existentes*@
-                @*<div class="form-group">
-                        <div class="form-row">
-                            <div class="col">
-                                <label>ClienteId</label>
-                                <select class="form-control" @bind="SeleccionCliente">
-                                    <option value="" disabled selected>Clientes Disponibles</option>
-                                    @foreach (var item in ListaClientes)
-                                    {
-                                        <option value="@item.ClienteId">Id: @item.ClienteId a Nombre de: @item.Nombres</option>
-                                    }
-                                </select>
+                    @*Clientes Existentes*@
+                    <div class="form-group">
+                            <div class="form-row">
+                                <div class="col">
+                                    <label>Cliente</label>
+                                    <select class="form-control" @bind="Venta.ClienteId">
+                                        <option value="" disabled selected>Clientes Disponibles</option>
+                                        @foreach (var item in ListaClientes)
+                                        {
+                                            <option value="@item.ClienteId">Id: @item.ClienteId a Nombre de: @item.Nombres</option>
+                                        }
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                    </div>*@
+                    </div>
 
-                @*Total*@
-                <div class="form-group">
-                    <label>Total</label>
-                    <InputNumber @bind-Value="Venta.Total" class="form-control" readonly="true"/>
+                    @*Total*@
+                    <div class="form-group">
+                        <label>Total</label>
+                        <InputNumber @bind-Value="Venta.Total" class="form-control" readonly="true" />
+                    </div>
+
+                    @*Balance*@
+                    <div class="form-group">
+                        <label>Balance</label>
+                        <InputNumber @bind-Value="Venta.Balance" class="form-control" readonly="true" />
+                    </div>
+
+                    @*Contratos Existentes*@
+                    @*<div class="form-group">
+                                <div class="form-row">
+                                    <div class="col">
+                                        <label>CacaoId</label>
+                                        <select class="form-control" @bind="SeleccionContrato" @onfocusout="BuscarPrecioEInventario">
+                                            <option value="" disabled selected>Tipos de Cacaos Disponibles</option>
+                                            @foreach (var item in ListaContratos)
+                                            {
+                                                <option value="@item.ContratoId">Id:@item.ContratoId a Nombre de: @ObtenerNombreCliente(item.ClienteId)</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                        </div>*@
+
+                    @*CantidadPendiente*@
+                    <div class="form-group">
+                        <label>Cantidad Pendiente</label>
+                        <InputNumber @bind-Value="CantidadPendiente" class="form-control" readonly="true" />
+                    </div>
+
+                    @*Cantidad*@
+                    <div class="form-group">
+                        <label>Cantidad</label>
+                        <InputNumber @bind-Value="Cantidad" class="form-control" @onfocusout="CalcularTotal" />
+                        <ValidationMessage For="@(() => Cantidad)" />
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="card-footer">
+                <div class="form-group text-center" display: inline-block>
+                    <button type="button" class="btn btn-lg btn-primary oi oi-file" @onclick="Nuevo"> Nuevo</button>
+                    <button type="submit" class="btn btn-lg btn-success oi oi-cloud-upload"> Guardar</button>
+                    <button type="button" class="btn btn-lg btn-danger oi oi-trash" @onclick="Eliminar"> Eliminar</button>
                 </div>
-
-                @*Balance*@
-                <div class="form-group">
-                    <label>Balance</label>
-                    <InputNumber @bind-Value="Venta.Balance" class="form-control" readonly="true"/>
-                </div>
-
-                @*Contratos Existentes*@
-                @*<div class="form-group">
-                        <div class="form-row">
-                            <div class="col">
-                                <label>CacaoId</label>
-                                <select class="form-control" @bind="SeleccionContrato" @onfocusout="BuscarPrecioEInventario">
-                                    <option value="" disabled selected>Tipos de Cacaos Disponibles</option>
-                                    @foreach (var item in ListaContratos)
-                                    {
-                                        <option value="@item.ContratoId">Id:@item.ContratoId a Nombre de: @ObtenerNombreCliente(item.ClienteId)</option>
-                                    }
-                                </select>
-                            </div>
-                        </div>
-                </div>*@
-
-                @*CantidadPendiente*@
-                <div class="form-group">
-                    <label>Cantidad Pendiente</label>
-                    <InputNumber @bind-Value="CantidadPendiente" class="form-control" readonly="true" />
-                </div>
-
-                @*Cantidad*@
-                <div class="form-group">
-                    <label>Cantidad</label>
-                    <InputNumber @bind-Value="Cantidad" class="form-control" @onfocusout="CalcularTotal" />
-                    <ValidationMessage For="@(() => Cantidad)" />
-                </div>
-
-            </form>
-        </div>
-
-        <div class="card-footer">
-            <div class="form-group text-center" display: inline-block>
-                <button type="button" class="btn btn-lg btn-primary oi oi-file" @onclick="Nuevo"> Nuevo</button>
-                <button type="submit" class="btn btn-lg btn-success oi oi-cloud-upload"> Guardar</button>
-                <button type="button" class="btn btn-lg btn-danger oi oi-trash" @onclick="Eliminar"> Eliminar</button>
             </div>
         </div>
-    </div>
-</EditForm>
+    </EditForm>
+}
 
 @code {
     [Parameter]
     public int VentaId { get; set; }
-    private int SeleccionCliente { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
     private int SeleccionContrato { get; set; }
+    public string nombreUsuarioCreacion { get; set; } = "";
+    public string usuarioIdCreacion { get; set; } = "";
     private List<Clientes> ListaClientes = new List<Clientes>();
     private List<Contratos> ListaContratos = new List<Contratos>();
     private decimal Inventario { get; set; }
@@ -128,15 +145,25 @@
     {
         Nuevo();
         BuscarParametro();
-        //ListaClientes = ClientesBLL.GetList(s => true);
-        //ListaContratos = ContratosBLL.GetList(c => true);
+
     }
 
     public void Nuevo()
     {
         Venta = new Ventas();
-        SeleccionCliente = 0;
         SeleccionContrato = 0;
+        ListaClientes = ClientesBLL.GetList(s => true);
+        ListaContratos = ContratosBLL.GetList(c => true);
+        ReiniciarUsuarioCreacion();
+    }
+
+    private async void ReiniciarUsuarioCreacion()
+    {
+        nombreUsuarioCreacion = (await authState).User.Identity.Name;
+
+        usuarioIdCreacion = (await authState).User.Claims
+            .Where(c => c.Type == ClaimTypes.NameIdentifier)
+            .Select(c => c.Value).FirstOrDefault();
     }
 
     private void BuscarParametro()
@@ -150,6 +177,27 @@
             else
                 toast.ShowWarning("No encontrado");
         }
+    }
+
+    private void Buscar()
+    {
+        if (Venta.VentaId > 0)
+        {
+            var encontrado = VentasBLL.Buscar(Venta.VentaId);
+
+            if (encontrado != null)
+                this.Venta = encontrado;
+            else
+                toast.ShowWarning("No encontrado");
+        }
+    }
+
+    private void AsignarUsuarioCreacion()
+    {
+        Usuarios usuarioCreacion = UsuariosBLL.Buscar(Venta.UsuarioId);
+
+        nombreUsuarioCreacion = usuarioCreacion.NombreUsuario;
+        usuarioIdCreacion = Venta.UsuarioId.ToString();
     }
 
     private string ObtenerNombreCliente(int id)
@@ -171,22 +219,12 @@
         //Contrato.Total = Contrato.Cantidad * Contrato.Precio;
     }
 
-    private void Buscar()
-    {
-        if (Venta.VentaId > 0)
-        {
-            var encontrado = VentasBLL.Buscar(Venta.VentaId);
-
-            if (encontrado != null)
-                this.Venta = encontrado;
-            else
-                toast.ShowWarning("No encontrado");
-        }
-    }
-
     public void Guardar()
     {
         bool guardo;
+
+        Venta.UsuarioId = Convert.ToInt32(usuarioIdCreacion);
+        Venta.FechaModificacion = DateTime.Now;
 
         guardo = VentasBLL.Guardar(Venta);
 
@@ -213,4 +251,4 @@
         else
             toast.ShowError("No fue posible eliminar");
     }
-}
+    }

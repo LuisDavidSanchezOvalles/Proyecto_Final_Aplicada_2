@@ -21,6 +21,9 @@ namespace ProyectoFinalAplicada2.BLL
 
         public static bool Insertar(Entradas entrada)
         {
+            if (entrada.EntradaId != 0)
+                return false;
+
             bool paso = false;
             Contexto db = new Contexto();
             try
@@ -66,8 +69,12 @@ namespace ProyectoFinalAplicada2.BLL
             try
             {
                 var entrada = db.Entradas.Find(id);
-                db.Entradas.Remove(entrada);
-                paso = db.SaveChanges() > 0;
+                if(entrada != null)
+                {
+                    db.Entradas.Remove(entrada);
+                    paso = db.SaveChanges() > 0;
+                }
+                
             }
             catch (Exception)
             {

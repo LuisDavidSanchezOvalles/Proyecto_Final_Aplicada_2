@@ -3,143 +3,159 @@
 
 @using Models
 @using BLL
+@using System.Web;
+@using System.Security.Claims;
 
 @inject IToastService toast
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<EditForm Model="Entrada" OnValidSubmit="Guardar">
-    <DataAnnotationsValidator />
-    <div class="card">
-        <div class="card-header">
-            <h3>Registro de Entradas</h3>
-        </div>
+<AuthorizeView>
+    <NotAuthorized>
+        <p class="h4 text-center">Usted no esta autorizado para acceder a esta pagina</p>
 
-        <div class="card-body">
-            <form>
+    </NotAuthorized>
+</AuthorizeView>
 
-                @*EntradaId*@
-                <div class="form-row align-items-center">
-                    <div class="col">
-                        <div class="form-group">
-                            <label>EntradaId</label>
-                            <div class="input-group">
-                                <InputNumber @bind-Value="Entrada.EntradaId" class="form-control col-4" />
-                                <div class="input-group-append">
-                                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" /> Buscar</button>
+@if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated)
+{
+
+    <EditForm Model="Entrada" OnValidSubmit="Guardar">
+        <DataAnnotationsValidator />
+        <div class="card">
+            <div class="card-header">
+                <h3>Registro de Entradas</h3>
+            </div>
+
+            <div class="card-body">
+                <form>
+
+                    @*EntradaId*@
+                    <div class="form-row align-items-center">
+                        <div class="col">
+                            <div class="form-group">
+                                <label>EntradaId</label>
+                                <div class="input-group">
+                                    <InputNumber @bind-Value="Entrada.EntradaId" class="form-control col-4" />
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" /> Buscar</button>
+                                    </div>
+                                </div>
+                                <ValidationMessage For="@(() => Entrada.EntradaId)" />
+                            </div>
+                        </div>
+                    </div>
+
+                    @*Fecha*@
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <InputDate @bind-Value="Entrada.Fecha" class="form-control" />
+                        <ValidationMessage For="@(() => Entrada.Fecha)" />
+                    </div>
+
+                    @*Suplidores Existentes*@
+                    <div class="form-group">
+                            <div class="form-row">
+                                <div class="col">
+                                    <label>Suplidor</label>
+                                    <select class="form-control" @bind="Entrada.SuplidorId">
+                                        <option value="" disabled selected>Suplidores Disponibles</option>
+                                        @foreach (var item in ListaSuplidores)
+                                        {
+                                            <option value="@item.SuplidorId">Id: @item.SuplidorId a Nombre de: @item.Nombres</option>
+                                        }
+                                    </select>
                                 </div>
                             </div>
-                            <ValidationMessage For="@(() => Entrada.EntradaId)" />
-                        </div>
                     </div>
-                </div>
 
-                @*Fecha*@
-                <div class="form-group">
-                    <label>Fecha</label>
-                    <InputDate @bind-Value="Entrada.Fecha" class="form-control" />
-                    <ValidationMessage For="@(() => Entrada.Fecha)" />
-                </div>
-
-                @*Suplidores Existentes*@
-                @*<div class="form-group">
-                    <div class="form-row">
-                        <div class="col">
-                            <label>SuplidorId</label>
-                            <select class="form-control" @bind="SeleccionSuplidor">
-                                <option value="" disabled selected>Suplidores Disponibles</option>
-                                @foreach (var item in ListaSuplidores)
-                                {
-                                    <option value="@item.SuplidorId">Id: @item.SuplidorId a Nombre de: @item.Nombres</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                </div>*@
-
-                @*Cacaos Existentes*@
-                @*<div class="form-group">
-                    <div class="form-row">
-                        <div class="col">
-                            <label>CacaoId</label>
-                            <select class="form-control" @bind="SeleccionCacao">
-                                <option value="" disabled selected>Tipos de Cacaos Disponibles</option>
-                                @foreach (var item in ListaCacaos)
-                                {
-                                    <option value="@item.CacaoId">Id:@item.CacaoId Tipo: @item.Tipo</option>
-                                }
-                            </select>
-                        </div>
-                    </div>
-                </div>*@
-
-                @*Cantidad*@
-                <div class="form-group">
-                    <label>Cantidad</label>
-                    <InputNumber @bind-Value="Entrada.Cantidad" class="form-control" @onfocusout="CalcularTotal"/>
-                    <ValidationMessage For="@(() => Entrada.Cantidad)" />
-                </div>
-
-                @*Costo*@
-                <div class="form-group">
-                    <label>Costo</label>
-                    <InputNumber @bind-Value="Entrada.Costo" class="form-control" @onfocusout="CalcularTotal"/>
-                    <ValidationMessage For="@(() => Entrada.Costo)" />
-                </div>
-
-                @*Total*@
-                <div class="form-group">
-                    <label>Total</label>
-                    <div class="row">
-                        <div class="col">
-                            <InputNumber @bind-Value="Entrada.Total" class="form-control" readonly="true" />
-                        </div>
-                        <div class="col-2">
-                            <div class="row">
-                                <label>Fecha Creación</label>
+                    @*Cacaos Existentes*@
+                    <div class="form-group">
+                            <div class="form-row">
+                                <div class="col">
+                                    <label>Cacao</label>
+                                    <select class="form-control" @bind="Entrada.CacaoId">
+                                        <option value="" disabled selected>Tipos de Cacaos Disponibles</option>
+                                        @foreach (var item in ListaCacaos)
+                                        {
+                                            <option value="@item.CacaoId">Id:@item.CacaoId Tipo: @item.Tipo</option>
+                                        }
+                                    </select>
+                                </div>
                             </div>
-                            <div class="row">
-                                <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
+                    </div>
+
+                    @*Cantidad*@
+                    <div class="form-group">
+                        <label>Cantidad</label>
+                        <InputNumber @bind-Value="Entrada.Cantidad" class="form-control" @onfocusout="CalcularTotal" />
+                        <ValidationMessage For="@(() => Entrada.Cantidad)" />
+                    </div>
+
+                    @*Costo*@
+                    <div class="form-group">
+                        <label>Costo</label>
+                        <InputNumber @bind-Value="Entrada.Costo" class="form-control" @onfocusout="CalcularTotal" />
+                        <ValidationMessage For="@(() => Entrada.Costo)" />
+                    </div>
+
+                    @*Total*@
+                    <div class="form-group">
+                        <label>Total</label>
+                        <div class="row">
+                            <div class="col">
+                                <InputNumber @bind-Value="Entrada.Total" class="form-control" readonly="true" />
+                            </div>
+                            <div class="col-2">
+                                <div class="row">
+                                    <label>Fecha Creación</label>
+                                </div>
+                                <div class="row">
+                                    <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
+                                </div>
+                            </div>
+                        </div>
+                        <ValidationMessage For="@(() => Entrada.Total)" />
+                    </div>
+
+                    @*Creado por*@
+                    <div class="form-group">
+                        <label>Creado Por</label>
+                        <div class="row">
+                            <div class="col">
+                                <label>@nombreUsuarioCreacion</label>
+                            </div>
+                            <div class="col-2">
+                                <div class="row">
+                                    <label>Fecha Modificación</label>
+                                </div>
+                                <div class="row">
+                                    <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <ValidationMessage For="@(() => Entrada.Total)" />
+
+                </form>
+            </div>
+
+            <div class="card-footer">
+                <div class="form-group text-center" display: inline-block>
+                    <button type="button" class="btn btn-lg btn-primary oi oi-file" @onclick="Nuevo"> Nuevo</button>
+                    <button type="submit" class="btn btn-lg btn-success oi oi-cloud-upload"> Guardar</button>
+                    <button type="button" class="btn btn-lg btn-danger oi oi-trash" @onclick="Eliminar"> Eliminar</button>
                 </div>
-
-                @*Creado por*@
-                <div class="form-group">
-                    <label>Creado Por</label>
-                    <div class="row">
-                        <div class="col">
-                            <label>Sujeto</label>
-                        </div>
-                        <div class="col-2">
-                            <div class="row">
-                                <label>Fecha Modificación</label>
-                            </div>
-                            <div class="row">
-                                <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </form>
-        </div>
-
-        <div class="card-footer">
-            <div class="form-group text-center" display: inline-block>
-                <button type="button" class="btn btn-lg btn-primary oi oi-file" @onclick="Nuevo"> Nuevo</button>
-                <button type="submit" class="btn btn-lg btn-success oi oi-cloud-upload"> Guardar</button>
-                <button type="button" class="btn btn-lg btn-danger oi oi-trash" @onclick="Eliminar"> Eliminar</button>
             </div>
         </div>
-    </div>
-</EditForm>
+    </EditForm>
+}
 
 @code {
     [Parameter]
     public int EntradaId { get; set; }
-    private int SeleccionSuplidor { get; set; }
-    private int SeleccionCacao { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
+    public string nombreUsuarioCreacion { get; set; } = "";
+    public string usuarioIdCreacion { get; set; } = "";
     private List<Suplidores> ListaSuplidores = new List<Suplidores>();
     private List<Cacaos> ListaCacaos = new List<Cacaos>();
 
@@ -149,15 +165,23 @@
     {
         Nuevo();
         BuscarParametro();
-        //ListaSuplidores = SuplidoresBLL.GetList(s => true);
-        //ListaCacaos = CacaosBLL.GetList(c => true);
     }
 
     public void Nuevo()
     {
         Entrada = new Entradas();
-        SeleccionSuplidor = 0;
-        SeleccionCacao = 0;
+        ListaSuplidores = SuplidoresBLL.GetList(s => true);
+        ListaCacaos = CacaosBLL.GetList(c => true);
+        ReiniciarUsuarioCreacion();
+    }
+
+    private async void ReiniciarUsuarioCreacion()
+    {
+        nombreUsuarioCreacion = (await authState).User.Identity.Name;
+
+        usuarioIdCreacion = (await authState).User.Claims
+            .Where(c => c.Type == ClaimTypes.NameIdentifier)
+            .Select(c => c.Value).FirstOrDefault();
     }
 
     private void BuscarParametro()
@@ -167,15 +191,14 @@
             var encontrado = EntradasBLL.Buscar(EntradaId);
 
             if (encontrado != null)
+            {
                 this.Entrada = encontrado;
+                ObtenerSuplidorCacaoSeleccionado();
+                AsignarUsuarioCreacion();
+            }
             else
                 toast.ShowWarning("No encontrado");
         }
-    }
-
-    private void CalcularTotal()
-    {
-        Entrada.Total = Entrada.Cantidad * Entrada.Costo;
     }
 
     private void Buscar()
@@ -185,20 +208,65 @@
             var encontrado = EntradasBLL.Buscar(Entrada.EntradaId);
 
             if (encontrado != null)
+            {
                 this.Entrada = encontrado;
+                ObtenerSuplidorCacaoSeleccionado();
+                AsignarUsuarioCreacion();
+            }
             else
                 toast.ShowWarning("No encontrado");
         }
+    }
+
+    private void ObtenerSuplidorCacaoSeleccionado()
+    {
+        ListaSuplidores.Clear();
+        ListaCacaos.Clear();
+
+        Suplidores suplidor = SuplidoresBLL.Buscar(Entrada.SuplidorId);
+        Cacaos cacao = CacaosBLL.Buscar(Entrada.CacaoId);
+
+        ListaSuplidores.Add(suplidor);
+        ListaCacaos.Add(cacao);
+    }
+
+    private void AsignarUsuarioCreacion()
+    {
+        Usuarios usuarioCreacion = UsuariosBLL.Buscar(Entrada.UsuarioId);
+
+        nombreUsuarioCreacion = usuarioCreacion.NombreUsuario;
+        usuarioIdCreacion = Entrada.UsuarioId.ToString();
+    }
+
+    private void CalcularTotal()
+    {
+        Entrada.Total = Entrada.Cantidad * Entrada.Costo;
     }
 
     public void Guardar()
     {
         bool guardo;
 
+        if(Entrada.SuplidorId <= 0)
+        {
+            toast.ShowInfo("Debe de seleccionar un suplidor");
+            return;
+        }
+
+        if (Entrada.CacaoId <= 0)
+        {
+            toast.ShowInfo("Debe de seleccionar un tipo cacao");
+            return;
+        }
+
+        Entrada.UsuarioId = Convert.ToInt32(usuarioIdCreacion);
+        Entrada.FechaModificacion = DateTime.Now;
+
         guardo = EntradasBLL.Guardar(Entrada);
 
         if (guardo)
         {
+            CacaosBLL.ActualizarCacao(Entrada.CacaoId, Entrada.Cantidad, Entrada.Costo);
             Nuevo();
             toast.ShowSuccess("Guardado correctamente");
         }

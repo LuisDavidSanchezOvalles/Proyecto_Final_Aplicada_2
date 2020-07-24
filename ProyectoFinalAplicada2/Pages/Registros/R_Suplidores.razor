@@ -3,132 +3,151 @@
 
 @using Models
 @using BLL
+@using System.Web;
+@using System.Security.Claims;
 
 @inject IToastService toast
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<EditForm Model="Suplidor" OnValidSubmit="Guardar">
-    <DataAnnotationsValidator />
-    <div class="card">
-        <div class="card-header">
-            <h3>Registro de Suplidores</h3>
-        </div>
+<AuthorizeView>
+    <NotAuthorized>
+        <p class="h4 text-center">Usted no esta autorizado para acceder a esta pagina</p>
 
-        <div class="card-body">
-            <form>
+    </NotAuthorized>
+</AuthorizeView>
 
-                @*SuplidorId*@
-                <div class="form-row align-items-center">
-                    <div class="col">
-                        <div class="form-group">
-                            <label>SuplidorId</label>
-                            <div class="input-group">
-                                <InputNumber @bind-Value="Suplidor.SuplidorId" class="form-control col-4" />
-                                <div class="input-group-append">
-                                    <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" /> Buscar</button>
+@if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated)
+{
+    <EditForm Model="Suplidor" OnValidSubmit="Guardar">
+        <DataAnnotationsValidator />
+        <div class="card">
+            <div class="card-header">
+                <h3>Registro de Suplidores</h3>
+            </div>
+
+            <div class="card-body">
+                <form>
+
+                    @*SuplidorId*@
+                    <div class="form-row align-items-center">
+                        <div class="col">
+                            <div class="form-group">
+                                <label>SuplidorId</label>
+                                <div class="input-group">
+                                    <InputNumber @bind-Value="Suplidor.SuplidorId" class="form-control col-4" />
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" /> Buscar</button>
+                                    </div>
+                                </div>
+                                <ValidationMessage For="@(() => Suplidor.SuplidorId)" />
+                            </div>
+                        </div>
+                    </div>
+
+                    @*Fecha*@
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <InputDate @bind-Value="Suplidor.Fecha" class="form-control" />
+                        <ValidationMessage For="@(() => Suplidor.Fecha)" />
+                    </div>
+
+                    @*Nombres*@
+                    <div class="form-group">
+                        <label>Nombres</label>
+                        <InputText @bind-Value="Suplidor.Nombres" class="form-control" />
+                        <ValidationMessage For="@(() => Suplidor.Nombres)" />
+                    </div>
+
+                    @*Cedula*@
+                    <div class="form-group">
+                        <label>Cedula</label>
+                        <InputText @bind-Value="Suplidor.Cedula" class="form-control" />
+                        <ValidationMessage For="@(() => Suplidor.Cedula)" />
+                    </div>
+
+                    @*Telefono*@
+                    <div class="form-group">
+                        <label>Telefono</label>
+                        <InputText @bind-Value="Suplidor.Telefono" class="form-control" />
+                        <ValidationMessage For="@(() => Suplidor.Telefono)" />
+                    </div>
+
+                    @*Celular*@
+                    <div class="form-group">
+                        <label>Celular</label>
+                        <InputText @bind-Value="Suplidor.Celular" class="form-control" />
+                        <ValidationMessage For="@(() => Suplidor.Celular)" />
+                    </div>
+
+                    @*Direccion*@
+                    <div class="form-group">
+                        <label>Dirección</label>
+                        <InputText @bind-Value="Suplidor.Direccion" class="form-control" />
+                        <ValidationMessage For="@(() => Suplidor.Direccion)" />
+                    </div>
+
+                    @*Email*@
+                    <div class="form-group">
+                        <label>Email</label>
+                        <div class="row">
+                            <div class="col">
+                                <InputText @bind-Value="Suplidor.Email" class="form-control" />
+                            </div>
+                            <div class="col-2">
+                                <div class="row">
+                                    <label>Fecha Creación</label>
+                                </div>
+                                <div class="row">
+                                    <label>@Suplidor.FechaCreacion.ToString("dd/MM/yyyy")</label>
                                 </div>
                             </div>
-                            <ValidationMessage For="@(() => Suplidor.SuplidorId)" />
                         </div>
+                        <ValidationMessage For="@(() => Suplidor.Email)" />
                     </div>
-                </div>
 
-                @*Fecha*@
-                <div class="form-group">
-                    <label>Fecha</label>
-                    <InputDate @bind-Value="Suplidor.Fecha" class="form-control" />
-                    <ValidationMessage For="@(() => Suplidor.Fecha)" />
-                </div>
-
-                @*Nombres*@
-                <div class="form-group">
-                    <label>Nombres</label>
-                    <InputText @bind-Value="Suplidor.Nombres" class="form-control" />
-                    <ValidationMessage For="@(() => Suplidor.Nombres)" />
-                </div>
-
-                @*Cedula*@
-                <div class="form-group">
-                    <label>Cedula</label>
-                    <InputText @bind-Value="Suplidor.Cedula" class="form-control" />
-                    <ValidationMessage For="@(() => Suplidor.Cedula)" />
-                </div>
-
-                @*Telefono*@
-                <div class="form-group">
-                    <label>Telefono</label>
-                    <InputText @bind-Value="Suplidor.Telefono" class="form-control" />
-                    <ValidationMessage For="@(() => Suplidor.Telefono)" />
-                </div>
-
-                @*Celular*@
-                <div class="form-group">
-                    <label>Celular</label>
-                    <InputText @bind-Value="Suplidor.Celular" class="form-control" />
-                    <ValidationMessage For="@(() => Suplidor.Celular)" />
-                </div>
-
-                @*Direccion*@
-                <div class="form-group">
-                    <label>Dirección</label>
-                    <InputText @bind-Value="Suplidor.Direccion" class="form-control" />
-                    <ValidationMessage For="@(() => Suplidor.Direccion)" />
-                </div>
-
-                @*Email*@
-                <div class="form-group">
-                    <label>Email</label>
-                    <div class="row">
-                        <div class="col">
-                            <InputText @bind-Value="Suplidor.Email" class="form-control" />
-                        </div>
-                        <div class="col-2">
-                            <div class="row">
-                                <label>Fecha Creación</label>
+                    @*Creado por*@
+                    <div class="form-group">
+                        <label>Creado Por</label>
+                        <div class="row">
+                            <div class="col">
+                                <label>@nombreUsuarioCreacion</label>
                             </div>
-                            <div class="row">
-                                <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
+                            <div class="col-2">
+                                <div class="row">
+                                    <label>Fecha Modificación</label>
+                                </div>
+                                <div class="row">
+                                    <label>@Suplidor.FechaModificacion.ToString("dd/MM/yyyy")</label>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <ValidationMessage For="@(() => Suplidor.Email)" />
+
+                </form>
+            </div>
+
+            <div class="card-footer">
+                <div class="form-group text-center" display: inline-block>
+                    <button type="button" class="btn btn-lg btn-primary oi oi-file" @onclick="Nuevo"> Nuevo</button>
+                    <button type="submit" class="btn btn-lg btn-success oi oi-cloud-upload"> Guardar</button>
+                    <button type="button" class="btn btn-lg btn-danger oi oi-trash" @onclick="Eliminar"> Eliminar</button>
                 </div>
-
-                @*Creado por*@
-                <div class="form-group">
-                    <label>Creado Por</label>
-                    <div class="row">
-                        <div class="col">
-                            <label>Sujeto</label>
-                        </div>
-                        <div class="col-2">
-                            <div class="row">
-                                <label>Fecha Modificación</label>
-                            </div>
-                            <div class="row">
-                                <label>@DateTime.Now.ToString("dd/MM/yyyy")</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </form>
-        </div>
-
-        <div class="card-footer">
-            <div class="form-group text-center" display: inline-block>
-                <button type="button" class="btn btn-lg btn-primary oi oi-file" @onclick="Nuevo"> Nuevo</button>
-                <button type="submit" class="btn btn-lg btn-success oi oi-cloud-upload"> Guardar</button>
-                <button type="button" class="btn btn-lg btn-danger oi oi-trash" @onclick="Eliminar"> Eliminar</button>
             </div>
         </div>
-    </div>
-</EditForm>
+    </EditForm>
+}
 
 @code {
     [Parameter]
     public int SuplidorId { get; set; }
 
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
+
     private Suplidores Suplidor = new Suplidores();
+
+    public string nombreUsuarioCreacion { get; set; } = "";
+    public string usuarioIdCreacion { get; set; } = "";
 
     protected override void OnInitialized()
     {
@@ -139,6 +158,17 @@
     public void Nuevo()
     {
         Suplidor = new Suplidores();
+
+        ReiniciarUsuarioCreacion();
+    }
+
+    private async void ReiniciarUsuarioCreacion()
+    {
+        nombreUsuarioCreacion = (await authState).User.Identity.Name;
+
+        usuarioIdCreacion = (await authState).User.Claims
+            .Where(c => c.Type == ClaimTypes.NameIdentifier)
+            .Select(c => c.Value).FirstOrDefault();
     }
 
     private void BuscarParametro()
@@ -148,7 +178,10 @@
             var encontrado = SuplidoresBLL.Buscar(SuplidorId);
 
             if (encontrado != null)
+            {
                 this.Suplidor = encontrado;
+                AsignarUsuarioCreacion();
+            }
             else
                 toast.ShowWarning("No encontrado");
         }
@@ -161,15 +194,29 @@
             var encontrado = SuplidoresBLL.Buscar(Suplidor.SuplidorId);
 
             if (encontrado != null)
+            {
                 this.Suplidor = encontrado;
+                AsignarUsuarioCreacion();
+            }
             else
                 toast.ShowWarning("No encontrado");
         }
     }
 
+    private void AsignarUsuarioCreacion()
+    {
+        Usuarios usuarioCreacion = UsuariosBLL.Buscar(Suplidor.UsuarioId);
+
+        nombreUsuarioCreacion = usuarioCreacion.NombreUsuario;
+        usuarioIdCreacion = Suplidor.UsuarioId.ToString();
+    }
+
     public void Guardar()
     {
         bool guardo;
+
+        Suplidor.UsuarioId = Convert.ToInt32(usuarioIdCreacion);
+        Suplidor.FechaModificacion = DateTime.Now;
 
         guardo = SuplidoresBLL.Guardar(Suplidor);
 
@@ -196,4 +243,4 @@
         else
             toast.ShowError("No fue posible eliminar");
     }
-}
+    }

@@ -21,6 +21,9 @@ namespace ProyectoFinalAplicada2.BLL
 
         public static bool Insertar(Suplidores suplidor)
         {
+            if (suplidor.SuplidorId != 0)
+                return false;
+
             bool paso = false;
             Contexto db = new Contexto();
             try
@@ -66,8 +69,12 @@ namespace ProyectoFinalAplicada2.BLL
             try
             {
                 var suplidor = db.Suplidores.Find(id);
-                db.Suplidores.Remove(suplidor);
-                paso = db.SaveChanges() > 0;
+                if(suplidor != null)
+                {
+                    db.Suplidores.Remove(suplidor);
+                    paso = db.SaveChanges() > 0;
+                }
+                
             }
             catch (Exception)
             {
