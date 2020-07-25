@@ -113,9 +113,11 @@
                         <ValidationMessage For="@(() => Cantidad)" />
                     </div>
 
-                    @*<div class="form-group" id="tabla">
-                        <table class="table table-bordered table-striped">
-                            <thead>
+                    @*Detalle*@
+                    @*La Tabla*@
+                    @*<div class="table-responsive text-nowrap" style="position: relative; height:200px; overflow: auto; display: block;">
+                        <table class="table table-striped">
+                            <thead class="thead-light">
                                 <tr>
                                     <th>VentaId</th>
                                     <th>ContratoId</th>
@@ -124,16 +126,17 @@
                                     <th>Total</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @for (int i = 0; i < Venta.VentaDetalle.Count; i++)
+                            Asignacion de Datos
+                            <tbody class="bg-white">
+                                @foreach (var item in Venta.VentaDetalle)
                                 {
-                                    int index = i;
                                     <tr>
-                                        <td>@Venta.VentaDetalle[i].PagoId</td>
-                                        <td>@Pago.PagoDetalle[i].VentaId</td>
-                                        <td>@Pago.PagoDetalle[i].Monto</td>
-                                        <td>@Pago.PagoDetalle[i].Saldo</td>
-                                        <td><button type="button" class="btn btn-lg btn-danger" @onclick="@((args) => RemoverFila(index))"><i class="oi oi-minus" /> Remover</button></td>
+                                        <td>@item.VentaId</td>
+                                        <td>@item.ContratoId</td>
+                                        <td>@item.Cantidad</td>
+                                        <td>@(item.Precio * item.Cantidad)</td>
+                                        <td></td>
+                                        <td><button type="button" class="btn btn-outline-danger" @onclick="(() => EliminarOrdenDetalle(item))"> Remover</button></td>
                                     </tr>
                                 }
                             </tbody>
