@@ -76,6 +76,7 @@
                         <div class="row">
                             <div class="col">
                                 <InputNumber @bind-Value="Cacao.Precio" class="form-control" />
+                                <ValidationMessage For="@(() => Cacao.Precio)" />
                             </div>
                             <div class="col-2">
                                 <div class="row">
@@ -86,7 +87,6 @@
                                 </div>
                             </div>
                         </div>
-                        <ValidationMessage For="@(() => Cacao.Precio)" />
                     </div>
 
                     @*Creado por*@
@@ -111,9 +111,9 @@
             </div>
             <div class="card-footer">
                 <div class="form-group text-center" display: inline-block>
-                    <button type="button" class="btn btn-lg btn-primary" @onclick="Nuevo"><i class="oi oi-plus" />Nuevo</button>
-                    <button type="submit" class="btn btn-lg btn-success"><i class="oi oi-hard-drive" />Guardar</button>
-                    <button type="button" class="btn btn-lg btn-danger" @onclick="Eliminar"><i class="oi oi-trash" />Eliminar</button>
+                    <button type="button" class="btn btn-lg btn-primary oi oi-file" @onclick="Nuevo"> Nuevo</button>
+                    <button type="submit" class="btn btn-lg btn-success oi oi-cloud-upload"> Guardar</button>
+                    <button type="button" class="btn btn-lg btn-danger oi oi-trash" @onclick="Eliminar"> Eliminar</button>
                 </div>
             </div>
         </div>

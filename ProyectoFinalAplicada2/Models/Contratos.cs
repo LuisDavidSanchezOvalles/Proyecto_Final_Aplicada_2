@@ -33,9 +33,6 @@ namespace ProyectoFinalAplicada2.Models
         [Required(ErrorMessage = "Es obligatorio introducir el campo ''")]
         [CantidadValidacion]
         public decimal Cantidad { get; set; }
-
-        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Precio'")]
-        [PrecioValidacion]
         public decimal Precio { get; set; }
         public decimal Total { get; set; }
         public decimal CantidadPendiente { get; set; }
@@ -51,7 +48,7 @@ namespace ProyectoFinalAplicada2.Models
             ContratoId = 0;
             Fecha = DateTime.Now;
             ClienteId = 0;
-            FechaVencimiento = DateTime.Now;
+            FechaVencimiento = DateTime.Now.AddDays(1);
             CacaoId = 0;
             Cantidad = 0.0m;
             Precio = 0.0m;
