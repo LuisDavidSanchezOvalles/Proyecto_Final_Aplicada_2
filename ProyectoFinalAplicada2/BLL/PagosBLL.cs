@@ -142,7 +142,7 @@ namespace ProyectoFinalAplicada2.BLL
             Contexto contexto = new Contexto();
             try
             {
-                Lista = contexto.Pagos.Where(pago).ToList();
+                Lista = contexto.Pagos.Where(pago).Include(p => p.PagoDetalle).ToList();
             }
             catch (Exception)
             {
@@ -188,6 +188,9 @@ namespace ProyectoFinalAplicada2.BLL
         public static bool VentaDisponible(Pagos pagos)
         {
             //verifica si la venta ya esta utilizada en algun otro pago
+            if (pagos.PagoId != 0)
+                return true;
+
             List<Pagos> lista = GetList(p => true);
 
             foreach (var item in lista)

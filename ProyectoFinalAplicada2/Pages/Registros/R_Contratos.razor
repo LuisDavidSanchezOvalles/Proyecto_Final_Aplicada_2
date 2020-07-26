@@ -191,6 +191,8 @@
         ListaClientes = ClientesBLL.GetList(c => true);
         ListaCacaos = CacaosBLL.GetList(c => true);
         ReiniciarUsuarioCreacion();
+
+        Inventario = 0.0m;
     }
 
     private async void ReiniciarUsuarioCreacion()

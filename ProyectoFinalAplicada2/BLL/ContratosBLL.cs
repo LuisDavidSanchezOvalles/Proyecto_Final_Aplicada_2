@@ -155,7 +155,7 @@ namespace ProyectoFinalAplicada2.BLL
                 return false;
         }
 
-        public static void RestarCantidad(int id, decimal cantidad)
+        public static void EvaluarCantidad(int id, decimal cantidad)
         {
             Contratos contrato = Buscar(id);
 

@@ -57,9 +57,9 @@
                         <label>Cliente</label>
                         <select @bind="Pago.ClienteId" class="form-control" @onfocusout="ObtenerVentas">
                             <option value="" disabled selected>Clientes Disponibles</option>
-                            @foreach (var cliente in Clientes)
+                            @foreach (var item in Clientes)
                             {
-                            <option value="@Convert.ToString(cliente.ClienteId)">@cliente.Nombres</option>
+                                <option value="@item.ClienteId">Id: @item.ClienteId a Nombre de: @item.Nombres</option>
                             }
                         </select>
                     </div>
@@ -69,9 +69,9 @@
                         <label>VentaId</label>
                         <select @bind="VentaIdSeleccionado" class="form-control" @onfocusout="ObtenerBalance">
                             <option value="" disabled selected>Ventas Disponibles</option>
-                            @foreach (var venta in Ventas)
+                            @foreach (var item in Ventas)
                             {
-                                <option value="@Convert.ToString(venta.VentaId)">@venta.VentaId</option>
+                                <option value="@item.VentaId">@item.VentaId</option>
                             }
                         </select>
                     </div>
@@ -123,26 +123,22 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group" id="tabla">
-                        <table class="table table-bordered table-striped">
-                            <thead>
+                    <div class="table-responsive text-nowrap" style="position: relative; height:200px; overflow: auto; display: block;">
+                        <table class="table table-striped">
+                            <thead class="thead-light">
                                 <tr>
-                                    <th>PagoId</th>
-                                    <th>VentaId</th>
                                     <th>Monto</th>
                                     <th>Saldo</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="bg-white">
                                 @for (int i = 0; i < Pago.PagoDetalle.Count; i++)
                                 {
                                     int index = i;
                                     <tr>
-                                        <td>@Pago.PagoDetalle[i].PagoId</td>
-                                        <td>@Pago.PagoDetalle[i].VentaId</td>
                                         <td>@Pago.PagoDetalle[i].Monto</td>
                                         <td>@Pago.PagoDetalle[i].Saldo</td>
-                                        <td><button type="button" class="btn btn-lg btn-danger" @onclick="@((args) => RemoverFila(index))"><i class="oi oi-minus" /> Remover</button></td>
+                                        <td><button type="button" class="btn btn-outline-danger oi oi-minus" @onclick="(() => RemoverFila(index))"> Remover</button></td>
                                     </tr>
                                 }
                             </tbody>
@@ -151,8 +147,12 @@
 
                     @*Creado por*@
                     <div class="form-group">
-                        <label>Creado Por</label>
-                        <label>@nombreUsuarioCreacion</label>
+                        <div>
+                            <label>Creado Por</label>
+                        </div>
+                        <div>
+                            <label>@nombreUsuarioCreacion</label>
+                        </div>
                     </div>
 
                 </form>
@@ -177,8 +177,8 @@
 
     public Pagos Pago { get; set; }
 
-    public List<Clientes> Clientes { get; set; }
-    public List<Ventas> Ventas { get; set; }
+    private List<Clientes> Clientes = new List<Clientes>();
+    private List<Ventas> Ventas = new List<Ventas>();
 
     public string nombreUsuarioCreacion { get; set; } = "";
     public string usuarioIdCreacion { get; set; } = "";
@@ -204,6 +204,9 @@
         VentaIdSeleccionado = 0;
 
         ReiniciarUsuarioCreacion();
+
+        Balance = 0.0m;
+        Monto = 0.0m;
     }
 
     private async void ReiniciarUsuarioCreacion()
@@ -227,6 +230,7 @@
                 AsignarCliente();
                 AsignarVenta();
                 AsignarUsuarioCreacion();
+                ObtenerBalance();
             }
             else
                 toast.ShowWarning("No encontrado");
@@ -245,6 +249,7 @@
                 AsignarCliente();
                 AsignarVenta();
                 AsignarUsuarioCreacion();
+                ObtenerBalance();
             }
             else
                 toast.ShowWarning("No encontrado");
@@ -279,29 +284,35 @@
         if (Pago.PagoId == 0)
         {
             Ventas = VentasBLL.GetList(v => v.ClienteId == Pago.ClienteId);
-            
-            if (Ventas.Count > 0)
-                VentaIdSeleccionado = Ventas.First().VentaId;
+            VentaIdSeleccionado = Ventas[0].VentaId;
+            ObtenerBalance();
         }
     }
 
     public void ObtenerBalance()
     {
-        if (Pago.PagoId == 0)
+        Ventas venta = VentasBLL.Buscar(VentaIdSeleccionado);
+
+        if(venta != null)
         {
-            Ventas venta = VentasBLL.Buscar(Convert.ToInt32(VentaIdSeleccionado));
             Balance = venta.Balance;
-            Pago.PagoDetalle.Clear();
+
+            if (Pago.PagoId == 0)
+                Pago.PagoDetalle.Clear();
         }
     }
 
     public void AgregarDetalle()
     {
-        int ventaId = Convert.ToInt32(VentaIdSeleccionado);
-
-        if (ventaId < 0 || Monto <= 0)
+        if (VentaIdSeleccionado < 0)
         {
-            toast.ShowInfo("Ingrese valores validos");
+            toast.ShowInfo("Ingrese alguna venta");
+            return;
+        }
+
+        if(Monto <= 0)
+        {
+            toast.ShowInfo("Ingrese algun monto");
             return;
         }
 
@@ -315,17 +326,17 @@
         {
             PagoDetalleId = 0,
             PagoId = Pago.PagoId,
-            VentaId = ventaId,
+            VentaId = VentaIdSeleccionado,
             Monto = Monto,
             Saldo = 0
         });
 
-        calcularPago();
+        CalcularPago();
 
         Monto = 0.0m;
     }
 
-    private void calcularPago()
+    private void CalcularPago()
     {
         Ventas venta = VentasBLL.Buscar(Convert.ToInt32(VentaIdSeleccionado));
 
@@ -343,7 +354,7 @@
     public void RemoverFila(int index)
     {
         Pago.PagoDetalle.RemoveAt(index);
-        calcularPago();
+        CalcularPago();
     }
 
     public void Guardar()
@@ -386,7 +397,7 @@
 
         if (elimino)
         {
-            VentasBLL.RestablecerBalance(Pago.PagoDetalle[0].VentaId);
+            VentasBLL.RestablecerBalance(Pago.PagoDetalle[0].VentaId);//que pasaria si se elimina todo el detalle antes de eliminar la venta
             Nuevo();
             toast.ShowSuccess("Eliminado correctamente");
         }

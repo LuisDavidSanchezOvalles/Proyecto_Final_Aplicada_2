@@ -23,14 +23,5 @@ namespace ProyectoFinalAplicada2.Models
             Cantidad = 0;
             Precio = 0;
         }
-
-        public VentasDetalle(int ventaId, int contratoId, decimal cantidad, decimal precio)
-        {
-            VentaDetalleId = 0;
-            VentaId = ventaId;
-            ContratoId = contratoId;
-            Cantidad = cantidad;
-            Precio = precio;
-        }
     }
 }

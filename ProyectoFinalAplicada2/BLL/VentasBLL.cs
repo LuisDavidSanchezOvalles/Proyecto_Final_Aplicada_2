@@ -54,6 +54,9 @@ namespace ProyectoFinalAplicada2.BLL
                 {
                     db.Entry(item).State = EntityState.Added;
                 }
+
+                CalcularSaldo(venta);
+
                 db.Entry(venta).State = EntityState.Modified;
                 paso = db.SaveChanges() > 0;
             }
@@ -66,6 +69,30 @@ namespace ProyectoFinalAplicada2.BLL
                 db.Dispose();
             }
             return paso;
+        }
+
+        private static void CalcularSaldo(Ventas venta)
+        {
+            if (PagosBLL.ExisteAlgunPago())
+            {
+                List<Pagos> pagos = PagosBLL.GetList(p => true);
+
+                foreach (var pago in pagos)
+                {
+                    if (pago.PagoDetalle[0].VentaId == venta.VentaId)
+                    {
+                        decimal balance = venta.Total;
+
+                        foreach (var item in pago.PagoDetalle)
+                        {
+                            balance -= item.Monto;
+                            item.Saldo = balance;
+                        }
+
+                        PagosBLL.Guardar(pago);
+                    }
+                }
+            }
         }
 
         public static bool Eliminar(int id)
@@ -138,7 +165,7 @@ namespace ProyectoFinalAplicada2.BLL
             Contexto db = new Contexto();
             try
             {
-                Lista = db.Ventas.Where(venta).ToList();
+                Lista = db.Ventas.Where(venta).Include(v => v.VentaDetalle).ToList();
             }
             catch (Exception)
             {
@@ -161,9 +188,12 @@ namespace ProyectoFinalAplicada2.BLL
                 return false;
         }
 
-        public static bool EntradaValida(Ventas ventas)
+        public static bool ContratoDisponible(Ventas ventas)
         {
             //verifica si el contrato ya esta utilizado
+            if (ventas.VentaId != 0)
+                return true;
+
             List<Ventas> lista = GetList(c => true);
 
             foreach (var item in lista)

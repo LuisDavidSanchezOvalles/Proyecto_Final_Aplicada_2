@@ -33,7 +33,7 @@
                     <div class="form-row align-items-center">
                         <div class="col">
                             <div class="form-group">
-                                <label>ContratoId</label>
+                                <label>VentaId</label>
                                 <div class="input-group">
                                     <InputNumber @bind-Value="Venta.VentaId" class="form-control col-4" />
                                     <div class="input-group-append">
@@ -57,7 +57,7 @@
                         <div class="form-row">
                             <div class="col">
                                 <label>Cliente</label>
-                                <select class="form-control" @bind="Venta.ClienteId">
+                                <select class="form-control" @bind="Venta.ClienteId" @onfocusout="ObtenerContratos">
                                     <option value="" disabled selected>Clientes Disponibles</option>
                                     @foreach (var item in ListaClientes)
                                     {
@@ -81,73 +81,27 @@
                     </div>
 
                     @*Contratos Existentes*@
-                    @*<div class="form-group">
-          <div class="form-row">
-              <div class="col">
-                  <label>CacaoId</label>
-                  <select class="form-control" @bind="SeleccionContrato" @onfocusout="BuscarPrecioEInventario">
-                      <option value="" disabled selected>Tipos de Cacaos Disponibles</option>
-                      @foreach (var item in ListaContratos)
-                      {
-                          <option value="@item.ContratoId">Id:@item.ContratoId a Nombre de: @ObtenerNombreCliente(item.ClienteId)</option>
-                      }
-                  </select>
-              </div>
-          </div>
-        </div>*@
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col">
+                                <label>Contrato</label>
+                                <select class="form-control" @bind="SeleccionContrato" @onfocusout="ObtenerCantidadPendiente">
+                                    <option value="" disabled selected>Tipos de Cacaos Disponibles</option>
+                                    @foreach (var item in ListaContratos)
+                                    {
+                                        <option value="@item.ContratoId">Id:@item.ContratoId</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
                     @*CantidadPendiente*@
                     <div class="form-group">
                         <label>Cantidad Pendiente</label>
-                        <InputNumber @bind-Value="CantidadPendiente" class="form-control" readonly="true" />
-                    </div>
-
-                    @*Cantidad*@
-                    <div class="form-group">
-                        <label>Cantidad</label>
                         <div class="row">
                             <div class="col">
-                                <InputNumber @bind-Value="Cantidad" class="form-control" readonly="true" />
-                            </div>
-                        </div>
-                        <ValidationMessage For="@(() => Cantidad)" />
-                    </div>
-
-                    @*Detalle*@
-                    @*La Tabla*@
-                    @*<div class="table-responsive text-nowrap" style="position: relative; height:200px; overflow: auto; display: block;">
-                        <table class="table table-striped">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>VentaId</th>
-                                    <th>ContratoId</th>
-                                    <th>Cantidad</th>
-                                    <th>Importe</th>
-                                    <th>Total</th>
-                                </tr>
-                            </thead>
-                            Asignacion de Datos
-                            <tbody class="bg-white">
-                                @foreach (var item in Venta.VentaDetalle)
-                                {
-                                    <tr>
-                                        <td>@item.VentaId</td>
-                                        <td>@item.ContratoId</td>
-                                        <td>@item.Cantidad</td>
-                                        <td>@(item.Precio * item.Cantidad)</td>
-                                        <td></td>
-                                        <td><button type="button" class="btn btn-outline-danger" @onclick="(() => EliminarOrdenDetalle(item))"> Remover</button></td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    </div>*@
-
-                    <div class="form-group">
-                        <label>Creado Por</label>
-                        <div class="row">
-                            <div class="col">
-                                <label>@nombreUsuarioCreacion</label>
+                                <InputNumber @bind-Value="CantidadPendiente" class="form-control" readonly="true" />
                             </div>
                             <div class="col-2">
                                 <div class="row">
@@ -157,14 +111,67 @@
                                     <label>@Venta.FechaCreacion.ToString("dd/MM/yyyy")</label>
                                 </div>
                             </div>
-                            <div class="col-2">
-                                <div class="row">
-                                    <label>Fecha Modificación</label>
-                                </div>
-                                <div class="row">
-                                    <label>@Venta.FechaModificacion.ToString("dd/MM/yyyy")</label>
+                        </div>
+                    </div>
+
+                    @*Cantidad*@
+                    <div class="form-group">
+                        <label>-Agregar Venta-</label>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-4">
+                            <label>Cantidad</label>
+                            <div class="input-group">
+                                <InputNumber @bind-Value="Cantidad" class="form-control"/>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-primary input-group-text" @onclick="AgregarDetalle"><i class="oi oi-plus" /> Agregar</button>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-2 offset-6">
+                            <div class="row">
+                                <label>Fecha Modificación</label>
+                            </div>
+                            <div class="row">
+                                <label>@Venta.FechaModificacion.ToString("dd/MM/yyyy")</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    @*Detalle*@
+                    @*La Tabla*@
+                    <div class="table-responsive text-nowrap" style="position: relative; height:200px; overflow: auto; display: block;">
+                        <table class="table table-striped">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>Cantidad</th>
+                                    <th>Importe</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white">
+                                @for (int i = 0; i < Venta.VentaDetalle.Count; i++)
+                                {
+                                    int index = i;
+                                    <tr>
+                                        <td>@Venta.VentaDetalle[i].Cantidad</td>
+                                        <td>@Venta.VentaDetalle[i].Precio</td>
+                                        <td>@(Venta.VentaDetalle[i].Precio * Venta.VentaDetalle[i].Cantidad)</td>
+                                        <td><button type="button" class="btn btn-outline-danger oi oi-minus" @onclick="(() => RemoverFila(index))"> Remover</button></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @*Creado por*@
+                    <div class="form-group">
+                        <div>
+                            <label>Creado Por</label>
+                        </div>
+                        <div>
+                            <label>@nombreUsuarioCreacion</label>
                         </div>
                     </div>
 
@@ -192,9 +199,6 @@
     public string usuarioIdCreacion { get; set; } = "";
     private List<Clientes> ListaClientes = new List<Clientes>();
     private List<Contratos> ListaContratos = new List<Contratos>();
-    private decimal Inventario { get; set; }
-    private decimal Total { get; set; }
-    private decimal Balance { get; set; }
     private decimal CantidadPendiente { get; set; }
     private decimal Cantidad { get; set; }
 
@@ -212,8 +216,11 @@
         Venta = new Ventas();
         SeleccionContrato = 0;
         ListaClientes = ClientesBLL.GetList(s => true);
-        ListaContratos = ContratosBLL.GetList(c => true);
+        ListaContratos.Clear();
         ReiniciarUsuarioCreacion();
+
+        CantidadPendiente = 0.0m;
+        Cantidad = 0.0m;
     }
 
     private async void ReiniciarUsuarioCreacion()
@@ -232,7 +239,12 @@
             var encontrado = VentasBLL.Buscar(VentaId);
 
             if (encontrado != null)
+            {
                 this.Venta = encontrado;
+                ObtenerClienteContratoSeleccionado();
+                AsignarUsuarioCreacion();
+                ObtenerCantidadPendiente();
+            }
             else
                 toast.ShowWarning("No encontrado");
         }
@@ -245,10 +257,29 @@
             var encontrado = VentasBLL.Buscar(Venta.VentaId);
 
             if (encontrado != null)
+            {
                 this.Venta = encontrado;
+                ObtenerClienteContratoSeleccionado();
+                AsignarUsuarioCreacion();
+                ObtenerCantidadPendiente();
+            }
             else
                 toast.ShowWarning("No encontrado");
         }
+    }
+
+    private void ObtenerClienteContratoSeleccionado()
+    {
+        ListaClientes.Clear();
+        ListaContratos.Clear();
+
+        Clientes cliente = ClientesBLL.Buscar(Venta.ClienteId);
+        Contratos contrato = ContratosBLL.Buscar(Venta.VentaDetalle[0].ContratoId);
+
+        ListaClientes.Add(cliente);
+        ListaContratos.Add(contrato);
+
+        SeleccionContrato = 1;
     }
 
     private void AsignarUsuarioCreacion()
@@ -259,28 +290,125 @@
         usuarioIdCreacion = Venta.UsuarioId.ToString();
     }
 
-    private string ObtenerNombreCliente(int id)
+    private void ObtenerCantidadPendiente()
     {
-        Clientes cliente = ClientesBLL.Buscar(id);
+        Contratos contrato = ContratosBLL.Buscar(SeleccionContrato);
 
-        return cliente.Nombres;
+        if(contrato != null)
+        {
+            CantidadPendiente = contrato.CantidadPendiente;
+
+            if (Venta.VentaId == 0)
+                Venta.VentaDetalle.Clear();
+        }
     }
 
-    private void BuscarPrecioEInventario()
+    public void ObtenerContratos()
     {
-        //Cacaos cacao = CacaosBLL.Buscar(SeleccionContrato);
-        //Inventario = cacao.Cantidad;
-        //Contrato.Precio = cacao.Precio;
+        if(Venta.VentaId == 0)
+        {
+            ListaContratos = ContratosBLL.GetList(c => c.ClienteId == Venta.ClienteId);
+            SeleccionContrato = ListaContratos[0].ContratoId;
+            ObtenerCantidadPendiente();
+        }
     }
 
-    private void CalcularTotal()
+    public void AgregarDetalle()
     {
-        //Contrato.Total = Contrato.Cantidad * Contrato.Precio;
+        if (SeleccionContrato < 1)
+        {
+            toast.ShowInfo("Ingrese algun contrato");
+            return;
+        }
+
+        if(Cantidad <= 0)
+        {
+            toast.ShowInfo("Ingrese alguna cantidad");
+            return;
+        }
+
+        if (Cantidad > CantidadPendiente)
+        {
+            toast.ShowInfo("Ha excedido la cantidad disponible");
+            return;
+        }
+
+        Venta.VentaDetalle.Add(new VentasDetalle
+        {
+            VentaDetalleId = 0,
+            VentaId = Venta.VentaId,
+            ContratoId = SeleccionContrato,
+            Cantidad = Cantidad,
+            Precio = ObtenerPrecio()
+        });
+
+        CalcularVenta();
+
+        Cantidad = 0.0m;
+    }
+
+    private void CalcularVenta()
+    {
+        Venta.Total = 0;
+        Venta.Balance = 0;
+        Cantidad = 0;
+
+        foreach (var item in Venta.VentaDetalle)
+        {
+            Venta.Total += item.Cantidad * item.Precio;
+            Venta.Balance += item.Cantidad * item.Precio;
+            Cantidad += item.Cantidad;
+        }
+
+        if(Venta.VentaId > 0)
+        {
+            if (PagosBLL.ExisteAlgunPago())
+            {
+                List<Pagos> pagos = PagosBLL.GetList(p => true);
+
+                foreach (var item in pagos)
+                {
+                    if (item.PagoDetalle[0].VentaId == Venta.VentaId)
+                    {
+                        Venta.Balance -= item.Total;
+                    }
+                }
+            }
+        }
+
+        Contratos contrato = ContratosBLL.Buscar(SeleccionContrato);
+
+        CantidadPendiente = contrato.Cantidad - Cantidad;
+    }
+
+    private decimal ObtenerPrecio()
+    {
+        Contratos contrato = ContratosBLL.Buscar(SeleccionContrato);
+
+        return contrato.Precio;
+    }
+
+    public void RemoverFila(int index)
+    {
+        Venta.VentaDetalle.RemoveAt(index);
+        CalcularVenta();
     }
 
     public void Guardar()
     {
         bool guardo;
+
+        if (Venta.VentaDetalle.Count < 1)
+        {
+            toast.ShowInfo("Debe ingresar alguna cantidad");
+            return;
+        }
+
+        if (!VentasBLL.ContratoDisponible(Venta))
+        {
+            toast.ShowInfo("Ya ha sido utilizada este contrato");
+            return;
+        }
 
         Venta.UsuarioId = Convert.ToInt32(usuarioIdCreacion);
         Venta.FechaModificacion = DateTime.Now;
@@ -289,6 +417,7 @@
 
         if (guardo)
         {
+            ContratosBLL.EvaluarCantidad(Venta.VentaDetalle[0].ContratoId, CantidadPendiente);
             Nuevo();
             toast.ShowSuccess("Guardado correctamente");
         }
@@ -300,10 +429,22 @@
     {
         bool elimino;
 
+        List<Pagos> pagos = PagosBLL.GetList(p => true);
+
+        foreach (var item in pagos)
+        {
+            if (item.PagoDetalle[0].VentaId == Venta.VentaId)
+            {
+                toast.ShowInfo("No se puede eliminar esta venta ya que tiene un pago");
+                return;
+            }
+        }
+
         elimino = VentasBLL.Eliminar(Venta.VentaId);
 
         if (elimino)
         {
+            ContratosBLL.RestablecerCantidadPendiente(Venta.VentaDetalle[0].ContratoId);//que pasaria si se elimina todo el detalle antes de eliminar la venta
             Nuevo();
             toast.ShowSuccess("Eliminado correctamente");
         }
