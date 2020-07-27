@@ -35,7 +35,7 @@
                             <div class="form-group">
                                 <label>VentaId</label>
                                 <div class="input-group">
-                                    <InputNumber @bind-Value="Venta.VentaId" class="form-control col-4" />
+                                    <InputNumber readonly="@Activacion" @bind-Value="Venta.VentaId" class="form-control col-4" />
                                     <div class="input-group-append">
                                         <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" /> Buscar</button>
                                     </div>
@@ -138,7 +138,6 @@
                         </div>
                     </div>
 
-
                     @*Detalle*@
                     @*La Tabla*@
                     <div class="table-responsive text-nowrap" style="position: relative; height:200px; overflow: auto; display: block;">
@@ -192,15 +191,21 @@
 @code {
     [Parameter]
     public int VentaId { get; set; }
+
     [CascadingParameter]
     private Task<AuthenticationState> authState { get; set; }
+
     private int SeleccionContrato { get; set; }
-    public string nombreUsuarioCreacion { get; set; } = "";
-    public string usuarioIdCreacion { get; set; } = "";
+    private string nombreUsuarioCreacion { get; set; } = "";
+    private string usuarioIdCreacion { get; set; } = "";
+
     private List<Clientes> ListaClientes = new List<Clientes>();
     private List<Contratos> ListaContratos = new List<Contratos>();
+
     private decimal CantidadPendiente { get; set; }
     private decimal Cantidad { get; set; }
+
+    private bool Activacion { get; set; }
 
     private Ventas Venta = new Ventas();
 
@@ -208,7 +213,6 @@
     {
         Nuevo();
         BuscarParametro();
-
     }
 
     public void Nuevo()
@@ -221,6 +225,7 @@
 
         CantidadPendiente = 0.0m;
         Cantidad = 0.0m;
+        Activacion = false;
     }
 
     private async void ReiniciarUsuarioCreacion()
@@ -244,13 +249,14 @@
                 ObtenerClienteContratoSeleccionado();
                 AsignarUsuarioCreacion();
                 ObtenerCantidadPendiente();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");
         }
     }
 
-    private void Buscar()
+    public void Buscar()
     {
         if (Venta.VentaId > 0)
         {
@@ -262,6 +268,7 @@
                 ObtenerClienteContratoSeleccionado();
                 AsignarUsuarioCreacion();
                 ObtenerCantidadPendiente();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");
@@ -303,7 +310,7 @@
         }
     }
 
-    public void ObtenerContratos()
+    private void ObtenerContratos()
     {
         if(Venta.VentaId == 0)
         {
@@ -461,4 +468,4 @@
         else
             toast.ShowError("No fue posible eliminar");
     }
-    }
+}

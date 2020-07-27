@@ -35,7 +35,7 @@
                             <div class="form-group">
                                 <label>EntradaId</label>
                                 <div class="input-group">
-                                    <InputNumber @bind-Value="Entrada.EntradaId" class="form-control col-4" />
+                                    <InputNumber readonly="@Activacion" @bind-Value="Entrada.EntradaId" class="form-control col-4" />
                                     <div class="input-group-append">
                                         <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" /> Buscar</button>
                                     </div>
@@ -152,12 +152,17 @@
 @code {
     [Parameter]
     public int EntradaId { get; set; }
+
     [CascadingParameter]
     private Task<AuthenticationState> authState { get; set; }
-    public string nombreUsuarioCreacion { get; set; } = "";
-    public string usuarioIdCreacion { get; set; } = "";
+
+    private string nombreUsuarioCreacion { get; set; } = "";
+    private string usuarioIdCreacion { get; set; } = "";
+
     private List<Suplidores> ListaSuplidores = new List<Suplidores>();
     private List<Cacaos> ListaCacaos = new List<Cacaos>();
+
+    private bool Activacion { get; set; }
 
     private Entradas Entrada = new Entradas();
 
@@ -173,6 +178,7 @@
         ListaSuplidores = SuplidoresBLL.GetList(s => true);
         ListaCacaos = CacaosBLL.GetList(c => true);
         ReiniciarUsuarioCreacion();
+        Activacion = false;
     }
 
     private async void ReiniciarUsuarioCreacion()
@@ -195,13 +201,14 @@
                 this.Entrada = encontrado;
                 ObtenerSuplidorCacaoSeleccionado();
                 AsignarUsuarioCreacion();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");
         }
     }
 
-    private void Buscar()
+    public void Buscar()
     {
         if (Entrada.EntradaId > 0)
         {
@@ -212,6 +219,7 @@
                 this.Entrada = encontrado;
                 ObtenerSuplidorCacaoSeleccionado();
                 AsignarUsuarioCreacion();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");

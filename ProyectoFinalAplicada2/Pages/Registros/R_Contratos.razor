@@ -35,7 +35,7 @@
                             <div class="form-group">
                                 <label>ContratoId</label>
                                 <div class="input-group">
-                                    <InputNumber @bind-Value="Contrato.ContratoId" class="form-control col-4" />
+                                    <InputNumber readonly="@Activacion" @bind-Value="Contrato.ContratoId" class="form-control col-4" />
                                     <div class="input-group-append">
                                         <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" /> Buscar</button>
                                     </div>
@@ -169,13 +169,19 @@
 @code {
     [Parameter]
     public int ContratoId { get; set; }
+
     [CascadingParameter]
     private Task<AuthenticationState> authState { get; set; }
-    public string nombreUsuarioCreacion { get; set; } = "";
-    public string usuarioIdCreacion { get; set; } = "";
+
+    private string nombreUsuarioCreacion { get; set; } = "";
+    private string usuarioIdCreacion { get; set; } = "";
+
     private List<Clientes> ListaClientes = new List<Clientes>();
     private List<Cacaos> ListaCacaos = new List<Cacaos>();
+
     private decimal Inventario { get; set; }
+
+    private bool Activacion { get; set; }
 
     private Contratos Contrato = new Contratos();
 
@@ -191,6 +197,7 @@
         ListaClientes = ClientesBLL.GetList(c => true);
         ListaCacaos = CacaosBLL.GetList(c => true);
         ReiniciarUsuarioCreacion();
+        Activacion = false;
 
         Inventario = 0.0m;
     }
@@ -215,13 +222,14 @@
                 this.Contrato = encontrado;
                 ObtenerClienteCacaoSeleccionado();
                 AsignarUsuarioCreacion();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");
         }
     }
 
-    private void Buscar()
+    public void Buscar()
     {
         if (Contrato.ContratoId > 0)
         {
@@ -232,6 +240,7 @@
                 this.Contrato = encontrado;
                 ObtenerClienteCacaoSeleccionado();
                 AsignarUsuarioCreacion();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");
@@ -333,4 +342,4 @@
         else
             toast.ShowError("No fue posible eliminar");
     }
-    }
+}

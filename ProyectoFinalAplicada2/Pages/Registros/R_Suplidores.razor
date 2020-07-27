@@ -34,7 +34,7 @@
                             <div class="form-group">
                                 <label>SuplidorId</label>
                                 <div class="input-group">
-                                    <InputNumber @bind-Value="Suplidor.SuplidorId" class="form-control col-4" />
+                                    <InputNumber readonly="@Activacion" @bind-Value="Suplidor.SuplidorId" class="form-control col-4" />
                                     <div class="input-group-append">
                                         <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" /> Buscar</button>
                                     </div>
@@ -146,8 +146,10 @@
 
     private Suplidores Suplidor = new Suplidores();
 
-    public string nombreUsuarioCreacion { get; set; } = "";
-    public string usuarioIdCreacion { get; set; } = "";
+    private string nombreUsuarioCreacion { get; set; } = "";
+    private string usuarioIdCreacion { get; set; } = "";
+
+    private bool Activacion { get; set; }
 
     protected override void OnInitialized()
     {
@@ -160,6 +162,7 @@
         Suplidor = new Suplidores();
 
         ReiniciarUsuarioCreacion();
+        Activacion = false;
     }
 
     private async void ReiniciarUsuarioCreacion()
@@ -181,13 +184,14 @@
             {
                 this.Suplidor = encontrado;
                 AsignarUsuarioCreacion();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");
         }
     }
 
-    private void Buscar()
+    public void Buscar()
     {
         if (Suplidor.SuplidorId > 0)
         {
@@ -197,6 +201,7 @@
             {
                 this.Suplidor = encontrado;
                 AsignarUsuarioCreacion();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");
@@ -243,4 +248,4 @@
         else
             toast.ShowError("No fue posible eliminar");
     }
-    }
+}
