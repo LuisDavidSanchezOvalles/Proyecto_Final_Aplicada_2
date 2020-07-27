@@ -279,7 +279,7 @@
         ListaClientes.Add(cliente);
         ListaContratos.Add(contrato);
 
-        SeleccionContrato = 1;
+        SeleccionContrato = contrato.ContratoId;
     }
 
     private void AsignarUsuarioCreacion()
@@ -308,8 +308,11 @@
         if(Venta.VentaId == 0)
         {
             ListaContratos = ContratosBLL.GetList(c => c.ClienteId == Venta.ClienteId);
-            SeleccionContrato = ListaContratos[0].ContratoId;
-            ObtenerCantidadPendiente();
+            if(ListaContratos != null)
+            {
+                SeleccionContrato = ListaContratos[0].ContratoId;
+                ObtenerCantidadPendiente();
+            }
         }
     }
 
@@ -362,10 +365,10 @@
 
         if(Venta.VentaId > 0)
         {
-            if (PagosBLL.ExisteAlgunPago())
-            {
-                List<Pagos> pagos = PagosBLL.GetList(p => true);
+            List<Pagos> pagos = PagosBLL.GetList(p => true);
 
+            if(pagos != null)
+            {
                 foreach (var item in pagos)
                 {
                     if (item.PagoDetalle[0].VentaId == Venta.VentaId)
@@ -396,7 +399,7 @@
 
     public void Guardar()
     {
-        bool guardo;
+        bool guardo = false;
 
         if (Venta.VentaDetalle.Count < 1)
         {
@@ -413,7 +416,10 @@
         Venta.UsuarioId = Convert.ToInt32(usuarioIdCreacion);
         Venta.FechaModificacion = DateTime.Now;
 
-        guardo = VentasBLL.Guardar(Venta);
+        if (CacaosBLL.VenderCacao(Venta))
+            guardo = VentasBLL.Guardar(Venta);
+        else
+            toast.ShowWarning("Ha excedido la cantidad disponible para vender");
 
         if (guardo)
         {
@@ -431,20 +437,24 @@
 
         List<Pagos> pagos = PagosBLL.GetList(p => true);
 
-        foreach (var item in pagos)
+        if(pagos != null)
         {
-            if (item.PagoDetalle[0].VentaId == Venta.VentaId)
+            foreach (var item in pagos)
             {
-                toast.ShowInfo("No se puede eliminar esta venta ya que tiene un pago");
-                return;
+                if (item.PagoDetalle[0].VentaId == Venta.VentaId)
+                {
+                    toast.ShowInfo("No se puede eliminar esta venta ya que tiene un pago");
+                    return;
+                }
             }
         }
 
+        CacaosBLL.DevolverCacao(Venta.VentaId);
+        ContratosBLL.RestablecerCantidadPendiente(Venta.VentaId);
         elimino = VentasBLL.Eliminar(Venta.VentaId);
 
         if (elimino)
         {
-            ContratosBLL.RestablecerCantidadPendiente(Venta.VentaDetalle[0].ContratoId);//que pasaria si se elimina todo el detalle antes de eliminar la venta
             Nuevo();
             toast.ShowSuccess("Eliminado correctamente");
         }

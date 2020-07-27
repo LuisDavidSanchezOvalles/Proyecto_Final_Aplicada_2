@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using ProyectoFinalAplicada2.Models;
 using ProyectoFinalAplicada2.DAL;
 using System.Linq.Expressions;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace ProyectoFinalAplicada2.BLL
 {
@@ -73,10 +74,10 @@ namespace ProyectoFinalAplicada2.BLL
 
         private static void CalcularSaldo(Ventas venta)
         {
-            if (PagosBLL.ExisteAlgunPago())
-            {
-                List<Pagos> pagos = PagosBLL.GetList(p => true);
+            List<Pagos> pagos = PagosBLL.GetList(p => true);
 
+            if(pagos != null)
+            {
                 foreach (var pago in pagos)
                 {
                     if (pago.PagoDetalle[0].VentaId == venta.VentaId)
@@ -217,7 +218,12 @@ namespace ProyectoFinalAplicada2.BLL
 
         public static void RestablecerBalance(int id)
         {
-            Ventas venta = Buscar(id);
+            Pagos pago = PagosBLL.Buscar(id);
+
+            if (pago == null)
+                return;
+
+            Ventas venta = Buscar(pago.PagoDetalle[0].VentaId);
 
             venta.Balance = venta.Total;
 

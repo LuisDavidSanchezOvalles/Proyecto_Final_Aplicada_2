@@ -35,7 +35,7 @@
                             <div class="form-group">
                                 <label>PagoId</label>
                                 <div class="input-group">
-                                    <InputNumber @bind-Value="Pago.PagoId" class="form-control col-4" />
+                                    <InputNumber readonly="@Activacion" @bind-Value="Pago.PagoId" class="form-control col-4" />
                                     <div class="input-group-append">
                                         <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" />Buscar</button>
                                     </div>
@@ -188,6 +188,8 @@
     public decimal Balance { get; set; }
     public decimal Monto { get; set; }
 
+    public bool Activacion { get; set; }
+
     protected override void OnInitialized()
     {
         Nuevo();
@@ -207,6 +209,8 @@
 
         Balance = 0.0m;
         Monto = 0.0m;
+
+        Activacion = false;
     }
 
     private async void ReiniciarUsuarioCreacion()
@@ -231,6 +235,7 @@
                 AsignarVenta();
                 AsignarUsuarioCreacion();
                 ObtenerBalance();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");
@@ -250,6 +255,7 @@
                 AsignarVenta();
                 AsignarUsuarioCreacion();
                 ObtenerBalance();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");
@@ -284,6 +290,10 @@
         if (Pago.PagoId == 0)
         {
             Ventas = VentasBLL.GetList(v => v.ClienteId == Pago.ClienteId);
+
+            if (Ventas == null)
+                return;
+
             VentaIdSeleccionado = Ventas[0].VentaId;
             ObtenerBalance();
         }
@@ -393,11 +403,11 @@
     {
         bool elimino;
 
+        VentasBLL.RestablecerBalance(Pago.PagoId);
         elimino = PagosBLL.Eliminar(Pago.PagoId);
 
         if (elimino)
         {
-            VentasBLL.RestablecerBalance(Pago.PagoDetalle[0].VentaId);//que pasaria si se elimina todo el detalle antes de eliminar la venta
             Nuevo();
             toast.ShowSuccess("Eliminado correctamente");
         }

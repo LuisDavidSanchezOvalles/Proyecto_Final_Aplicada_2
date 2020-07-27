@@ -47,19 +47,5 @@ namespace ProyectoFinalAplicada2.Models
             VentaDetalle = new List<VentasDetalle>();
             PagoDetalle = new List<PagosDetalle>();
         }
-
-        public Ventas(int ventaId, DateTime fecha, int clienteId, decimal total, decimal balance, DateTime fechaCreacion, DateTime fechaModificacion, int usuarioId, List<VentasDetalle> ventaDetalle, List<PagosDetalle> pagoDetalle)
-        {
-            VentaId = ventaId;
-            Fecha = fecha;
-            ClienteId = clienteId;
-            Total = total;
-            Balance = balance;
-            FechaCreacion = fechaCreacion;
-            FechaModificacion = fechaModificacion;
-            UsuarioId = usuarioId;
-            VentaDetalle = ventaDetalle;
-            PagoDetalle = pagoDetalle;
-        }
     }
 }

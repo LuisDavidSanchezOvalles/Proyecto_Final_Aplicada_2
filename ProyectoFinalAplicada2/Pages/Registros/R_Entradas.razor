@@ -245,7 +245,7 @@
 
     public void Guardar()
     {
-        bool guardo;
+        bool guardo = false;
 
         if(Entrada.SuplidorId <= 0)
         {
@@ -262,11 +262,13 @@
         Entrada.UsuarioId = Convert.ToInt32(usuarioIdCreacion);
         Entrada.FechaModificacion = DateTime.Now;
 
-        guardo = EntradasBLL.Guardar(Entrada);
+        if (CacaosBLL.ActualizarCacao(Entrada))
+            guardo = EntradasBLL.Guardar(Entrada);
+        else
+            toast.ShowError("La existencia del cacao resulto menor o igual a cero");
 
         if (guardo)
         {
-            CacaosBLL.ActualizarCacao(Entrada.CacaoId, Entrada.Cantidad, Entrada.Costo);
             Nuevo();
             toast.ShowSuccess("Guardado correctamente");
         }

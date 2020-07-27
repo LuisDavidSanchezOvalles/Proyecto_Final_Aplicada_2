@@ -34,7 +34,7 @@
                             <div class="form-group">
                                 <label>UsuarioId</label>
                                 <div class="input-group">
-                                    <InputNumber @bind-Value="Usuario.UsuarioId" class="form-control col-4" />
+                                    <InputNumber readonly="@Activacion" @bind-Value="Usuario.UsuarioId" class="form-control col-4" />
                                     <div class="input-group-append">
                                         <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" />Buscar</button>
                                     </div>
@@ -131,8 +131,10 @@
 
     private Usuarios Usuario = new Usuarios();
 
-    public string nombreUsuarioCreacion { get; set; } = "";
-    public string usuarioIdCreacion { get; set; } = "";
+    private string nombreUsuarioCreacion { get; set; } = "";
+    private string usuarioIdCreacion { get; set; } = "";
+
+    public bool Activacion { get; set; }
 
     protected override void OnInitialized()
     {
@@ -140,11 +142,13 @@
         BuscarParametro();
     }
 
-    public void Nuevo()
+    private void Nuevo()
     {
         Usuario = new Usuarios();
 
         ReiniciarUsuarioCreacion();
+
+        Activacion = false;
     }
 
     private async void ReiniciarUsuarioCreacion()
@@ -166,6 +170,7 @@
             {
                 this.Usuario = encontrado;
                 AsignarUsuarioCreacion();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");
@@ -183,6 +188,7 @@
             {
                 this.Usuario = encontrado;
                 AsignarUsuarioCreacion();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");

@@ -175,16 +175,6 @@ namespace ProyectoFinalAplicada2.BLL
             return pago;
         }
 
-        public static bool ExisteAlgunPago()
-        {
-            List<Pagos> pagos = GetList(c => true);
-
-            if (pagos.Count > 0)
-                return true;
-            else
-                return false;
-        }
-
         public static bool VentaDisponible(Pagos pagos)
         {
             //verifica si la venta ya esta utilizada en algun otro pago

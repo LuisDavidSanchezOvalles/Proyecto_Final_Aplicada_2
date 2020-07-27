@@ -246,6 +246,8 @@
         Clientes cliente = ClientesBLL.Buscar(Contrato.ClienteId);
         Cacaos cacao = CacaosBLL.Buscar(Contrato.CacaoId);
 
+        Inventario = cacao.Cantidad;
+
         ListaClientes.Add(cliente);
         ListaCacaos.Add(cacao);
     }
@@ -292,11 +294,10 @@
         Contrato.UsuarioId = Convert.ToInt32(usuarioIdCreacion);
         Contrato.FechaModificacion = DateTime.Now;
 
-        if (CacaosBLL.ContratarCacao(Contrato))
-        {
+        if(Contrato.ContratoId == 0)
             Contrato.CantidadPendiente = Contrato.Cantidad;
-            guardo = ContratosBLL.Guardar(Contrato);
-        }
+
+        guardo = ContratosBLL.Guardar(Contrato);
 
         if (guardo)
         {
@@ -326,7 +327,6 @@
 
         if (elimino)
         {
-            CacaosBLL.DevolverCacao(Contrato.ContratoId, Contrato.CacaoId);
             Nuevo();
             toast.ShowSuccess("Eliminado correctamente");
         }
