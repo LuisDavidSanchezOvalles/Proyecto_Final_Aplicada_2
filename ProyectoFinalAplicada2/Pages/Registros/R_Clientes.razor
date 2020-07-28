@@ -34,7 +34,7 @@
                             <div class="form-group">
                                 <label>ClienteId</label>
                                 <div class="input-group">
-                                    <InputNumber @bind-Value="Cliente.ClienteId" class="form-control col-4" />
+                                    <InputNumber readonly="@Activacion" @bind-Value="Cliente.ClienteId" class="form-control col-4" />
                                     <div class="input-group-append">
                                         <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" />Buscar</button>
                                     </div>
@@ -145,8 +145,10 @@
 
     private Clientes Cliente = new Clientes();
 
-    public string nombreUsuarioCreacion { get; set; } = "";
-    public string usuarioIdCreacion { get; set; } = "";
+    private string nombreUsuarioCreacion { get; set; } = "";
+    private string usuarioIdCreacion { get; set; } = "";
+
+    private bool Activacion { get; set; }
 
     protected override void OnInitialized()
     {
@@ -159,6 +161,8 @@
         Cliente = new Clientes();
 
         ReiniciarUsuarioCreacion();
+
+        Activacion = false;
     }
 
     private async void ReiniciarUsuarioCreacion()
@@ -180,13 +184,14 @@
             {
                 this.Cliente = encontrado;
                 AsignarUsuarioCreacion();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");
         }
     }
 
-    private void Buscar()
+    public void Buscar()
     {
         if (Cliente.ClienteId > 0)
         {
@@ -196,6 +201,7 @@
             {
                 this.Cliente = encontrado;
                 AsignarUsuarioCreacion();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");
@@ -253,4 +259,4 @@
         else
             toast.ShowError("No fue posible eliminar");
     }
-    }
+}

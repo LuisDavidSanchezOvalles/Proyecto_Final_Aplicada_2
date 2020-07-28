@@ -34,7 +34,7 @@
                             <div class="form-group">
                                 <label>CacaoId</label>
                                 <div class="input-group">
-                                    <InputNumber @bind-Value="Cacao.CacaoId" class="form-control col-4" />
+                                    <InputNumber readonly="@Activacion" @bind-Value="Cacao.CacaoId" class="form-control col-4" />
                                     <div class="input-group-append">
                                         <button type="button" class="btn btn-primary input-group-text" @onclick="Buscar"><i class="oi oi-magnifying-glass" />Buscar</button>
                                     </div>
@@ -129,8 +129,10 @@
 
     private Cacaos Cacao = new Cacaos();
 
-    public string nombreUsuarioCreacion { get; set; } = "";
-    public string usuarioIdCreacion { get; set; } = "";
+    private string nombreUsuarioCreacion { get; set; } = "";
+    private string usuarioIdCreacion { get; set; } = "";
+
+    private bool Activacion { get; set; }
 
     protected override void OnInitialized()
     {
@@ -143,6 +145,8 @@
         Cacao = new Cacaos();
 
         ReiniciarUsuarioCreacion();
+
+        Activacion = false;
     }
 
     private async void ReiniciarUsuarioCreacion()
@@ -164,13 +168,14 @@
             {
                 this.Cacao = encontrado;
                 AsignarUsuarioCreacion();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");
         }
     }
 
-    private void Buscar()
+    public void Buscar()
     {
         if (Cacao.CacaoId > 0)
         {
@@ -180,6 +185,7 @@
             {
                 this.Cacao = encontrado;
                 AsignarUsuarioCreacion();
+                Activacion = true;
             }
             else
                 toast.ShowWarning("No encontrado");
@@ -226,5 +232,5 @@
         else
             toast.ShowError("No fue posible eliminar");
     }
-    }
+}
 

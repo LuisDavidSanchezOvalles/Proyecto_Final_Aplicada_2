@@ -175,20 +175,20 @@
     [CascadingParameter]
     private Task<AuthenticationState> authState { get; set; }
 
-    public Pagos Pago { get; set; }
+    private Pagos Pago { get; set; }
 
     private List<Clientes> Clientes = new List<Clientes>();
     private List<Ventas> Ventas = new List<Ventas>();
 
-    public string nombreUsuarioCreacion { get; set; } = "";
-    public string usuarioIdCreacion { get; set; } = "";
+    private string nombreUsuarioCreacion { get; set; } = "";
+    private string usuarioIdCreacion { get; set; } = "";
 
-    public int VentaIdSeleccionado { get; set; }
+    private int VentaIdSeleccionado { get; set; }
 
-    public decimal Balance { get; set; }
-    public decimal Monto { get; set; }
+    private decimal Balance { get; set; }
+    private decimal Monto { get; set; }
 
-    public bool Activacion { get; set; }
+    private bool Activacion { get; set; }
 
     protected override void OnInitialized()
     {
@@ -285,7 +285,7 @@
         usuarioIdCreacion = Pago.UsuarioId.ToString();
     }
 
-    public void ObtenerVentas()
+    private void ObtenerVentas()
     {
         if (Pago.PagoId == 0)
         {
@@ -299,7 +299,7 @@
         }
     }
 
-    public void ObtenerBalance()
+    private void ObtenerBalance()
     {
         Ventas venta = VentasBLL.Buscar(VentaIdSeleccionado);
 

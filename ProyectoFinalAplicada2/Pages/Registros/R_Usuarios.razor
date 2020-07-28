@@ -134,7 +134,7 @@
     private string nombreUsuarioCreacion { get; set; } = "";
     private string usuarioIdCreacion { get; set; } = "";
 
-    public bool Activacion { get; set; }
+    private bool Activacion { get; set; }
 
     protected override void OnInitialized()
     {
@@ -142,7 +142,7 @@
         BuscarParametro();
     }
 
-    private void Nuevo()
+    public void Nuevo()
     {
         Usuario = new Usuarios();
 
@@ -177,8 +177,7 @@
         }
     }
 
-
-    private void Buscar()
+    public void Buscar()
     {
         if (Usuario.UsuarioId > 0)
         {
@@ -247,4 +246,4 @@
         else
             toast.ShowError("No fue posible eliminar");
     }
-    }
+}
