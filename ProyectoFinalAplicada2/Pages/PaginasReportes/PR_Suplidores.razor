@@ -1,0 +1,23 @@
+﻿@page "/ReporteSuplidores"
+
+@using Reportes;
+
+@if (Data is { })
+{
+    <object data="@pdfContent" width="900" height="700"></object>
+}
+
+@code {
+    byte[] Data;
+    string pdfContent = "";
+
+    protected override void OnInitialized()
+    {
+        SuplidoresReport suplidores = new SuplidoresReport();
+
+        Data = suplidores.Reporte();
+
+        pdfContent = "data:application/pdf;base64,";
+        pdfContent += System.Convert.ToBase64String(Data);
+    }
+}

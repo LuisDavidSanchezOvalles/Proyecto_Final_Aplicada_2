@@ -44,7 +44,6 @@
                 <table class="table table-striped">
                     <thead class="thead-light">
                         <tr>
-                            <th>UsuarioId</th>
                             <th>SuplidorId</th>
                             <th>Nombres</th>
                             <th>Cedula</th>
@@ -52,6 +51,7 @@
                             <th>Celular</th>
                             <th>Dirección</th>
                             <th>Email</th>
+                            <th>UsuarioId</th>
                         </tr>
                     </thead>
                     @*Asignacion de Datos*@
@@ -59,7 +59,6 @@
                         @foreach (var item in ListaSuplidores)
                         {
                             <tr>
-                                <td>@item.UsuarioId</td>
                                 <td>@item.SuplidorId</td>
                                 <td>@item.Nombres</td>
                                 <td>@item.Cedula</td>
@@ -67,12 +66,21 @@
                                 <td>@item.Celular</td>
                                 <td>@item.Direccion</td>
                                 <td>@item.Email</td>
+                                <td>@item.UsuarioId</td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
         </form>
+
+        
+
+        <div class="card-footer">
+            <div class="form-group text-center">
+                <a class="btn btn-lg btn-primary oi oi-file" href="/ReporteSuplidores"> Generar Reporte</a>
+            </div>
+        </div>
     </div>
 </div>
 

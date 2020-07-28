@@ -40,13 +40,13 @@
                 <table class="table table-striped">
                     <thead class="thead-light">
                         <tr>
-                            <th>UsuarioId</th>
                             <th>ContratoId</th>
                             <th>ClienteId</th>
                             <th>CacaoId</th>
                             <th>Cantidad</th>
                             <th>Precio</th>
                             <th>Total</th>
+                            <th>UsuarioId</th>
                         </tr>
                     </thead>
                     @*Asignacion de Datos*@
@@ -54,13 +54,13 @@
                         @foreach (var item in ListaContratos)
                         {
                             <tr>
-                                <td>@item.UsuarioId</td>
                                 <td>@item.ContratoId</td>
                                 <td>@item.ClienteId</td>
                                 <td>@item.CacaoId</td>
                                 <td>@item.Cantidad</td>
                                 <td>@item.Precio</td>
                                 <td>@item.Total</td>
+                                <td>@item.UsuarioId</td>
                             </tr>
                         }
                     </tbody>
