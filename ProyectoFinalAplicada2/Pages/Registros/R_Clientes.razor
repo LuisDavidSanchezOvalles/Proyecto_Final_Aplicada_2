@@ -8,6 +8,7 @@
 
 @inject IToastService toast
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JS
 
 <AuthorizeView>
     <NotAuthorized>
@@ -137,11 +138,11 @@
 }
 
 @code {
-    [Parameter]
-    public int ClienteId { get; set; }
+        [Parameter]
+        public int ClienteId { get; set; }
 
-    [CascadingParameter]
-    private Task<AuthenticationState> authState { get; set; }
+        [CascadingParameter]
+        private Task<AuthenticationState> authState { get; set; }
 
     private Clientes Cliente = new Clientes();
 
@@ -234,29 +235,32 @@
             toast.ShowError("No fue posible guardar");
     }
 
-    public void Eliminar()
+    public async Task Eliminar()
     {
-        bool elimino;
-
-        List<Contratos> contratos = ContratosBLL.GetList(p => true);
-
-        foreach (var item in contratos)
+        if (await JS.ConfirmDelete("Confirmar", "¿Esta seguro que desea eliminar este usuario?", "question"))
         {
-            if (item.ClienteId == Cliente.ClienteId)
+            bool elimino;
+
+            List<Contratos> contratos = ContratosBLL.GetList(p => true);
+
+            foreach (var item in contratos)
             {
-                toast.ShowInfo("No se puede eliminar este cliente ya que tiene un contrato");
-                return;
+                if (item.ClienteId == Cliente.ClienteId)
+                {
+                    toast.ShowInfo("No se puede eliminar este cliente ya que tiene un contrato");
+                    return;
+                }
             }
-        }
 
-        elimino = ClientesBLL.Eliminar(Cliente.ClienteId);
+            elimino = ClientesBLL.Eliminar(Cliente.ClienteId);
 
-        if (elimino)
-        {
-            Nuevo();
-            toast.ShowSuccess("Eliminado correctamente");
+            if (elimino)
+            {
+                Nuevo();
+                toast.ShowSuccess("Eliminado correctamente");
+            }
+            else
+                toast.ShowError("No fue posible eliminar");
         }
-        else
-            toast.ShowError("No fue posible eliminar");
     }
 }

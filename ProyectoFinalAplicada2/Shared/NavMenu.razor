@@ -1,5 +1,5 @@
 ﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">ProyectoFinalAplicada2</a>
+    <a class="navbar-brand" href="">Agrocontsa, srl</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -7,17 +7,127 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
-        <li class="nav-item px-3">
+        <li class="nav-item px-1">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </li>
         <AuthorizeView>
             <Authorized>
-                <li class="nav-item px-3">
-                    <NavLink class="nav-link" href="Usuarios">
-                        <span class="oi oi-plus" aria-hidden="true"></span> Registro Usuarios
+                <li class="nav-item px-1">
+                    <NavLink class="nav-link" @onclick="ToggleRegistrosMenu">
+                        <span class="oi oi-plus" aria-hidden="true"></span> Registros &nbsp; <span class="oi oi-arrow-circle-bottom"></span>
                     </NavLink>
+                    @if (Registros)
+                    {
+                        <ul class="children">
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="Cacaos">
+                                    <span class="oi oi-document" aria-hidden="true"></span>Cacaos
+                                </NavLink>
+                            </li>
+
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="Clientes">
+                                    <span class="oi oi-document" aria-hidden="true"></span>Clientes
+                                </NavLink>
+                            </li>
+
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="Contratos">
+                                    <span class="oi oi-document" aria-hidden="true"></span>Contratos
+                                </NavLink>
+                            </li>
+
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="Entradas">
+                                    <span class="oi oi-document" aria-hidden="true"></span>Entradas
+                                </NavLink>
+                            </li>
+
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="Pagos">
+                                    <span class="oi oi-document" aria-hidden="true"></span>Pagos
+                                </NavLink>
+                            </li>
+
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="Suplidores">
+                                    <span class="oi oi-document" aria-hidden="true"></span>Suplidores
+                                </NavLink>
+                            </li>
+
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="Usuarios">
+                                    <span class="oi oi-document" aria-hidden="true"></span>Usuarios
+                                </NavLink>
+                            </li>
+
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="Ventas">
+                                    <span class="oi oi-document" aria-hidden="true"></span>Ventas
+                                </NavLink>
+                            </li>
+                        </ul>
+                    }
+                </li>
+
+                <li class="nav-item px-1">
+                    <NavLink class="nav-link" @onclick="ToggleConsultasMenu">
+                        <span class="oi oi-list" aria-hidden="true"></span> Consultas &nbsp; <span class="oi oi-arrow-circle-bottom"></span>
+                    </NavLink>
+                    @if (Consultas)
+                    {
+                        <ul class="children">
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="ConsultaCacaos">
+                                    <span class="oi oi-list-rich" aria-hidden="true"></span>Cacaos
+                                </NavLink>
+                            </li>
+
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="ConsultaClientes">
+                                    <span class="oi oi-list-rich" aria-hidden="true"></span>Clientes
+                                </NavLink>
+                            </li>
+
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="ConsultaContratos">
+                                    <span class="oi oi-list-rich" aria-hidden="true"></span>Contratos
+                                </NavLink>
+                            </li>
+
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="ConsultaEntradas">
+                                    <span class="oi oi-list-rich" aria-hidden="true"></span>Entradas
+                                </NavLink>
+                            </li>
+
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="ConsultaPagos">
+                                    <span class="oi oi-list-rich" aria-hidden="true"></span>Pagos
+                                </NavLink>
+                            </li>
+
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="ConsultaSuplidores">
+                                    <span class="oi oi-list-rich" aria-hidden="true"></span>Suplidores
+                                </NavLink>
+                            </li>
+
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="ConsultaUsuarios">
+                                    <span class="oi oi-list-rich" aria-hidden="true"></span>Usuarios
+                                </NavLink>
+                            </li>
+
+                            <li class="list-unstyled">
+                                <NavLink class="nav-link" href="ConsultaVentas">
+                                    <span class="oi oi-list-rich" aria-hidden="true"></span>Ventas
+                                </NavLink>
+                            </li>
+                        </ul>
+                    }
                 </li>
             </Authorized>
         </AuthorizeView>
@@ -27,10 +137,25 @@
 @code {
     private bool collapseNavMenu = true;
 
+    private bool Registros = false;
+    private bool Consultas = false;
+
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void ToggleRegistrosMenu()
+    {
+        Registros = !Registros;
+        Consultas = false;
+    }
+
+    private void ToggleConsultasMenu()
+    {
+        Consultas = !Consultas;
+        Registros = false;
     }
 }

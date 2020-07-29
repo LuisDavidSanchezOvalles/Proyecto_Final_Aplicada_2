@@ -27,10 +27,9 @@
                     <label>Filtro</label>
                     <select class="form-control" @bind="Filtro">
                         <option value="0">Todos</option>
-                        <option value="1">Id</option>
+                        <option value="1">PagoId</option>
                         <option value="2">ClienteId</option>
-                        <option value="3">Total</option>
-                        <option value="4">UsuarioId</option>
+                        <option value="3">UsuarioId</option>
                     </select>
                 </div>
 
@@ -142,25 +141,7 @@
                     ListaPagos = PagosBLL.GetList(p => true).OrderBy(p => p.ClienteId).ToList();
                 }
                 break;
-            case "3": //Total
-                if (Criterio.Trim().Length > 0)
-                {
-                    try
-                    {
-                        decimal total = Convert.ToInt32(Criterio);
-                        ListaPagos = PagosBLL.GetList(p => p.Total == total);
-                    }
-                    catch (FormatException)
-                    {
-                        toast.ShowWarning("Ingrese un numero");
-                    }
-                }
-                else
-                {
-                    ListaPagos = PagosBLL.GetList(p => true).OrderBy(p => p.Total).ToList();
-                }
-                break;
-            case "4": //UsuarioId
+            case "3": //UsuarioId
                 if (Criterio.Trim().Length > 0)
                 {
                     try
