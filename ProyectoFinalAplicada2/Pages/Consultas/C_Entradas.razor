@@ -42,7 +42,9 @@
                         <tr>
                             <th>EntradaId</th>
                             <th>SuplidorId</th>
+                            <th>Nombres</th>
                             <th>CacaoId</th>
+                            <th>Tipo</th>
                             <th>Cantidad</th>
                             <th>Costo</th>
                             <th>Total</th>
@@ -56,8 +58,11 @@
                             <tr>
                                 <td>@item.EntradaId</td>
                                 <td>@item.SuplidorId</td>
+                                <td>@ObtenerNombre(item.SuplidorId)</td>
                                 <td>@item.CacaoId</td>
+                                <td>@ObtenerTipo(item.CacaoId)</td>
                                 <td>@item.Cantidad</td>
+                                <td>@item.Costo</td>
                                 <td>@item.Total</td>
                                 <td>@item.UsuarioId</td>
                             </tr>
@@ -66,6 +71,12 @@
                 </table>
             </div>
         </form>
+    </div>
+
+    <div class="card-footer">
+        <div class="form-group text-center">
+            <a class="btn btn-lg btn-primary oi oi-file" href="/ReporteEntradas"> Generar Reporte</a>
+        </div>
     </div>
 </div>
 
@@ -86,6 +97,20 @@
         ListaEntradas = new List<Entradas>();
         Filtro = "0";
         Criterio = string.Empty;
+    }
+
+    private string ObtenerNombre(int id)
+    {
+        Suplidores suplidor = SuplidoresBLL.Buscar(id);
+
+        return suplidor.Nombres;
+    }
+
+    private string ObtenerTipo(int id)
+    {
+        Cacaos cacao = CacaosBLL.Buscar(id);
+
+        return cacao.Tipo;
     }
 
     public void Consultar()

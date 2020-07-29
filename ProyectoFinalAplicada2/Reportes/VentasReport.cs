@@ -10,9 +10,9 @@ using ProyectoFinalAplicada2.BLL;
 
 namespace ProyectoFinalAplicada2.Reportes
 {
-    public class SuplidoresReport
+    public class VentasReport
     {
-        int columnas = 8;
+        int columnas = 9;
 
         Document document = new Document();
         PdfPTable pdfTable;
@@ -21,7 +21,21 @@ namespace ProyectoFinalAplicada2.Reportes
 
         MemoryStream memoryStream = new MemoryStream();
 
-        List<Suplidores> listaSuplidores = SuplidoresBLL.GetList(s => true);
+        List<Ventas> listaVentas = VentasBLL.GetList(v => true);
+
+        private string ObtenerNombre(int id)
+        {
+            Clientes cliente = ClientesBLL.Buscar(id);
+
+            return cliente.Nombres;
+        }
+
+        private string ObtenerTipo(int id)
+        {
+            Cacaos cacao = CacaosBLL.Buscar(id);
+
+            return cacao.Tipo;
+        }
 
         public byte[] Reporte()
         {
@@ -38,14 +52,12 @@ namespace ProyectoFinalAplicada2.Reportes
 
             float[] anchoColumnas = new float[columnas];
 
-            anchoColumnas[0] = 100; //Esta sera la fila 1 suplidorId
-            anchoColumnas[1] = 175; //Esta sera la fila 2 nombre
-            anchoColumnas[2] = 115; //Esta sera la fila 3 cedula
-            anchoColumnas[3] = 110; //Esta sera la fila 4 telefono
-            anchoColumnas[4] = 110; //Esta sera la fila 5 celular
-            anchoColumnas[5] = 175; //Esta sera la fila 6 direccion
-            anchoColumnas[6] = 180; //Esta sera la fila 7 email
-            anchoColumnas[7] = 100; //Esta sera la fila 8 usuarioId
+            anchoColumnas[0] = 115; //Esta sera la fila 1 VentaId
+            anchoColumnas[1] = 115; //Esta sera la fila 2 ClienteId
+            anchoColumnas[2] = 200; //Esta sera la fila 3 Nombres
+            anchoColumnas[3] = 180; //Esta sera la fila 4 Total
+            anchoColumnas[4] = 180; //Esta sera la fila 5 Balance
+            anchoColumnas[5] = 115; //Esta sera la fila 6 usuarioId
 
             pdfTable.SetWidths(anchoColumnas);
 
@@ -109,7 +121,7 @@ namespace ProyectoFinalAplicada2.Reportes
 
             pdfTable.CompleteRow();
 
-            pdfCell = new PdfPCell(new Phrase("Reporte de Suplidores", fontStyle));
+            pdfCell = new PdfPCell(new Phrase("Reporte de Ventas", fontStyle));
             pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
             pdfCell.Colspan = 2;
             pdfCell.Border = 0;
@@ -146,7 +158,13 @@ namespace ProyectoFinalAplicada2.Reportes
             var _fontStyle = FontFactory.GetFont("Calibri", 9f, 0);
 
             #region Table Header
-            pdfCell = new PdfPCell(new Phrase("SuplidorId", fontStyle));
+            pdfCell = new PdfPCell(new Phrase("VentaId", fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.LightGray;
+            pdfTable.AddCell(pdfCell);
+
+            pdfCell = new PdfPCell(new Phrase("ClienteId", fontStyle));
             pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
             pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
             pdfCell.BackgroundColor = BaseColor.LightGray;
@@ -158,31 +176,13 @@ namespace ProyectoFinalAplicada2.Reportes
             pdfCell.BackgroundColor = BaseColor.LightGray;
             pdfTable.AddCell(pdfCell);
 
-            pdfCell = new PdfPCell(new Phrase("Cédula", fontStyle));
+            pdfCell = new PdfPCell(new Phrase("Total", fontStyle));
             pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
             pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
             pdfCell.BackgroundColor = BaseColor.LightGray;
             pdfTable.AddCell(pdfCell);
 
-            pdfCell = new PdfPCell(new Phrase("Teléfono", fontStyle));
-            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
-            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
-            pdfCell.BackgroundColor = BaseColor.LightGray;
-            pdfTable.AddCell(pdfCell);
-
-            pdfCell = new PdfPCell(new Phrase("Celular", fontStyle));
-            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
-            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
-            pdfCell.BackgroundColor = BaseColor.LightGray;
-            pdfTable.AddCell(pdfCell);
-
-            pdfCell = new PdfPCell(new Phrase("Dirección", fontStyle));
-            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
-            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
-            pdfCell.BackgroundColor = BaseColor.LightGray;
-            pdfTable.AddCell(pdfCell);
-
-            pdfCell = new PdfPCell(new Phrase("Email", fontStyle));
+            pdfCell = new PdfPCell(new Phrase("Balance", fontStyle));
             pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
             pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
             pdfCell.BackgroundColor = BaseColor.LightGray;
@@ -200,46 +200,34 @@ namespace ProyectoFinalAplicada2.Reportes
             #region Table Body
             int num = 0;
 
-            foreach (var item in listaSuplidores)
+            foreach (var item in listaVentas)
             {
                 num++;
-                pdfCell = new PdfPCell(new Phrase(item.SuplidorId.ToString(), _fontStyle));
+                pdfCell = new PdfPCell(new Phrase(item.VentaId.ToString(), _fontStyle));
                 pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                 pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 pdfCell.BackgroundColor = BaseColor.White;
                 pdfTable.AddCell(pdfCell);
 
-                pdfCell = new PdfPCell(new Phrase(item.Nombres, _fontStyle));
+                pdfCell = new PdfPCell(new Phrase(item.ClienteId.ToString(), _fontStyle));
                 pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                 pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 pdfCell.BackgroundColor = BaseColor.White;
                 pdfTable.AddCell(pdfCell);
 
-                pdfCell = new PdfPCell(new Phrase(item.Cedula, _fontStyle));
+                pdfCell = new PdfPCell(new Phrase(ObtenerNombre(item.ClienteId), _fontStyle));
                 pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                 pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 pdfCell.BackgroundColor = BaseColor.White;
                 pdfTable.AddCell(pdfCell);
 
-                pdfCell = new PdfPCell(new Phrase(item.Telefono, _fontStyle));
+                pdfCell = new PdfPCell(new Phrase(item.Total.ToString(), _fontStyle));
                 pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                 pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 pdfCell.BackgroundColor = BaseColor.White;
                 pdfTable.AddCell(pdfCell);
 
-                pdfCell = new PdfPCell(new Phrase(item.Celular, _fontStyle));
-                pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
-                pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                pdfCell.BackgroundColor = BaseColor.White;
-                pdfTable.AddCell(pdfCell);
-
-                pdfCell = new PdfPCell(new Phrase(item.Direccion, _fontStyle));
-                pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
-                pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
-                pdfCell.BackgroundColor = BaseColor.White;
-                pdfTable.AddCell(pdfCell);
-
-                pdfCell = new PdfPCell(new Phrase(item.Email, _fontStyle));
+                pdfCell = new PdfPCell(new Phrase(item.Balance.ToString(), _fontStyle));
                 pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                 pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 pdfCell.BackgroundColor = BaseColor.White;

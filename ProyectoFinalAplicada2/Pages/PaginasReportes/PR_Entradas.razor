@@ -1,4 +1,4 @@
-﻿@page "/ReporteSuplidores"
+﻿@page "/ReporteEntradas"
 
 @using Reportes;
 
@@ -7,12 +7,12 @@
         <div class="form-group">
             <div class="row">
                 <div class="col">
-                    <h2>Reporte de Suplidores</h2>
+                    <h2>Reporte de Entradas</h2>
                 </div>
 
                 <div class="col-2">
                     <div class="row">
-                        <a class="btn btn-lg btn-primary oi oi-list-rich" href="/ConsultaSuplidores"> Consulta</a>
+                        <a class="btn btn-lg btn-primary oi oi-list-rich" href="/ConsultaEntradas"> Consulta</a>
                     </div>
                 </div>
             </div>
@@ -38,9 +38,9 @@
 
     protected override void OnInitialized()
     {
-        SuplidoresReport suplidores = new SuplidoresReport();
+        EntradasReport Entradas = new EntradasReport();
 
-        Data = suplidores.Reporte();
+        Data = Entradas.Reporte();
 
         pdfContent = "data:application/pdf;base64,";
         pdfContent += System.Convert.ToBase64String(Data);
