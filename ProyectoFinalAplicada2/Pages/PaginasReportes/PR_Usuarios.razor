@@ -1,0 +1,60 @@
+﻿@page "/ReporteUsuarios"
+
+@using Reportes;
+
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<AuthorizeView>
+    <NotAuthorized>
+        <p class="h4 text-center">Usted no esta autorizado para acceder a esta pagina</p>
+
+    </NotAuthorized>
+</AuthorizeView>
+
+@if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated)
+{
+    <div class="card">
+        <div class="card-header">
+            <div class="form-group">
+                <div class="row">
+                    <div class="col">
+                        <h2>Reporte de Usuarios</h2>
+                    </div>
+
+                    <div class="col-2">
+                        <div class="row">
+                            <a class="btn btn-lg btn-primary oi oi-list-rich" href="/ConsultaUsuarios"> Consulta</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-body">
+            <form>
+                @if (Data is { })
+                {
+                    <object data="@pdfContent" width="1000" height="500"></object>
+                }
+            </form>
+        </div>
+
+        <div class="card-footer">
+        </div>
+    </div>
+}
+
+@code {
+    byte[] Data;
+    string pdfContent = "";
+
+    protected override void OnInitialized()
+    {
+        UsuariosReport usuarios = new UsuariosReport();
+
+        Data = usuarios.Reporte();
+
+        pdfContent = "data:application/pdf;base64,";
+        pdfContent += System.Convert.ToBase64String(Data);
+    }
+}
