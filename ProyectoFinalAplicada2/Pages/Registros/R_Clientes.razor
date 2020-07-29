@@ -138,11 +138,11 @@
 }
 
 @code {
-        [Parameter]
-        public int ClienteId { get; set; }
+    [Parameter]
+    public int ClienteId { get; set; }
 
-        [CascadingParameter]
-        private Task<AuthenticationState> authState { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
 
     private Clientes Cliente = new Clientes();
 
@@ -237,7 +237,7 @@
 
     public async Task Eliminar()
     {
-        if (await JS.ConfirmDelete("Confirmar", "¿Esta seguro que desea eliminar este usuario?", "question"))
+        if (await JS.ConfirmDelete("Confirmar", "¿Esta seguro que desea eliminar este Cliente?", "question"))
         {
             bool elimino;
 

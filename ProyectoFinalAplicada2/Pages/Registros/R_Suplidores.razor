@@ -8,6 +8,7 @@
 
 @inject IToastService toast
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JS
 
 <AuthorizeView>
     <NotAuthorized>
@@ -234,18 +235,21 @@
             toast.ShowError("No fue posible guardar");
     }
 
-    public void Eliminar()
+    public async Task Eliminar()
     {
-        bool elimino;
-
-        elimino = SuplidoresBLL.Eliminar(Suplidor.SuplidorId);
-
-        if (elimino)
+        if (await JS.ConfirmDelete("Confirmar", "¿Esta seguro que desea eliminar este Suplidor?", "question"))
         {
-            Nuevo();
-            toast.ShowSuccess("Eliminado correctamente");
+            bool elimino;
+
+            elimino = SuplidoresBLL.Eliminar(Suplidor.SuplidorId);
+
+            if (elimino)
+            {
+                Nuevo();
+                toast.ShowSuccess("Eliminado correctamente");
+            }
+            else
+                toast.ShowError("No fue posible eliminar");
         }
-        else
-            toast.ShowError("No fue posible eliminar");
     }
 }

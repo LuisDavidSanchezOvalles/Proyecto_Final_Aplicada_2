@@ -8,6 +8,7 @@
 
 @inject IToastService toast
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JS
 
 <AuthorizeView>
     <NotAuthorized>
@@ -54,34 +55,34 @@
 
                     @*Suplidores Existentes*@
                     <div class="form-group">
-                            <div class="form-row">
-                                <div class="col">
-                                    <label>Suplidor</label>
-                                    <select class="form-control" @bind="Entrada.SuplidorId">
-                                        <option value="" disabled selected>Suplidores Disponibles</option>
-                                        @foreach (var item in ListaSuplidores)
-                                        {
-                                            <option value="@item.SuplidorId">Id: @item.SuplidorId a Nombre de: @item.Nombres</option>
-                                        }
-                                    </select>
-                                </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <label>Suplidor</label>
+                                <select class="form-control" @bind="Entrada.SuplidorId">
+                                    <option value="" disabled selected>Suplidores Disponibles</option>
+                                    @foreach (var item in ListaSuplidores)
+                                    {
+                                        <option value="@item.SuplidorId">Id: @item.SuplidorId a Nombre de: @item.Nombres</option>
+                                    }
+                                </select>
                             </div>
+                        </div>
                     </div>
 
                     @*Cacaos Existentes*@
                     <div class="form-group">
-                            <div class="form-row">
-                                <div class="col">
-                                    <label>Cacao</label>
-                                    <select class="form-control" @bind="Entrada.CacaoId">
-                                        <option value="" disabled selected>Tipos de Cacaos Disponibles</option>
-                                        @foreach (var item in ListaCacaos)
-                                        {
-                                            <option value="@item.CacaoId">Id:@item.CacaoId Tipo: @item.Tipo</option>
-                                        }
-                                    </select>
-                                </div>
+                        <div class="form-row">
+                            <div class="col">
+                                <label>Cacao</label>
+                                <select class="form-control" @bind="Entrada.CacaoId">
+                                    <option value="" disabled selected>Tipos de Cacaos Disponibles</option>
+                                    @foreach (var item in ListaCacaos)
+                                    {
+                                        <option value="@item.CacaoId">Id:@item.CacaoId Tipo: @item.Tipo</option>
+                                    }
+                                </select>
                             </div>
+                        </div>
                     </div>
 
                     @*Cantidad*@
@@ -255,7 +256,7 @@
     {
         bool guardo = false;
 
-        if(Entrada.SuplidorId <= 0)
+        if (Entrada.SuplidorId <= 0)
         {
             toast.ShowInfo("Debe de seleccionar un suplidor");
             return;
@@ -284,18 +285,21 @@
             toast.ShowError("No fue posible guardar");
     }
 
-    public void Eliminar()
+    public async Task Eliminar()
     {
-        bool elimino;
-
-        elimino = EntradasBLL.Eliminar(Entrada.EntradaId);
-
-        if (elimino)
+        if (await JS.ConfirmDelete("Confirmar", "¿Esta seguro que desea eliminar esta Entrada?", "question"))
         {
-            Nuevo();
-            toast.ShowSuccess("Eliminado correctamente");
+            bool elimino;
+
+            elimino = EntradasBLL.Eliminar(Entrada.EntradaId);
+
+            if (elimino)
+            {
+                Nuevo();
+                toast.ShowSuccess("Eliminado correctamente");
+            }
+            else
+                toast.ShowError("No fue posible eliminar");
         }
-        else
-            toast.ShowError("No fue posible eliminar");
     }
 }

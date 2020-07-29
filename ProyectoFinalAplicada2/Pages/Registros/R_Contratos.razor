@@ -8,6 +8,7 @@
 
 @inject IToastService toast
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JS
 
 <AuthorizeView>
     <NotAuthorized>
@@ -272,7 +273,7 @@
     private void BuscarPrecioEInventario()
     {
         Cacaos cacao = CacaosBLL.Buscar(Contrato.CacaoId);
-        if(cacao != null)
+        if (cacao != null)
         {
             Inventario = cacao.Cantidad;
             Contrato.Precio = cacao.Precio;
@@ -303,7 +304,7 @@
         Contrato.UsuarioId = Convert.ToInt32(usuarioIdCreacion);
         Contrato.FechaModificacion = DateTime.Now;
 
-        if(Contrato.ContratoId == 0)
+        if (Contrato.ContratoId == 0)
             Contrato.CantidadPendiente = Contrato.Cantidad;
 
         guardo = ContratosBLL.Guardar(Contrato);
@@ -317,29 +318,32 @@
             toast.ShowError("No fue posible guardar");
     }
 
-    public void Eliminar()
+    public async Task Eliminar()
     {
-        bool elimino;
-
-        List<Ventas> ventas = VentasBLL.GetList(p => true);
-
-        foreach (var item in ventas)
+        if (await JS.ConfirmDelete("Confirmar", "¿Esta seguro que desea eliminar este Contrato?", "question"))
         {
-            if (item.VentaDetalle[0].ContratoId == Contrato.ContratoId)
+            bool elimino;
+
+            List<Ventas> ventas = VentasBLL.GetList(p => true);
+
+            foreach (var item in ventas)
             {
-                toast.ShowInfo("No se puede eliminar este contrato ya que tiene una venta");
-                return;
+                if (item.VentaDetalle[0].ContratoId == Contrato.ContratoId)
+                {
+                    toast.ShowInfo("No se puede eliminar este contrato ya que tiene una venta");
+                    return;
+                }
             }
-        }
 
-        elimino = ContratosBLL.Eliminar(Contrato.ContratoId);
+            elimino = ContratosBLL.Eliminar(Contrato.ContratoId);
 
-        if (elimino)
-        {
-            Nuevo();
-            toast.ShowSuccess("Eliminado correctamente");
+            if (elimino)
+            {
+                Nuevo();
+                toast.ShowSuccess("Eliminado correctamente");
+            }
+            else
+                toast.ShowError("No fue posible eliminar");
         }
-        else
-            toast.ShowError("No fue posible eliminar");
     }
 }
