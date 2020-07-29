@@ -18,7 +18,6 @@
 
 @if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated)
 {
-
     <EditForm Model="Venta" OnValidSubmit="Guardar">
         <DataAnnotationsValidator />
         <div class="card">

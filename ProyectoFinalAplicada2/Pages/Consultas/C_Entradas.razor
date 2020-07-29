@@ -4,81 +4,92 @@
 @using Models;
 
 @inject IToastService toast
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<div class="card">
-    <div class="card-header">
-        <h1>Consulta de Entradas</h1>
-    </div>
+<AuthorizeView>
+    <NotAuthorized>
+        <p class="h4 text-center">Usted no esta autorizado para acceder a esta pagina</p>
 
-    <div class="card-body">
-        <form>
-            <label>Filtro</label>
-            <div class="col">
-                <select class="form-control" @bind="Filtro">
-                    <option value="0">Todos</option>
-                    <option value="1">EntradaId</option>
-                    <option value="2">SuplidorId</option>
-                    <option value="3">CacaoId</option>
-                    <option value="4">UsuarioId</option>
-                </select>
-            </div>
+    </NotAuthorized>
+</AuthorizeView>
 
-            <div class="col">
-                <div class="form-group">
-                    <label>Criterio</label>
-                    <div class="input-group">
-                        <input type="text" @bind="Criterio" class="form-control">
-                        <div class="input-group-append">
-                            <button type="button" class="btn btn-primary input-group-text" @onclick="Consultar"><i class="oi oi-list-rich" /> Consultar</button>
+@if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated)
+{
+    <div class="card">
+        <div class="card-header">
+            <h1>Consulta de Entradas</h1>
+        </div>
+
+        <div class="card-body">
+            <form>
+                <label>Filtro</label>
+                <div class="col">
+                    <select class="form-control" @bind="Filtro">
+                        <option value="0">Todos</option>
+                        <option value="1">EntradaId</option>
+                        <option value="2">SuplidorId</option>
+                        <option value="3">CacaoId</option>
+                        <option value="4">UsuarioId</option>
+                    </select>
+                </div>
+
+                <div class="col">
+                    <div class="form-group">
+                        <label>Criterio</label>
+                        <div class="input-group">
+                            <input type="text" @bind="Criterio" class="form-control">
+                            <div class="input-group-append">
+                                <button type="button" class="btn btn-primary input-group-text" @onclick="Consultar"><i class="oi oi-list-rich" /> Consultar</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            @*La Tabla*@
-            <div class="table-responsive text-nowrap" style="position: relative; height:200px; overflow: auto; display: block;">
-                <table class="table table-striped">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>EntradaId</th>
-                            <th>SuplidorId</th>
-                            <th>Nombres</th>
-                            <th>CacaoId</th>
-                            <th>Tipo</th>
-                            <th>Cantidad</th>
-                            <th>Costo</th>
-                            <th>Total</th>
-                            <th>UsuarioId</th>
-                        </tr>
-                    </thead>
-                    @*Asignacion de Datos*@
-                    <tbody class="bg-white">
-                        @foreach (var item in ListaEntradas)
-                        {
+                @*La Tabla*@
+                <div class="table-responsive text-nowrap" style="position: relative; height:200px; overflow: auto; display: block;">
+                    <table class="table table-striped">
+                        <thead class="thead-light">
                             <tr>
-                                <td>@item.EntradaId</td>
-                                <td>@item.SuplidorId</td>
-                                <td>@ObtenerNombre(item.SuplidorId)</td>
-                                <td>@item.CacaoId</td>
-                                <td>@ObtenerTipo(item.CacaoId)</td>
-                                <td>@item.Cantidad</td>
-                                <td>@item.Costo</td>
-                                <td>@item.Total</td>
-                                <td>@item.UsuarioId</td>
+                                <th>EntradaId</th>
+                                <th>SuplidorId</th>
+                                <th>Nombres</th>
+                                <th>CacaoId</th>
+                                <th>Tipo</th>
+                                <th>Cantidad</th>
+                                <th>Costo</th>
+                                <th>Total</th>
+                                <th>UsuarioId</th>
                             </tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </form>
-    </div>
+                        </thead>
+                        @*Asignacion de Datos*@
+                        <tbody class="bg-white">
+                            @foreach (var item in ListaEntradas)
+                            {
+                                <tr>
+                                    <td>@item.EntradaId</td>
+                                    <td>@item.SuplidorId</td>
+                                    <td>@ObtenerNombre(item.SuplidorId)</td>
+                                    <td>@item.CacaoId</td>
+                                    <td>@ObtenerTipo(item.CacaoId)</td>
+                                    <td>@item.Cantidad</td>
+                                    <td>@item.Costo</td>
+                                    <td>@item.Total</td>
+                                    <td>@item.UsuarioId</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </form>
+        </div>
 
-    <div class="card-footer">
-        <div class="form-group text-center">
-            <a class="btn btn-lg btn-primary oi oi-file" href="/ReporteEntradas"> Generar Reporte</a>
+        <div class="card-footer">
+            <div class="form-group text-center">
+                <a class="btn btn-lg btn-primary oi oi-file" href="/ReporteEntradas"> Generar Reporte</a>
+            </div>
         </div>
     </div>
-</div>
+}
 
 @code {
     public List<Entradas> ListaEntradas { get; set; }
