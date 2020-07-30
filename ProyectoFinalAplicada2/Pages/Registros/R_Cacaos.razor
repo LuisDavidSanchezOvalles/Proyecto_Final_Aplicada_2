@@ -202,12 +202,15 @@
 
     public void Guardar()
     {
-        bool guardo;
+        bool guardo = false;
 
         Cacao.UsuarioId = Convert.ToInt32(usuarioIdCreacion);
         Cacao.FechaModificacion = DateTime.Now;
 
-        guardo = CacaosBLL.Guardar(Cacao);
+        if (Cacao.Precio > Cacao.Costo)
+            guardo = CacaosBLL.Guardar(Cacao);
+        else
+            toast.ShowWarning("Precio debe ser Mayor que Costo");
 
         if (guardo)
         {
