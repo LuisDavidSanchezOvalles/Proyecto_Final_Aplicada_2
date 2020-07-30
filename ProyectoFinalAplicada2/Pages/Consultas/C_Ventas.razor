@@ -163,8 +163,6 @@
         {
             case "0": //Todo
                 ListaVentas = VentasBLL.GetList(v => true);
-                TotalPaginas = (int)Math.Ceiling(ListaVentas.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "1": //VentaId
                 if (Criterio.Trim().Length > 0)
@@ -183,8 +181,6 @@
                 {
                     ListaVentas = VentasBLL.GetList(v => true).OrderBy(v => v.VentaId).ToList();
                 }
-                TotalPaginas = (int)Math.Ceiling(ListaVentas.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "2": //ClientesId
                 if (Criterio.Trim().Length > 0)
@@ -203,8 +199,6 @@
                 {
                     ListaVentas = VentasBLL.GetList(v => true).OrderBy(v => v.ClienteId).ToList();
                 }
-                TotalPaginas = (int)Math.Ceiling(ListaVentas.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "3": //UsuarioId
                 if (Criterio.Trim().Length > 0)
@@ -223,13 +217,11 @@
                 {
                     ListaVentas = VentasBLL.GetList(v => true).OrderBy(v => v.UsuarioId).ToList();
                 }
-                TotalPaginas = (int)Math.Ceiling(ListaVentas.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
-                break;
-            default:
-                ListaVentas = VentasBLL.GetList(c => true);
                 break;
         }
+        TotalPaginas = (int)Math.Ceiling(ListaVentas.Count() / (decimal)pagina.mostrarCantidad);
+        ActualizarLista(pag);
+
         Filtro = "0";
     }
 

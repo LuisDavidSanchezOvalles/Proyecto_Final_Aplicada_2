@@ -177,8 +177,6 @@
         {
             case "0": //Todo
                 ListaContratos = ContratosBLL.GetList(c => true);
-                TotalPaginas = (int)Math.Ceiling(ListaContratos.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "1": //ContratoId
                 if (Criterio.Trim().Length > 0)
@@ -197,8 +195,6 @@
                 {
                     ListaContratos = ContratosBLL.GetList(e => true).OrderBy(c => c.ContratoId).ToList();
                 }
-                TotalPaginas = (int)Math.Ceiling(ListaContratos.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "2": //ClientesId
                 if (Criterio.Trim().Length > 0)
@@ -217,8 +213,6 @@
                 {
                     ListaContratos = ContratosBLL.GetList(c => true).OrderBy(c => c.ClienteId).ToList();
                 }
-                TotalPaginas = (int)Math.Ceiling(ListaContratos.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "3": //CacaoId
                 if (Criterio.Trim().Length > 0)
@@ -237,8 +231,6 @@
                 {
                     ListaContratos = ContratosBLL.GetList(e => true).OrderBy(c => c.CacaoId).ToList();
                 }
-                TotalPaginas = (int)Math.Ceiling(ListaContratos.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "4": //UsuarioId
                 if (Criterio.Trim().Length > 0)
@@ -257,13 +249,11 @@
                 {
                     ListaContratos = ContratosBLL.GetList(e => true).OrderBy(c => c.UsuarioId).ToList();
                 }
-                TotalPaginas = (int)Math.Ceiling(ListaContratos.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
-                break;
-            default:
-                ListaContratos = ContratosBLL.GetList(c => true);
                 break;
         }
+        TotalPaginas = (int)Math.Ceiling(ListaContratos.Count() / (decimal)pagina.mostrarCantidad);
+        ActualizarLista(pag);
+
         Filtro = "0";
     }
 

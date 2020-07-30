@@ -177,8 +177,6 @@
         {
             case "0": //Todo
                 ListaEntradas = EntradasBLL.GetList(e => true);
-                TotalPaginas = (int)Math.Ceiling(ListaEntradas.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "1": //EntradaId
                 if (Criterio.Trim().Length > 0)
@@ -197,8 +195,6 @@
                 {
                     ListaEntradas = EntradasBLL.GetList(e => true).OrderBy(e => e.EntradaId).ToList();
                 }
-                TotalPaginas = (int)Math.Ceiling(ListaEntradas.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "2": //SuplidorId
                 if (Criterio.Trim().Length > 0)
@@ -217,8 +213,6 @@
                 {
                     ListaEntradas = EntradasBLL.GetList(e => true).OrderBy(e => e.SuplidorId).ToList();
                 }
-                TotalPaginas = (int)Math.Ceiling(ListaEntradas.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "3": //CacaoId
                 if (Criterio.Trim().Length > 0)
@@ -237,8 +231,6 @@
                 {
                     ListaEntradas = EntradasBLL.GetList(e => true).OrderBy(e => e.CacaoId).ToList();
                 }
-                TotalPaginas = (int)Math.Ceiling(ListaEntradas.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "4": //UsuarioId
                 if (Criterio.Trim().Length > 0)
@@ -257,13 +249,11 @@
                 {
                     ListaEntradas = EntradasBLL.GetList(e => true).OrderBy(e => e.UsuarioId).ToList();
                 }
-                TotalPaginas = (int)Math.Ceiling(ListaEntradas.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
-                break;
-            default:
-                ListaEntradas = EntradasBLL.GetList(e => true);
                 break;
         }
+        TotalPaginas = (int)Math.Ceiling(ListaEntradas.Count() / (decimal)pagina.mostrarCantidad);
+        ActualizarLista(pag);
+
         Filtro = "0";
     }
 

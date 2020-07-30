@@ -57,7 +57,6 @@
                                 <th>UsuarioId</th>
                                 <th>Nombres</th>
                                 <th>Nombre Usuario</th>
-                                <th>Clave</th>
                                 <th>Email</th>
                                 <th>UsuarioId Creacion</th>
                             </tr>
@@ -69,7 +68,6 @@
                                     <td>@usuario.UsuarioId</td>
                                     <td>@usuario.Nombres</td>
                                     <td>@usuario.NombreUsuario</td>
-                                    <td>@usuario.Clave</td>
                                     <td>@usuario.Email</td>
                                     <td>@usuario.UsuarioIdCreacion</td>
                                 </tr>
@@ -189,19 +187,13 @@
                 else
                     ListaUsuarios = UsuariosBLL.GetList(u => true).OrderBy(u => u.NombreUsuario).ToList();
                 break;
-            case "4": //Clave
-                if (Criterio.Trim().Length > 0)
-                    ListaUsuarios = UsuariosBLL.GetList(u => u.Clave.Contains(Criterio));
-                else
-                    ListaUsuarios = UsuariosBLL.GetList(u => true).OrderBy(u => u.Clave).ToList();
-                break;
-            case "5": //Email
+            case "4": //Email
                 if (Criterio.Trim().Length > 0)
                     ListaUsuarios = UsuariosBLL.GetList(u => u.Email.Contains(Criterio));
                 else
                     ListaUsuarios = UsuariosBLL.GetList(u => true).OrderBy(u => u.Email).ToList();
                 break;
-            case "6": //UsuarioIdCreacion
+            case "5": //UsuarioIdCreacion
                 if (Criterio.Trim().Length > 0)
                 {
                     try

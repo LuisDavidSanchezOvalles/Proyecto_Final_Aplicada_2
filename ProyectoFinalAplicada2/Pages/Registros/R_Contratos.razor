@@ -81,7 +81,7 @@
                         <div class="form-row">
                             <div class="col">
                                 <label>Cacao</label>
-                                <select class="form-control" @bind="Contrato.CacaoId" @onclick="BuscarPrecioEInventario">
+                                <select class="form-control" @bind="Contrato.CacaoId" @onclick="BuscarPrecio">
                                     <option value="" disabled selected>Tipos de Cacaos Disponibles</option>
                                     @foreach (var item in ListaCacaos)
                                     {
@@ -90,12 +90,6 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
-
-                    @*Inventario*@
-                    <div class="form-group">
-                        <label>Inventario</label>
-                        <InputNumber @bind-Value="Inventario" class="form-control" readonly="true" />
                     </div>
 
                     @*Cantidad*@
@@ -180,8 +174,6 @@
     private List<Clientes> ListaClientes = new List<Clientes>();
     private List<Cacaos> ListaCacaos = new List<Cacaos>();
 
-    private decimal Inventario { get; set; }
-
     private bool Activacion { get; set; }
 
     private Contratos Contrato = new Contratos();
@@ -199,8 +191,6 @@
         ListaCacaos = CacaosBLL.GetList(c => true);
         ReiniciarUsuarioCreacion();
         Activacion = false;
-
-        Inventario = 0.0m;
     }
 
     private async void ReiniciarUsuarioCreacion()
@@ -256,8 +246,6 @@
         Clientes cliente = ClientesBLL.Buscar(Contrato.ClienteId);
         Cacaos cacao = CacaosBLL.Buscar(Contrato.CacaoId);
 
-        Inventario = cacao.Cantidad;
-
         ListaClientes.Add(cliente);
         ListaCacaos.Add(cacao);
     }
@@ -270,12 +258,11 @@
         usuarioIdCreacion = Contrato.UsuarioId.ToString();
     }
 
-    private void BuscarPrecioEInventario()
+    private void BuscarPrecio()
     {
         Cacaos cacao = CacaosBLL.Buscar(Contrato.CacaoId);
         if (cacao != null)
         {
-            Inventario = cacao.Cantidad;
             Contrato.Precio = cacao.Precio;
         }
     }
@@ -326,7 +313,7 @@
 
             List<Ventas> ventas = VentasBLL.GetList(p => true);
 
-            foreach (var item in ventas)  //hacer prueba si se eliminar un contrato sin ventas
+            foreach (var item in ventas)
             {
                 if (item.VentaDetalle[0].ContratoId == Contrato.ContratoId)
                 {

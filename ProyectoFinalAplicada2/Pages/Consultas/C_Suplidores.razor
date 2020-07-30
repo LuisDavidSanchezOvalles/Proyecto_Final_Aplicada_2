@@ -165,8 +165,6 @@
         {
             case "0": //Todo
                 ListaSuplidores = SuplidoresBLL.GetList(s => true);
-                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "1": //SuplidorId
                 if (Criterio.Trim().Length > 0)
@@ -185,8 +183,6 @@
                 {
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.SuplidorId).ToList();
                 }
-                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "2": //Nombres
                 if (Criterio.Trim().Length > 0)
@@ -203,44 +199,30 @@
                 else
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Cedula).ToList();
 
-                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "4": //Telefono
                 if (Criterio.Trim().Length > 0)
                     ListaSuplidores = SuplidoresBLL.GetList(s => s.Telefono.Contains(Criterio));
                 else
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Telefono).ToList();
-
-                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "5": //Celular
                 if (Criterio.Trim().Length > 0)
                     ListaSuplidores = SuplidoresBLL.GetList(s => s.Celular.Contains(Criterio));
                 else
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Celular).ToList();
-
-                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "6": //Direccion
                 if (Criterio.Trim().Length > 0)
                     ListaSuplidores = SuplidoresBLL.GetList(s => s.Direccion.Contains(Criterio));
                 else
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Direccion).ToList();
-
-                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "7": //Email
                 if (Criterio.Trim().Length > 0)
                     ListaSuplidores = SuplidoresBLL.GetList(s => s.Email.Contains(Criterio));
                 else
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Email).ToList();
-
-                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
                 break;
             case "8": //UsuarioId
                 if (Criterio.Trim().Length > 0)
@@ -259,14 +241,12 @@
                 {
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.UsuarioId).ToList();
                 }
-                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
-                ActualizarLista(pag);
-                break;
-            default:
-                ListaSuplidores = SuplidoresBLL.GetList(s => true);
                 break;
 
         }
+        TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
+        ActualizarLista(pag);
+
         Filtro = "0";
     }
 
