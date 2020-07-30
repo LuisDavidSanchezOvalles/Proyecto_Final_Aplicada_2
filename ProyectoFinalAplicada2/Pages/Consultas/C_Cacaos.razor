@@ -2,6 +2,8 @@
 
 @using BLL;
 @using Models;
+@using Reportes;
+@using Paginacion;
 
 @inject IToastService toast
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -26,7 +28,7 @@
                 <div class="col">
                     <label>Filtro</label>
                     <select class="form-control" @bind="Filtro">
-                        <option value="0">Todos</option>
+                        <option value="0" disabled selected>Seleccione un Filtro</option>
                         <option value="1">CacaoId</option>
                         <option value="2">Tipo</option>
                         <option value="3">Cantidad</option>
@@ -42,7 +44,7 @@
                         <div class="input-group">
                             <input type="text" @bind="Criterio" class="form-control">
                             <div class="input-group-append">
-                                <button type="button" class="btn btn-primary input-group-text" @onclick="Consultar"><i class="oi oi-list-rich" /> Consultar</button>
+                                <button type="button" class="btn btn-primary input-group-text" @onclick="@(u => Consultar(0))"><i class="oi oi-list-rich" /> Consultar</button>
                             </div>
                         </div>
                     </div>
@@ -61,14 +63,14 @@
                             </tr>
                         </thead>
                         <tbody class="bg-white">
-                            @foreach (var cacao in ListaCacaos)
+                            @foreach (var cacao in AuxListaCacaos)
                             {
                                 <tr>
                                     <td>@cacao.UsuarioId</td>
                                     <td>@cacao.Tipo</td>
-                                    <td>@cacao.Cantidad</td>
-                                    <td>@cacao.Costo</td>
-                                    <td>@cacao.Precio</td>
+                                    <td>@cacao.Cantidad.ToString("n2")</td>
+                                    <td>@cacao.Costo.ToString("n2")</td>
+                                    <td>@cacao.Precio.ToString("n2")</td>
                                     <td>@cacao.UsuarioId</td>
                                 </tr>
                             }
@@ -78,20 +80,64 @@
             </form>
         </div>
 
+        <div class="form-group text-center" display: inline-block>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <button class="page-link btn btn-primary"
+                                @onclick="@(e => NavegateTo("Anterior"))" tabindex="-1">
+                            Anterior
+                        </button>
+                    </li>
+
+                    @for (int i = 0; i < TotalPaginas; i++)
+                    {
+                        var NumeroPagina = i;
+                        <li class="page-item">
+                            <button class="@(pagina.pagina == NumeroPagina ? "page-link btn btn-dark" : "page-link btn btn-danger")"
+                                    @onclick="@(u => Consultar(NumeroPagina))">
+                                @(i + 1)
+                            </button>
+                        </li>
+                    }
+
+                    <li class="page-item">
+                        <button type="button" class="page-link btn btn-primary" @onclick="@(e => NavegateTo("Siguiente"))" tabindex="-1">Siguiente</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
         <div class="card-footer">
             <div class="form-group text-center">
-                <a class="btn btn-lg btn-primary oi oi-file" href="/ReporteCacaos"> Generar Reporte</a>
+                <button class="btn btn-lg btn-primary oi oi-file" @onclick="GenerarReporte"> Generar Reporte</button>
             </div>
+
+            <form>
+                @if (Data is { })
+                {
+                    <object data="@pdfContent" width="1000" height="500"></object>
+                }
+            </form>
         </div>
     </div>
 }
 
 @code {
     public List<Cacaos> ListaCacaos { get; set; }
+    public List<Cacaos> AuxListaCacaos { get; set; }
+
+    Paginas pagina = new Paginas();
 
     public string Filtro { get; set; }
 
     public string Criterio { get; set; }
+
+    private int Numeracion { get; set; }
+    private int TotalPaginas { get; set; }
+
+    byte[] Data;
+    string pdfContent = "";
 
     protected override void OnInitialized()
     {
@@ -101,11 +147,12 @@
     private void Nuevo()
     {
         ListaCacaos = new List<Cacaos>();
+        AuxListaCacaos = new List<Cacaos>();
         Filtro = "0";
         Criterio = string.Empty;
     }
 
-    public void Consultar()
+    public void Consultar(int pag)
     {
         switch (Filtro)
         {
@@ -209,5 +256,36 @@
                 }
                 break;
         }
+
+        TotalPaginas = (int)Math.Ceiling(ListaCacaos.Count() / (decimal)pagina.mostrarCantidad);
+        ActualizarLista(pag);
+
+        Filtro = "0";
+    }
+
+    private void ActualizarLista(int NumeroPagina)
+    {
+        AuxListaCacaos = ListaCacaos.Skip(NumeroPagina * pagina.mostrarCantidad).Take(pagina.mostrarCantidad).ToList();
+        pagina.pagina = NumeroPagina;
+    }
+
+    private void NavegateTo(string direccion)
+    {
+        if (direccion == "Anterior" && pagina.pagina != 0)
+            pagina.pagina -= 1;
+        if (direccion == "Siguiente" && pagina.pagina != TotalPaginas)
+            pagina.pagina += 1;
+
+        ActualizarLista(pagina.pagina);
+    }
+
+    private void GenerarReporte()
+    {
+        CacaosReport cacaos = new CacaosReport();
+
+        Data = cacaos.Reporte(AuxListaCacaos);
+
+        pdfContent = "data:application/pdf;base64,";
+        pdfContent += System.Convert.ToBase64String(Data);
     }
 }

@@ -21,10 +21,12 @@ namespace ProyectoFinalAplicada2.Reportes
 
         MemoryStream memoryStream = new MemoryStream();
 
-        List<Pagos> listaPagos = PagosBLL.GetList(p => true);
+        List<Pagos> listaPagos = new List<Pagos>();
 
-        public byte[] Reporte()
+        public byte[] Reporte(List<Pagos> lista)
         {
+            listaPagos = lista;
+
             document = new Document(PageSize.Letter, 25f, 25f, 20f, 20f);
             pdfTable = new PdfPTable(columnas);
 
@@ -187,7 +189,7 @@ namespace ProyectoFinalAplicada2.Reportes
                 pdfCell.BackgroundColor = BaseColor.White;
                 pdfTable.AddCell(pdfCell);
 
-                pdfCell = new PdfPCell(new Phrase(item.Total.ToString(), _fontStyle));
+                pdfCell = new PdfPCell(new Phrase(item.Total.ToString("n2"), _fontStyle));
                 pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                 pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 pdfCell.BackgroundColor = BaseColor.White;

@@ -21,10 +21,12 @@ namespace ProyectoFinalAplicada2.Reportes
 
         MemoryStream memoryStream = new MemoryStream();
 
-        List<Usuarios> listaUsuarios = UsuariosBLL.GetList(u => true);
+        List<Usuarios> listaUsuarios = new List<Usuarios>();
 
-        public byte[] Reporte()
+        public byte[] Reporte(List<Usuarios> lista)
         {
+            listaUsuarios = lista;
+
             document = new Document(PageSize.Letter, 25f, 25f, 20f, 20f);
             pdfTable = new PdfPTable(columnas);
 
