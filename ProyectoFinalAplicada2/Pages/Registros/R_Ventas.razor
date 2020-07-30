@@ -8,6 +8,7 @@
 
 @inject IToastService toast
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JS
 
 <AuthorizeView>
     <NotAuthorized>
@@ -121,7 +122,7 @@
                         <div class="form-group col-4">
                             <label>Cantidad</label>
                             <div class="input-group">
-                                <InputNumber @bind-Value="Cantidad" class="form-control"/>
+                                <InputNumber @bind-Value="Cantidad" class="form-control" />
                                 <div class="input-group-append">
                                     <button type="button" class="btn btn-primary input-group-text" @onclick="AgregarDetalle"><i class="oi oi-plus" /> Agregar</button>
                                 </div>
@@ -300,7 +301,7 @@
     {
         Contratos contrato = ContratosBLL.Buscar(SeleccionContrato);
 
-        if(contrato != null)
+        if (contrato != null)
         {
             CantidadPendiente = contrato.CantidadPendiente;
 
@@ -311,10 +312,10 @@
 
     private void ObtenerContratos()
     {
-        if(Venta.VentaId == 0)
+        if (Venta.VentaId == 0)
         {
             ListaContratos = ContratosBLL.GetList(c => c.ClienteId == Venta.ClienteId);
-            if(ListaContratos != null)
+            if (ListaContratos != null)
             {
                 SeleccionContrato = ListaContratos[0].ContratoId;
                 ObtenerCantidadPendiente();
@@ -330,7 +331,7 @@
             return;
         }
 
-        if(Cantidad <= 0)
+        if (Cantidad <= 0)
         {
             toast.ShowInfo("Ingrese alguna cantidad");
             return;
@@ -369,11 +370,11 @@
             Cantidad += item.Cantidad;
         }
 
-        if(Venta.VentaId > 0)
+        if (Venta.VentaId > 0)
         {
             List<Pagos> pagos = PagosBLL.GetList(p => true);
 
-            if(pagos != null)
+            if (pagos != null)
             {
                 foreach (var item in pagos)
                 {
@@ -437,34 +438,37 @@
             toast.ShowError("No fue posible guardar");
     }
 
-    public void Eliminar()
+    public async Task Eliminar()
     {
-        bool elimino;
-
-        List<Pagos> pagos = PagosBLL.GetList(p => true);
-
-        if(pagos != null)
+        if (await JS.ConfirmDelete("Confirmar", "¿Esta seguro que desea eliminar esta Venta?", "question"))
         {
-            foreach (var item in pagos)
+            bool elimino;
+
+            List<Pagos> pagos = PagosBLL.GetList(p => true);
+
+            if (pagos != null)
             {
-                if (item.PagoDetalle[0].VentaId == Venta.VentaId)
+                foreach (var item in pagos)
                 {
-                    toast.ShowInfo("No se puede eliminar esta venta ya que tiene un pago");
-                    return;
+                    if (item.PagoDetalle[0].VentaId == Venta.VentaId)
+                    {
+                        toast.ShowInfo("No se puede eliminar esta venta ya que tiene un pago");
+                        return;
+                    }
                 }
             }
-        }
 
-        CacaosBLL.DevolverCacao(Venta.VentaId);
-        ContratosBLL.RestablecerCantidadPendiente(Venta.VentaId);
-        elimino = VentasBLL.Eliminar(Venta.VentaId);
+            CacaosBLL.DevolverCacao(Venta.VentaId);
+            ContratosBLL.RestablecerCantidadPendiente(Venta.VentaId);
+            elimino = VentasBLL.Eliminar(Venta.VentaId);
 
-        if (elimino)
-        {
-            Nuevo();
-            toast.ShowSuccess("Eliminado correctamente");
+            if (elimino)
+            {
+                Nuevo();
+                toast.ShowSuccess("Eliminado correctamente");
+            }
+            else
+                toast.ShowError("No fue posible eliminar");
         }
-        else
-            toast.ShowError("No fue posible eliminar");
     }
 }
