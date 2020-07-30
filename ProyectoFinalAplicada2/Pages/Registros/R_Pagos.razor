@@ -56,7 +56,7 @@
                     @*Clientes*@
                     <div class="form-group">
                         <label>Cliente</label>
-                        <select @bind="Pago.ClienteId" class="form-control" @onfocusout="ObtenerVentas">
+                        <select @bind="Pago.ClienteId" class="form-control" @onclick="ObtenerVentas">
                             <option value="" disabled selected>Clientes Disponibles</option>
                             @foreach (var item in Clientes)
                             {
@@ -68,7 +68,7 @@
                     @*VentaId*@
                     <div class="form-group">
                         <label>VentaId</label>
-                        <select @bind="VentaIdSeleccionado" class="form-control" @onfocusout="ObtenerBalance">
+                        <select @bind="VentaIdSeleccionado" class="form-control" @onclick="ObtenerBalance">
                             <option value="" disabled selected>Ventas Disponibles</option>
                             @foreach (var item in Ventas)
                             {
@@ -170,11 +170,11 @@
 }
 
 @code {
-        [Parameter]
-        public int PagoId { get; set; }
+    [Parameter]
+    public int PagoId { get; set; }
 
-        [CascadingParameter]
-        private Task<AuthenticationState> authState { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
 
     private Pagos Pago { get; set; }
 
@@ -292,7 +292,7 @@
         {
             Ventas = VentasBLL.GetList(v => v.ClienteId == Pago.ClienteId);
 
-            if (Ventas == null)
+            if (Ventas.Count == 0)
                 return;
 
             VentaIdSeleccionado = Ventas[0].VentaId;

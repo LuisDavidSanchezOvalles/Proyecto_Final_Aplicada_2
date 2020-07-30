@@ -122,11 +122,11 @@
 }
 
 @code {
-        [Parameter]
-        public int CacaoId { get; set; }
+    [Parameter]
+    public int CacaoId { get; set; }
 
-        [CascadingParameter]
-        private Task<AuthenticationState> authState { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
 
     private Cacaos Cacao = new Cacaos();
 

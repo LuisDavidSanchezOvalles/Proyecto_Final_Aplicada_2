@@ -2,6 +2,8 @@
 
 @using BLL;
 @using Models;
+@using Reportes;
+@using Paginacion;
 
 @inject IToastService toast
 @inject AuthenticationStateProvider AuthenticationStateProvider
@@ -25,7 +27,7 @@
                 <div class="col">
                     <label>Filtro</label>
                     <select class="form-control" @bind="Filtro">
-                        <option value="0">Todos</option>
+                        <option value="0" disabled selected>Seleccion un Filtro</option>
                         <option value="1">Id</option>
                         <option value="2">Nombres</option>
                         <option value="3">Cédula</option>
@@ -43,7 +45,7 @@
                         <div class="input-group">
                             <input type="text" @bind="Criterio" class="form-control">
                             <div class="input-group-append">
-                                <button type="button" class="btn btn-primary input-group-text" @onclick="Consultar"><i class="oi oi-list-rich" /> Consultar</button>
+                                <button type="button" class="btn btn-primary input-group-text" @onclick="@(u => Consultar(0))"><i class="oi oi-list-rich" /> Consultar</button>
                             </div>
                         </div>
                     </div>
@@ -66,7 +68,7 @@
                         </thead>
                         @*Asignacion de Datos*@
                         <tbody class="bg-white">
-                            @foreach (var item in ListaSuplidores)
+                            @foreach (var item in AuxListaSuplidores)
                             {
                                 <tr>
                                     <td>@item.SuplidorId</td>
@@ -85,20 +87,64 @@
             </form>
         </div>
 
+        <div class="form-group text-center" display: inline-block>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item">
+                        <button class="page-link btn btn-primary"
+                                @onclick="@(e => NavegateTo("Anterior"))" tabindex="-1">
+                            Anterior
+                        </button>
+                    </li>
+
+                    @for (int i = 0; i < TotalPaginas; i++)
+                    {
+                        var NumeroPagina = i;
+                        <li class="page-item">
+                            <button class="@(pagina.pagina == NumeroPagina ? "page-link btn btn-dark" : "page-link btn btn-danger")"
+                                    @onclick="@(u => Consultar(NumeroPagina))">
+                                @(i + 1)
+                            </button>
+                        </li>
+                    }
+
+                    <li class="page-item">
+                        <button type="button" class="page-link btn btn-primary" @onclick="@(e => NavegateTo("Siguiente"))" tabindex="-1">Siguiente</button>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
         <div class="card-footer">
             <div class="form-group text-center">
-                <a class="btn btn-lg btn-primary oi oi-file" href="/ReporteSuplidores"> Generar Reporte</a>
+                <button class="btn btn-lg btn-primary oi oi-file" @onclick="GenerarReporte"> Generar Reporte</button>
             </div>
+
+            <form>
+                @if (Data is { })
+                {
+                    <object data="@pdfContent" width="1000" height="500"></object>
+                }
+            </form>
         </div>
     </div>
 }
 
 @code {
     public List<Suplidores> ListaSuplidores { get; set; }
+    public List<Suplidores> AuxListaSuplidores { get; set; }
+
+    Paginas pagina = new Paginas();
 
     public string Filtro { get; set; }
 
     public string Criterio { get; set; }
+
+    public int Numeracion { get; set; }
+    public int TotalPaginas { get; set; }
+
+    byte[] Data;
+    string pdfContent = "";
 
     protected override void OnInitialized()
     {
@@ -108,16 +154,19 @@
     private void Nuevo()
     {
         ListaSuplidores = new List<Suplidores>();
+        AuxListaSuplidores = new List<Suplidores>();
         Filtro = "0";
         Criterio = string.Empty;
     }
 
-    public void Consultar()
+    public void Consultar(int pag)
     {
         switch (Filtro)
         {
             case "0": //Todo
                 ListaSuplidores = SuplidoresBLL.GetList(s => true);
+                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
+                ActualizarLista(pag);
                 break;
             case "1": //SuplidorId
                 if (Criterio.Trim().Length > 0)
@@ -136,42 +185,62 @@
                 {
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.SuplidorId).ToList();
                 }
+                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
+                ActualizarLista(pag);
                 break;
             case "2": //Nombres
                 if (Criterio.Trim().Length > 0)
                     ListaSuplidores = SuplidoresBLL.GetList(s => s.Nombres.Contains(Criterio));
                 else
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Nombres).ToList();
+
+                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
+                ActualizarLista(pag);
                 break;
             case "3": //Cedula
                 if (Criterio.Trim().Length > 0)
                     ListaSuplidores = SuplidoresBLL.GetList(s => s.Cedula.Contains(Criterio));
                 else
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Cedula).ToList();
+
+                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
+                ActualizarLista(pag);
                 break;
             case "4": //Telefono
                 if (Criterio.Trim().Length > 0)
                     ListaSuplidores = SuplidoresBLL.GetList(s => s.Telefono.Contains(Criterio));
                 else
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Telefono).ToList();
+
+                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
+                ActualizarLista(pag);
                 break;
             case "5": //Celular
                 if (Criterio.Trim().Length > 0)
                     ListaSuplidores = SuplidoresBLL.GetList(s => s.Celular.Contains(Criterio));
                 else
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Celular).ToList();
+
+                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
+                ActualizarLista(pag);
                 break;
             case "6": //Direccion
                 if (Criterio.Trim().Length > 0)
                     ListaSuplidores = SuplidoresBLL.GetList(s => s.Direccion.Contains(Criterio));
                 else
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Direccion).ToList();
+
+                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
+                ActualizarLista(pag);
                 break;
             case "7": //Email
                 if (Criterio.Trim().Length > 0)
                     ListaSuplidores = SuplidoresBLL.GetList(s => s.Email.Contains(Criterio));
                 else
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.Email).ToList();
+
+                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
+                ActualizarLista(pag);
                 break;
             case "8": //UsuarioId
                 if (Criterio.Trim().Length > 0)
@@ -190,10 +259,40 @@
                 {
                     ListaSuplidores = SuplidoresBLL.GetList(s => true).OrderBy(s => s.UsuarioId).ToList();
                 }
+                TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
+                ActualizarLista(pag);
                 break;
             default:
                 ListaSuplidores = SuplidoresBLL.GetList(s => true);
                 break;
+
         }
+        Filtro = "0";
+    }
+
+    private void ActualizarLista(int NumeroPagina)
+    {
+        AuxListaSuplidores = ListaSuplidores.Skip(NumeroPagina * pagina.mostrarCantidad).Take(pagina.mostrarCantidad).ToList();
+        pagina.pagina = NumeroPagina;
+    }
+
+    private void NavegateTo(string direccion)
+    {
+        if (direccion == "Anterior" && pagina.pagina != 0)
+            pagina.pagina -= 1;
+        if (direccion == "Siguiente" && pagina.pagina != TotalPaginas)
+            pagina.pagina += 1;
+
+        ActualizarLista(pagina.pagina);
+    }
+
+    private void GenerarReporte()
+    {
+        SuplidoresReport suplidores = new SuplidoresReport();
+
+        Data = suplidores.Reporte(AuxListaSuplidores);
+
+        pdfContent = "data:application/pdf;base64,";
+        pdfContent += System.Convert.ToBase64String(Data);
     }
 }

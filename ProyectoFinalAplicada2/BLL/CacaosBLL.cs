@@ -167,16 +167,6 @@ namespace ProyectoFinalAplicada2.BLL
                 return false;
         }
 
-        //public static void ActualizarCacao(int id, decimal cantidad, decimal costo)
-        //{
-        //    Cacaos cacao = Buscar(id);
-
-        //    cacao.Cantidad += cantidad;
-        //    cacao.Costo = costo;
-
-        //    Modificar(cacao);
-        //}
-
         public static bool ActualizarCacao(Entradas entrada)
         {
             Entradas AnteriorEntrada = EntradasBLL.Buscar(entrada.EntradaId);
@@ -201,35 +191,6 @@ namespace ProyectoFinalAplicada2.BLL
             Modificar(cacao);
             return true;
         }
-
-        //public static bool ContratarCacao(Contratos contrato)
-        //{
-        //    Contratos AnteriorContrato = ContratosBLL.Buscar(contrato.ContratoId);
-        //    Cacaos cacao;
-
-        //    if(AnteriorContrato == null)
-        //    {
-        //        cacao = Buscar(contrato.CacaoId);
-
-        //        cacao.Cantidad -= contrato.Cantidad;
-        //    }
-        //    else
-        //    {
-        //        decimal diferenciaCantidad = AnteriorContrato.Cantidad - contrato.Cantidad;
-
-        //        cacao = Buscar(contrato.CacaoId);
-
-        //        cacao.Cantidad += diferenciaCantidad;
-        //    }
-
-        //    if (cacao.Cantidad >= 0)
-        //    {
-        //        Modificar(cacao);
-        //        return true;
-        //    }
-        //    else
-        //        return false;
-        //}
 
         public static bool VenderCacao(Ventas venta)
         {
@@ -268,18 +229,6 @@ namespace ProyectoFinalAplicada2.BLL
             else
                 return false;
         }
-
-        //public static void DevolverCacao(decimal cantidad, int cacaoId)
-        //{
-        //    Cacaos cacao = Buscar(cacaoId);
-
-        //    if (cacao == null)
-        //        return;
-
-        //    cacao.Cantidad += cantidad;
-
-        //    Modificar(cacao);
-        //}
 
         public static void DevolverCacao(int id)
         {

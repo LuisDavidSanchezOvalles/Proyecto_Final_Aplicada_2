@@ -243,7 +243,7 @@
 
             List<Contratos> contratos = ContratosBLL.GetList(p => true);
 
-            foreach (var item in contratos)
+            foreach (var item in contratos) //hacer prueba si se eliminar un cliente sin contratos
             {
                 if (item.ClienteId == Cliente.ClienteId)
                 {

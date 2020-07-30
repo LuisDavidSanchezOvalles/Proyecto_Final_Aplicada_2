@@ -81,7 +81,7 @@
                         <div class="form-row">
                             <div class="col">
                                 <label>Cacao</label>
-                                <select class="form-control" @bind="Contrato.CacaoId" @onfocusout="BuscarPrecioEInventario">
+                                <select class="form-control" @bind="Contrato.CacaoId" @onclick="BuscarPrecioEInventario">
                                     <option value="" disabled selected>Tipos de Cacaos Disponibles</option>
                                     @foreach (var item in ListaCacaos)
                                     {
@@ -326,7 +326,7 @@
 
             List<Ventas> ventas = VentasBLL.GetList(p => true);
 
-            foreach (var item in ventas)
+            foreach (var item in ventas)  //hacer prueba si se eliminar un contrato sin ventas
             {
                 if (item.VentaDetalle[0].ContratoId == Contrato.ContratoId)
                 {

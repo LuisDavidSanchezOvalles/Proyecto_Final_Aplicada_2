@@ -15,7 +15,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http;
 
-
 namespace ProyectoFinalAplicada2
 {
     public class Startup

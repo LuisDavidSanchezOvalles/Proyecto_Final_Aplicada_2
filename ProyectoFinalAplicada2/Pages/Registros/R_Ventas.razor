@@ -57,7 +57,7 @@
                         <div class="form-row">
                             <div class="col">
                                 <label>Cliente</label>
-                                <select class="form-control" @bind="Venta.ClienteId" @onfocusout="ObtenerContratos">
+                                <select class="form-control" @bind="Venta.ClienteId" @onclick="ObtenerContratos">
                                     <option value="" disabled selected>Clientes Disponibles</option>
                                     @foreach (var item in ListaClientes)
                                     {
@@ -85,7 +85,7 @@
                         <div class="form-row">
                             <div class="col">
                                 <label>Contrato</label>
-                                <select class="form-control" @bind="SeleccionContrato" @onfocusout="ObtenerCantidadPendiente">
+                                <select class="form-control" @bind="SeleccionContrato" @onclick="ObtenerCantidadPendiente">
                                     <option value="" disabled selected>Tipos de Cacaos Disponibles</option>
                                     @foreach (var item in ListaContratos)
                                     {
@@ -315,7 +315,7 @@
         if (Venta.VentaId == 0)
         {
             ListaContratos = ContratosBLL.GetList(c => c.ClienteId == Venta.ClienteId);
-            if (ListaContratos != null)
+            if (ListaContratos.Count > 0)
             {
                 SeleccionContrato = ListaContratos[0].ContratoId;
                 ObtenerCantidadPendiente();
@@ -374,7 +374,7 @@
         {
             List<Pagos> pagos = PagosBLL.GetList(p => true);
 
-            if (pagos != null)
+            if (pagos.Count > 0)
             {
                 foreach (var item in pagos)
                 {
@@ -446,7 +446,7 @@
 
             List<Pagos> pagos = PagosBLL.GetList(p => true);
 
-            if (pagos != null)
+            if (pagos.Count > 0)
             {
                 foreach (var item in pagos)
                 {

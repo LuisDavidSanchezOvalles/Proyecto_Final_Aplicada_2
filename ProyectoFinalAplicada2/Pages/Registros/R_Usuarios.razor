@@ -124,11 +124,11 @@
 }
 
 @code {
-        [Parameter]
-        public int UsuarioId { get; set; }
+    [Parameter]
+    public int UsuarioId { get; set; }
 
-        [CascadingParameter]
-        private Task<AuthenticationState> authState { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
 
     private Usuarios Usuario = new Usuarios();
 

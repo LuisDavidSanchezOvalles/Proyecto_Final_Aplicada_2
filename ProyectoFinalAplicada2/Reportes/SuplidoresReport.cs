@@ -21,10 +21,12 @@ namespace ProyectoFinalAplicada2.Reportes
 
         MemoryStream memoryStream = new MemoryStream();
 
-        List<Suplidores> listaSuplidores = SuplidoresBLL.GetList(s => true);
+        List<Suplidores> listaSuplidores = new List<Suplidores>();
 
-        public byte[] Reporte()
+        public byte[] Reporte(List<Suplidores> lista)
         {
+            listaSuplidores = lista;
+
             document = new Document(PageSize.Letter, 25f, 25f, 20f, 20f);
             pdfTable = new PdfPTable(columnas);
 

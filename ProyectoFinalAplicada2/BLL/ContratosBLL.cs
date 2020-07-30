@@ -164,14 +164,6 @@ namespace ProyectoFinalAplicada2.BLL
             Modificar(contrato);
         }
 
-        //public static void RestablecerCantidadPendiente(int id)
-        //{
-        //    Contratos contrato = Buscar(id);
-
-        //    contrato.CantidadPendiente = contrato.Cantidad;
-
-        //    Modificar(contrato);
-        //}
         public static void RestablecerCantidadPendiente(int id)
         {
             Ventas venta = VentasBLL.Buscar(id);
