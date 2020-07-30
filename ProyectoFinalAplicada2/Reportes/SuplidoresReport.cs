@@ -12,7 +12,7 @@ namespace ProyectoFinalAplicada2.Reportes
 {
     public class SuplidoresReport
     {
-        int columnas = 8;
+        int columnas = 11;
 
         Document document = new Document();
         PdfPTable pdfTable;
@@ -41,13 +41,16 @@ namespace ProyectoFinalAplicada2.Reportes
             float[] anchoColumnas = new float[columnas];
 
             anchoColumnas[0] = 100; //Esta sera la fila 1 suplidorId
-            anchoColumnas[1] = 175; //Esta sera la fila 2 nombre
-            anchoColumnas[2] = 115; //Esta sera la fila 3 cedula
-            anchoColumnas[3] = 110; //Esta sera la fila 4 telefono
-            anchoColumnas[4] = 110; //Esta sera la fila 5 celular
-            anchoColumnas[5] = 175; //Esta sera la fila 6 direccion
-            anchoColumnas[6] = 180; //Esta sera la fila 7 email
-            anchoColumnas[7] = 100; //Esta sera la fila 8 usuarioId
+            anchoColumnas[1] = 100; //Esta sera la fila 2 fecha
+            anchoColumnas[2] = 175; //Esta sera la fila 3 nombre
+            anchoColumnas[3] = 115; //Esta sera la fila 4 cedula
+            anchoColumnas[4] = 110; //Esta sera la fila 5 telefono
+            anchoColumnas[5] = 110; //Esta sera la fila 6 celular
+            anchoColumnas[6] = 175; //Esta sera la fila 7 direccion
+            anchoColumnas[7] = 180; //Esta sera la fila 8 email
+            anchoColumnas[8] = 100; //Esta sera la fila 9 fechaCreacion
+            anchoColumnas[9] = 100; //Esta sera la fila 10 fechaModificacion
+            anchoColumnas[10] = 100; //Esta sera la fila 11 usuarioId
 
             pdfTable.SetWidths(anchoColumnas);
 
@@ -120,7 +123,7 @@ namespace ProyectoFinalAplicada2.Reportes
 
             pdfTable.CompleteRow();
 
-            pdfCell = new PdfPCell(new Phrase(DateTime.Now.ToString("MM/dd/yyyy H:mm tt"), fontFecha));
+            pdfCell = new PdfPCell(new Phrase(DateTime.Now.ToString("dd/MM/yyyy H:mm tt"), fontFecha));
             pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
             pdfCell.Colspan = 2;
             pdfCell.Border = 0;
@@ -149,6 +152,12 @@ namespace ProyectoFinalAplicada2.Reportes
 
             #region Table Header
             pdfCell = new PdfPCell(new Phrase("SuplidorId", fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.LightGray;
+            pdfTable.AddCell(pdfCell);
+
+            pdfCell = new PdfPCell(new Phrase("Fecha", fontStyle));
             pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
             pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
             pdfCell.BackgroundColor = BaseColor.LightGray;
@@ -190,6 +199,18 @@ namespace ProyectoFinalAplicada2.Reportes
             pdfCell.BackgroundColor = BaseColor.LightGray;
             pdfTable.AddCell(pdfCell);
 
+            pdfCell = new PdfPCell(new Phrase("Fecha Creación", fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.LightGray;
+            pdfTable.AddCell(pdfCell);
+
+            pdfCell = new PdfPCell(new Phrase("Fecha Modificación", fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.LightGray;
+            pdfTable.AddCell(pdfCell);
+
             pdfCell = new PdfPCell(new Phrase("UsuarioId", fontStyle));
             pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
             pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -206,6 +227,12 @@ namespace ProyectoFinalAplicada2.Reportes
             {
                 num++;
                 pdfCell = new PdfPCell(new Phrase(item.SuplidorId.ToString(), _fontStyle));
+                pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                pdfCell.BackgroundColor = BaseColor.White;
+                pdfTable.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell(new Phrase(item.Fecha.ToString("dd/MM/yyyy"), _fontStyle));
                 pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                 pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 pdfCell.BackgroundColor = BaseColor.White;
@@ -242,6 +269,18 @@ namespace ProyectoFinalAplicada2.Reportes
                 pdfTable.AddCell(pdfCell);
 
                 pdfCell = new PdfPCell(new Phrase(item.Email, _fontStyle));
+                pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                pdfCell.BackgroundColor = BaseColor.White;
+                pdfTable.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell(new Phrase(item.FechaCreacion.ToString("dd/MM/yyyy"), _fontStyle));
+                pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                pdfCell.BackgroundColor = BaseColor.White;
+                pdfTable.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell(new Phrase(item.FechaModificacion.ToString("dd/MM/yyyy"), _fontStyle));
                 pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                 pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 pdfCell.BackgroundColor = BaseColor.White;

@@ -59,6 +59,8 @@
                                 <th>Cantidad</th>
                                 <th>Costo</th>
                                 <th>Precio</th>
+                                <th>Importe Compra</th>
+                                <th>Importe Venta</th>
                                 <th>UsuarioId</th>
                             </tr>
                         </thead>
@@ -71,6 +73,8 @@
                                     <td>@cacao.Cantidad.ToString("n2")</td>
                                     <td>@cacao.Costo.ToString("n2")</td>
                                     <td>@cacao.Precio.ToString("n2")</td>
+                                    <td>@((cacao.Cantidad * cacao.Costo).ToString("n2"))</td>
+                                    <td>@((cacao.Cantidad * cacao.Precio).ToString("n2"))</td>
                                     <td>@cacao.UsuarioId</td>
                                 </tr>
                             }
@@ -78,6 +82,30 @@
                     </table>
                 </div>
             </form>
+        </div>
+
+        <div class="form-row">
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <div>
+                <label>Total de Registros: @TotalRegistros</label>
+            </div>
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <div>
+                <label>Total de Importe Compra: @TotalImporteCompra.ToString("n2")</label>
+            </div>
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <div>
+                <label>Total de Importe Venta: @TotalImporteVenta.ToString("n2")</label>
+            </div>
         </div>
 
         <div class="form-group text-center" display: inline-block>
@@ -133,8 +161,11 @@
 
     public string Criterio { get; set; }
 
-    private int Numeracion { get; set; }
+    private int TotalRegistros { get; set; }
     private int TotalPaginas { get; set; }
+
+    private decimal TotalImporteCompra { get; set; }
+    private decimal TotalImporteVenta { get; set; }
 
     byte[] Data;
     string pdfContent = "";
@@ -260,6 +291,9 @@
         TotalPaginas = (int)Math.Ceiling(ListaCacaos.Count() / (decimal)pagina.mostrarCantidad);
         ActualizarLista(pag);
 
+        TotalRegistros = ListaCacaos.Count();
+        CalcularImporte(AuxListaCacaos);
+
         Filtro = "0";
     }
 
@@ -277,6 +311,15 @@
             pagina.pagina += 1;
 
         ActualizarLista(pagina.pagina);
+    }
+
+    private void CalcularImporte(List<Cacaos> listaCacaos)
+    {
+        foreach(var cacao in listaCacaos)
+        {
+            TotalImporteCompra += (cacao.Cantidad * cacao.Costo);
+            TotalImporteVenta += (cacao.Cantidad * cacao.Precio);
+        }
     }
 
     private void GenerarReporte()
