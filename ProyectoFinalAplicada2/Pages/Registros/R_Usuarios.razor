@@ -8,6 +8,7 @@
 
 @inject IToastService toast
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JS
 
 <AuthorizeView>
     <NotAuthorized>
@@ -123,11 +124,11 @@
 }
 
 @code {
-    [Parameter]
-    public int UsuarioId { get; set; }
+        [Parameter]
+        public int UsuarioId { get; set; }
 
-    [CascadingParameter]
-    private Task<AuthenticationState> authState { get; set; }
+        [CascadingParameter]
+        private Task<AuthenticationState> authState { get; set; }
 
     private Usuarios Usuario = new Usuarios();
 
@@ -226,24 +227,27 @@
             toast.ShowError("No fue posible guardar");
     }
 
-    public void Eliminar()
+    public async Task Eliminar()
     {
-        bool elimino;
-
-        if (Usuario.UsuarioId == Convert.ToInt32(usuarioIdCreacion))
+        if (await JS.ConfirmDelete("Confirmar", "¿Esta seguro que desea eliminar este usuario?", "question"))
         {
-            toast.ShowInfo("No se puede eliminar a si mismo");
-            return;
-        }
+            bool elimino;
 
-        elimino = UsuariosBLL.Eliminar(Usuario.UsuarioId);
+            if (Usuario.UsuarioId == Convert.ToInt32(usuarioIdCreacion))
+            {
+                toast.ShowInfo("No se puede eliminar a si mismo");
+                return;
+            }
 
-        if (elimino)
-        {
-            Nuevo();
-            toast.ShowSuccess("Eliminado correctamente");
+            elimino = UsuariosBLL.Eliminar(Usuario.UsuarioId);
+
+            if (elimino)
+            {
+                Nuevo();
+                toast.ShowSuccess("Eliminado correctamente");
+            }
+            else
+                toast.ShowError("No fue posible eliminar");
         }
-        else
-            toast.ShowError("No fue posible eliminar");
     }
 }

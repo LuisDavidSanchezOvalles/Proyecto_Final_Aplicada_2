@@ -138,11 +138,11 @@
 }
 
 @code {
-        [Parameter]
-        public int ClienteId { get; set; }
+    [Parameter]
+    public int ClienteId { get; set; }
 
-        [CascadingParameter]
-        private Task<AuthenticationState> authState { get; set; }
+    [CascadingParameter]
+    private Task<AuthenticationState> authState { get; set; }
 
     private Clientes Cliente = new Clientes();
 
