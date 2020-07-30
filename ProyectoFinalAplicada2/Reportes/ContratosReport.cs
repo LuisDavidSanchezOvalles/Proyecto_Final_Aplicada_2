@@ -21,7 +21,7 @@ namespace ProyectoFinalAplicada2.Reportes
 
         MemoryStream memoryStream = new MemoryStream();
 
-        List<Contratos> listaContratos = ContratosBLL.GetList(c => true);
+        List<Contratos> listaContratos = new List<Contratos>();
 
         private string ObtenerNombre(int id)
         {
@@ -37,8 +37,10 @@ namespace ProyectoFinalAplicada2.Reportes
             return cacao.Tipo;
         }
 
-        public byte[] Reporte()
+        public byte[] Reporte(List<Contratos> lista)
         {
+            listaContratos = lista;
+
             document = new Document(PageSize.Letter, 25f, 25f, 20f, 20f);
             pdfTable = new PdfPTable(columnas);
 
@@ -254,19 +256,19 @@ namespace ProyectoFinalAplicada2.Reportes
                 pdfCell.BackgroundColor = BaseColor.White;
                 pdfTable.AddCell(pdfCell);
 
-                pdfCell = new PdfPCell(new Phrase(item.Cantidad.ToString(), _fontStyle));
+                pdfCell = new PdfPCell(new Phrase(item.Cantidad.ToString("n2"), _fontStyle));
                 pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                 pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 pdfCell.BackgroundColor = BaseColor.White;
                 pdfTable.AddCell(pdfCell);
 
-                pdfCell = new PdfPCell(new Phrase(item.Precio.ToString(), _fontStyle));
+                pdfCell = new PdfPCell(new Phrase(item.Precio.ToString("n2"), _fontStyle));
                 pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                 pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 pdfCell.BackgroundColor = BaseColor.White;
                 pdfTable.AddCell(pdfCell);
 
-                pdfCell = new PdfPCell(new Phrase(item.Total.ToString(), _fontStyle));
+                pdfCell = new PdfPCell(new Phrase(item.Total.ToString("n2"), _fontStyle));
                 pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                 pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 pdfCell.BackgroundColor = BaseColor.White;

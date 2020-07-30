@@ -27,7 +27,7 @@
                 <div class="col">
                     <label>Filtro</label>
                     <select class="form-control" @bind="Filtro">
-                        <option value="0" disabled selected>Seleccion un Filtro</option>
+                        <option value="0" disabled selected>Seleccione un Filtro</option>
                         <option value="1">Id</option>
                         <option value="2">Nombres</option>
                         <option value="3">Cédula</option>
@@ -131,17 +131,17 @@
 }
 
 @code {
-    public List<Suplidores> ListaSuplidores { get; set; }
-    public List<Suplidores> AuxListaSuplidores { get; set; }
+    private List<Suplidores> ListaSuplidores { get; set; }
+    private List<Suplidores> AuxListaSuplidores { get; set; }
 
     Paginas pagina = new Paginas();
 
-    public string Filtro { get; set; }
+    private string Filtro { get; set; }
 
-    public string Criterio { get; set; }
+    private string Criterio { get; set; }
 
-    public int Numeracion { get; set; }
-    public int TotalPaginas { get; set; }
+    private int Numeracion { get; set; }
+    private int TotalPaginas { get; set; }
 
     byte[] Data;
     string pdfContent = "";
