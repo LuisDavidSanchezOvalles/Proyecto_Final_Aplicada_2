@@ -8,6 +8,7 @@
 
 @inject IToastService toast
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JS
 
 <AuthorizeView>
     <NotAuthorized>
@@ -121,11 +122,11 @@
 }
 
 @code {
-    [Parameter]
-    public int CacaoId { get; set; }
+        [Parameter]
+        public int CacaoId { get; set; }
 
-    [CascadingParameter]
-    private Task<AuthenticationState> authState { get; set; }
+        [CascadingParameter]
+        private Task<AuthenticationState> authState { get; set; }
 
     private Cacaos Cacao = new Cacaos();
 
@@ -221,19 +222,22 @@
             toast.ShowError("No fue posible guardar");
     }
 
-    public void Eliminar()
+    public async Task Eliminar()
     {
-        bool elimino;
-
-        elimino = CacaosBLL.Eliminar(Cacao.CacaoId);
-
-        if (elimino)
+        if (await JS.ConfirmDelete("Confirmar", "¿Esta seguro que desea eliminar este usuario?", "question"))
         {
-            Nuevo();
-            toast.ShowSuccess("Eliminado correctamente");
+            bool elimino;
+
+            elimino = CacaosBLL.Eliminar(Cacao.CacaoId);
+
+            if (elimino)
+            {
+                Nuevo();
+                toast.ShowSuccess("Eliminado correctamente");
+            }
+            else
+                toast.ShowError("No fue posible eliminar");
         }
-        else
-            toast.ShowError("No fue posible eliminar");
     }
 }
 
