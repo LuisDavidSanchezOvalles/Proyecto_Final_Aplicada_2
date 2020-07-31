@@ -14,6 +14,8 @@ namespace ProyectoFinalAplicada2.Reportes
     {
         int columnas = 9;
 
+        decimal Total = 0;
+
         Document document = new Document();
         PdfPTable pdfTable;
         PdfPCell pdfCell = new PdfPCell();
@@ -55,11 +57,14 @@ namespace ProyectoFinalAplicada2.Reportes
             float[] anchoColumnas = new float[columnas];
 
             anchoColumnas[0] = 115; //Esta sera la fila 1 VentaId
-            anchoColumnas[1] = 115; //Esta sera la fila 2 ClienteId
-            anchoColumnas[2] = 200; //Esta sera la fila 3 Nombres
-            anchoColumnas[3] = 180; //Esta sera la fila 4 Total
-            anchoColumnas[4] = 180; //Esta sera la fila 5 Balance
-            anchoColumnas[5] = 115; //Esta sera la fila 6 usuarioId
+            anchoColumnas[1] = 100; //Esta sera la fila 2 fecha
+            anchoColumnas[2] = 115; //Esta sera la fila 3 ClienteId
+            anchoColumnas[3] = 200; //Esta sera la fila 4 Nombres
+            anchoColumnas[4] = 180; //Esta sera la fila 5 Total
+            anchoColumnas[5] = 180; //Esta sera la fila 6 Balance
+            anchoColumnas[6] = 100; //Esta sera la fila 7 fechaCreacion
+            anchoColumnas[7] = 100; //Esta sera la fila 8 fechaModificacion
+            anchoColumnas[8] = 115; //Esta sera la fila 9 usuarioId
 
             pdfTable.SetWidths(anchoColumnas);
 
@@ -166,6 +171,12 @@ namespace ProyectoFinalAplicada2.Reportes
             pdfCell.BackgroundColor = BaseColor.LightGray;
             pdfTable.AddCell(pdfCell);
 
+            pdfCell = new PdfPCell(new Phrase("Fecha", fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.LightGray;
+            pdfTable.AddCell(pdfCell);
+
             pdfCell = new PdfPCell(new Phrase("ClienteId", fontStyle));
             pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
             pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -190,6 +201,18 @@ namespace ProyectoFinalAplicada2.Reportes
             pdfCell.BackgroundColor = BaseColor.LightGray;
             pdfTable.AddCell(pdfCell);
 
+            pdfCell = new PdfPCell(new Phrase("Fecha Creación", fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.LightGray;
+            pdfTable.AddCell(pdfCell);
+
+            pdfCell = new PdfPCell(new Phrase("Fecha Modificación", fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.LightGray;
+            pdfTable.AddCell(pdfCell);
+
             pdfCell = new PdfPCell(new Phrase("UsuarioId", fontStyle));
             pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
             pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -206,6 +229,12 @@ namespace ProyectoFinalAplicada2.Reportes
             {
                 num++;
                 pdfCell = new PdfPCell(new Phrase(item.VentaId.ToString(), _fontStyle));
+                pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                pdfCell.BackgroundColor = BaseColor.White;
+                pdfTable.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell(new Phrase(item.Fecha.ToString("dd/MM/yyyy"), _fontStyle));
                 pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                 pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
                 pdfCell.BackgroundColor = BaseColor.White;
@@ -235,6 +264,18 @@ namespace ProyectoFinalAplicada2.Reportes
                 pdfCell.BackgroundColor = BaseColor.White;
                 pdfTable.AddCell(pdfCell);
 
+                pdfCell = new PdfPCell(new Phrase(item.FechaCreacion.ToString("dd/MM/yyyy"), _fontStyle));
+                pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                pdfCell.BackgroundColor = BaseColor.White;
+                pdfTable.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell(new Phrase(item.FechaModificacion.ToString("dd/MM/yyyy"), _fontStyle));
+                pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                pdfCell.BackgroundColor = BaseColor.White;
+                pdfTable.AddCell(pdfCell);
+
                 pdfCell = new PdfPCell(new Phrase(item.UsuarioId.ToString(), _fontStyle));
                 pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                 pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
@@ -244,8 +285,83 @@ namespace ProyectoFinalAplicada2.Reportes
                 pdfTable.CompleteRow();
             }
 
+            CalcularTotal(listaVentas);
+
+            pdfCell = new PdfPCell(new Phrase("Total de Registros", fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.White;
+            pdfCell.Border = 0;
+            pdfTable.AddCell(pdfCell);
+
+            pdfCell = new PdfPCell(new Phrase(num++.ToString(), fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.White;
+            pdfCell.Border = 0;
+            pdfTable.AddCell(pdfCell);
+
+            pdfCell = new PdfPCell(new Phrase("Total", fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.White;
+            pdfCell.Border = 0;
+            pdfTable.AddCell(pdfCell);
+
+            pdfCell = new PdfPCell(new Phrase(Total.ToString("n2"), fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.White;
+            pdfCell.Border = 0;
+            pdfTable.AddCell(pdfCell);
+
+            //espacios en blanco
+            
+            pdfCell = new PdfPCell(new Phrase("        ", fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.White;
+            pdfCell.Border = 0;
+            pdfTable.AddCell(pdfCell);
+
+            pdfCell = new PdfPCell(new Phrase("        ", fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.White;
+            pdfCell.Border = 0;
+            pdfTable.AddCell(pdfCell);
+
+            pdfCell = new PdfPCell(new Phrase("        ", fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.White;
+            pdfCell.Border = 0;
+            pdfTable.AddCell(pdfCell);
+
+            pdfCell = new PdfPCell(new Phrase("        ", fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.White;
+            pdfCell.Border = 0;
+            pdfTable.AddCell(pdfCell);
+
+            pdfCell = new PdfPCell(new Phrase("        ", fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.White;
+            pdfCell.Border = 0;
+            pdfTable.AddCell(pdfCell);
+
             pdfTable.CompleteRow();
             #endregion
+        }
+
+        private void CalcularTotal(List<Ventas> listaVentas)
+        {
+            foreach (var ventas in listaVentas)
+            {
+                Total += ventas.Total;
+            }
         }
     }
 }

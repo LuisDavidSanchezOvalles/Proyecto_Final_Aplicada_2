@@ -122,6 +122,16 @@
             </form>
         </div>
 
+        <div class="form-row">
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            &nbsp;
+            <div>
+                <label>Total de Registros: @TotalRegistros</label>
+            </div>
+        </div>
+
         <div class="form-group text-center" display: inline-block>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
@@ -181,6 +191,7 @@
 
     private int Numeracion { get; set; }
     private int TotalPaginas { get; set; }
+    private int TotalRegistros { get; set; }
 
     byte[] Data;
     string pdfContent = "";
@@ -304,6 +315,7 @@
 
         Filtro = "0";
         FiltroFecha = "0";
+        TotalRegistros = ListaSuplidores.Count();
     }
 
     private void ActualizarLista(int NumeroPagina)

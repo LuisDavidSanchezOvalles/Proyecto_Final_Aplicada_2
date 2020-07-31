@@ -17,14 +17,44 @@
 
 @if (AuthenticationStateProvider.GetAuthenticationStateAsync().Result.User.Identity.IsAuthenticated)
 {
-    <div class="card">
-        <div class="card-header">
-            <h1>Consulta de Entradas</h1>
-        </div>
+<div class="card">
+    <div class="card-header">
+        <h1>Consulta de Entradas</h1>
+    </div>
 
-        <div class="card-body">
-            <form>
-                <div class="col">
+    <div class="card-body">
+        <form>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Filtrar por Fecha</label>
+                    <select class="form-control" @bind="FiltroFecha">
+                        <option value="0" disabled selected>Seleccione un Filtro de Fecha</option>
+                        <option value="1">Fecha</option>
+                        <option value="2">FechaCreación</option>
+                        <option value="3">FechaModificación</option>
+                    </select>
+                </div>
+                &nbsp;
+                <div class="form-group">
+                    <label>Desde</label>
+                    <input type="date" @bind="Desde" class="form-control" />
+                </div>
+                &nbsp;
+                <div class="form-group">
+                    <label>Hasta</label>
+                    <input type="date" @bind="Hasta" class="form-control" />
+                </div>
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                &nbsp;
+                <div class="form-group">
                     <label>Filtro</label>
                     <select class="form-control" @bind="Filtro">
                         <option value="0" disabled selected>Seleccione un Filtro</option>
@@ -34,98 +64,120 @@
                         <option value="4">UsuarioId</option>
                     </select>
                 </div>
-
-                <div class="col">
-                    <div class="form-group">
-                        <label>Criterio</label>
-                        <div class="input-group">
-                            <input type="text" @bind="Criterio" class="form-control">
-                            <div class="input-group-append">
-                                <button type="button" class="btn btn-primary input-group-text" @onclick="(u => Consultar(0))"><i class="oi oi-list-rich" /> Consultar</button>
-                            </div>
+                &nbsp;
+                <div class="form-group">
+                    <label>Criterio</label>
+                    <div class="input-group">
+                        <input type="text" @bind="Criterio" class="form-control">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-primary input-group-text" @onclick="@(u => Consultar(0))"><i class="oi oi-list-rich" /> Consultar</button>
                         </div>
                     </div>
                 </div>
-
-                @*La Tabla*@
-                <div class="table-responsive text-nowrap" style="position: relative; height:200px; overflow: auto; display: block;">
-                    <table class="table table-striped">
-                        <thead class="thead-light">
-                            <tr>
-                                <th>EntradaId</th>
-                                <th>SuplidorId</th>
-                                <th>Nombres</th>
-                                <th>CacaoId</th>
-                                <th>Tipo</th>
-                                <th>Cantidad</th>
-                                <th>Costo</th>
-                                <th>Total</th>
-                                <th>UsuarioId</th>
-                            </tr>
-                        </thead>
-                        @*Asignacion de Datos*@
-                        <tbody class="bg-white">
-                            @foreach (var item in ListaEntradas)
-                            {
-                                <tr>
-                                    <td>@item.EntradaId</td>
-                                    <td>@item.SuplidorId</td>
-                                    <td>@ObtenerNombre(item.SuplidorId)</td>
-                                    <td>@item.CacaoId</td>
-                                    <td>@ObtenerTipo(item.CacaoId)</td>
-                                    <td>@item.Cantidad.ToString("n2")</td>
-                                    <td>@item.Costo.ToString("n2")</td>
-                                    <td>@item.Total.ToString("n2")</td>
-                                    <td>@item.UsuarioId</td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
-            </form>
-        </div>
-
-        <div class="form-group text-center" display: inline-block>
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item">
-                        <button class="page-link btn btn-primary"
-                                @onclick="@(e => NavegateTo("Anterior"))" tabindex="-1">
-                            Anterior
-                        </button>
-                    </li>
-
-                    @for (int i = 0; i < TotalPaginas; i++)
-                    {
-                        var NumeroPagina = i;
-                        <li class="page-item">
-                            <button class="@(pagina.pagina == NumeroPagina ? "page-link btn btn-dark" : "page-link btn btn-danger")"
-                                    @onclick="@(u => Consultar(NumeroPagina))">
-                                @(i + 1)
-                            </button>
-                        </li>
-                    }
-
-                    <li class="page-item">
-                        <button type="button" class="page-link btn btn-primary" @onclick="@(e => NavegateTo("Siguiente"))" tabindex="-1">Siguiente</button>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-
-        <div class="card-footer">
-            <div class="form-group text-center">
-                <button class="btn btn-lg btn-primary oi oi-file" @onclick="GenerarReporte"> Generar Reporte</button>
             </div>
 
-            <form>
-                @if (Data is { })
-                {
-                    <object data="@pdfContent" width="1000" height="500"></object>
-                }
-            </form>
+            @*La Tabla*@
+            <div class="table-responsive text-nowrap" style="position: relative; height:200px; overflow: auto; display: block;">
+                <table class="table table-striped">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>EntradaId</th>
+                            <th>Fecha</th>
+                            <th>SuplidorId</th>
+                            <th>Nombres</th>
+                            <th>CacaoId</th>
+                            <th>Tipo</th>
+                            <th>Cantidad</th>
+                            <th>Costo</th>
+                            <th>Total</th>
+                            <th>Fecha Creación</th>
+                            <th>Fecha Modificación</th>
+                            <th>UsuarioId</th>
+                        </tr>
+                    </thead>
+                    @*Asignacion de Datos*@
+                    <tbody class="bg-white">
+                        @foreach (var item in ListaEntradas)
+                        {
+                            <tr>
+                                <td>@item.EntradaId</td>
+                                <td>@item.Fecha.ToString("dd/MM/yyyy")</td>
+                                <td>@item.SuplidorId</td>
+                                <td>@ObtenerNombre(item.SuplidorId)</td>
+                                <td>@item.CacaoId</td>
+                                <td>@ObtenerTipo(item.CacaoId)</td>
+                                <td>@item.Cantidad.ToString("n2")</td>
+                                <td>@item.Costo.ToString("n2")</td>
+                                <td>@item.Total.ToString("n2")</td>
+                                <td>@item.FechaCreacion.ToString("dd/MM/yyyy")</td>
+                                <td>@item.FechaModificacion.ToString("dd/MM/yyyy")</td>
+                                <td>@item.UsuarioId</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </form>
+    </div>
+
+    <div class="form-row">
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        <div>
+            <label>Total de Registros: @TotalRegistros</label>
+        </div>
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        &nbsp;
+        <div>
+            <label>Total: @Total.ToString("n2")</label>
         </div>
     </div>
+
+    <div class="form-group text-center" display: inline-block>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <li class="page-item">
+                    <button class="page-link btn btn-primary"
+                            @onclick="@(e => NavegateTo("Anterior"))" tabindex="-1">
+                        Anterior
+                    </button>
+                </li>
+
+                @for (int i = 0; i < TotalPaginas; i++)
+                {
+                    var NumeroPagina = i;
+                    <li class="page-item">
+                        <button class="@(pagina.pagina == NumeroPagina ? "page-link btn btn-dark" : "page-link btn btn-danger")"
+                                @onclick="@(u => Consultar(NumeroPagina))">
+                            @(i + 1)
+                        </button>
+                    </li>
+                }
+
+                <li class="page-item">
+                    <button type="button" class="page-link btn btn-primary" @onclick="@(e => NavegateTo("Siguiente"))" tabindex="-1">Siguiente</button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="card-footer">
+        <div class="form-group text-center">
+            <button class="btn btn-lg btn-primary oi oi-file" @onclick="GenerarReporte"> Generar Reporte</button>
+        </div>
+
+        <form>
+            @if (Data is { })
+            {
+                <object data="@pdfContent" width="1000" height="500"></object>
+            }
+        </form>
+    </div>
+</div>
 }
 
 @code {
@@ -134,12 +186,19 @@
 
     Paginas pagina = new Paginas();
 
+    private DateTime Desde { get; set; } = DateTime.Now;
+    private DateTime Hasta { get; set; } = DateTime.Now;
+
     public string Filtro { get; set; }
+    private string FiltroFecha { get; set; }
 
     public string Criterio { get; set; }
 
     private int Numeracion { get; set; }
     private int TotalPaginas { get; set; }
+    private int TotalRegistros { get; set; }
+
+    private decimal Total { get; set; }
 
     byte[] Data;
     string pdfContent = "";
@@ -251,10 +310,30 @@
                 }
                 break;
         }
+
+        switch (FiltroFecha)
+        {
+            case "0": //Nada
+                break;
+            case "1": //Fecha
+                ListaEntradas = ListaEntradas.Where(s => s.Fecha >= Desde && s.Fecha <= Hasta).ToList();
+                break;
+            case "2": //FechaCreacion
+                ListaEntradas = ListaEntradas.Where(s => s.FechaCreacion >= Desde && s.FechaCreacion <= Hasta).ToList();
+                break;
+            case "3": //FechaModificacion
+                ListaEntradas = ListaEntradas.Where(s => s.FechaModificacion >= Desde && s.FechaModificacion <= Hasta).ToList();
+                break;
+        }
+
         TotalPaginas = (int)Math.Ceiling(ListaEntradas.Count() / (decimal)pagina.mostrarCantidad);
         ActualizarLista(pag);
 
+        TotalRegistros = ListaEntradas.Count();
+        CalcularTotal(AuxListaEntradas);
+
         Filtro = "0";
+        FiltroFecha = "0";
     }
 
     private void ActualizarLista(int NumeroPagina)
@@ -271,6 +350,14 @@
             pagina.pagina += 1;
 
         ActualizarLista(pagina.pagina);
+    }
+
+    private void CalcularTotal(List<Entradas> listaEntradas)
+    {
+        foreach (var entradas in listaEntradas)
+        {
+            Total += entradas.Total;
+        }
     }
 
     private void GenerarReporte()
