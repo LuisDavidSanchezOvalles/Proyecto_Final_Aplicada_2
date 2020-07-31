@@ -13,6 +13,11 @@ namespace ProyectoFinalAplicada2.BLL
             return await js.InvokeAsync<bool>("ConfirmationPrumpt", titulo, Mensaje, tipo);
         }
 
+        public async static Task<bool> Aceptar(this IJSRuntime js, string titulo, string Mensaje, string tipo)
+        {
+            return await js.InvokeAsync<bool>("Confirmation", titulo, Mensaje, tipo);
+        }
+
         public async static Task<bool> Confirmar(this IJSRuntime js, string posicion, string icono, string titulo, string texto, bool confbtn, int timer)
         {
             return await js.InvokeAsync<bool>("SavePrumpt", posicion, icono, titulo, texto, confbtn, timer);

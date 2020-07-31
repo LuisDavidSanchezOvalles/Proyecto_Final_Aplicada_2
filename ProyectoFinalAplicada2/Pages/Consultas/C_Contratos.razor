@@ -100,7 +100,7 @@
                         </thead>
                         @*Asignacion de Datos*@
                         <tbody class="bg-white">
-                            @foreach (var item in ListaContratos)
+                            @foreach (var item in AuxListaContratos)
                             {
                             <tr>
                                 <td>@item.ContratoId</td>
@@ -220,20 +220,6 @@
         Criterio = string.Empty;
     }
 
-    private string ObtenerNombre(int id)
-    {
-        Clientes cliente = ClientesBLL.Buscar(id);
-
-        return cliente.Nombres;
-    }
-
-    private string ObtenerTipo(int id)
-    {
-        Cacaos cacao = CacaosBLL.Buscar(id);
-
-        return cacao.Tipo;
-    }
-
     public void Consultar(int pag)
     {
         switch (Filtro)
@@ -349,6 +335,28 @@
         pagina.pagina = NumeroPagina;
     }
 
+    private void CalcularTotal(List<Contratos> listaContratos)
+    {
+        foreach (var contrato in listaContratos)
+        {
+            Total += contrato.Total;
+        }
+    }
+
+    private string ObtenerNombre(int id)
+    {
+        Clientes cliente = ClientesBLL.Buscar(id);
+
+        return cliente.Nombres;
+    }
+
+    private string ObtenerTipo(int id)
+    {
+        Cacaos cacao = CacaosBLL.Buscar(id);
+
+        return cacao.Tipo;
+    }
+
     private void NavegateTo(string direccion)
     {
         if (direccion == "Anterior" && pagina.pagina != 0)
@@ -357,14 +365,6 @@
             pagina.pagina += 1;
 
         ActualizarLista(pagina.pagina);
-    }
-
-    private void CalcularTotal(List<Contratos> listaContratos)
-    {
-        foreach (var contrato in listaContratos)
-        {
-            Total += contrato.Total;
-        }
     }
 
     private void GenerarReporte()

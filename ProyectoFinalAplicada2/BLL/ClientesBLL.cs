@@ -148,15 +148,5 @@ namespace ProyectoFinalAplicada2.BLL
             }
             return Lista;
         }
-
-        public static bool ExisteAlgunCliente()
-        {
-            List<Clientes> clientes = GetList(c => true);
-
-            if (clientes.Count > 0)
-                return true;
-            else
-                return false;
-        }
     }
 }

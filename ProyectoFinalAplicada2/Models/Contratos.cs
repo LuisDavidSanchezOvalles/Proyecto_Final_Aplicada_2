@@ -50,10 +50,10 @@ namespace ProyectoFinalAplicada2.Models
             ClienteId = 0;
             FechaVencimiento = DateTime.Now.AddDays(1);
             CacaoId = 0;
-            Cantidad = 0.0m;
-            Precio = 0.0m;
-            Total = 0.0m;
-            CantidadPendiente = 0.0m;
+            Cantidad = 0;
+            Precio = 0;
+            Total = 0;
+            CantidadPendiente = 0;
             FechaCreacion = DateTime.Now;
             FechaModificacion = DateTime.Now;
             UsuarioId = 0;

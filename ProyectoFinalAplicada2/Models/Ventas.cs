@@ -38,8 +38,8 @@ namespace ProyectoFinalAplicada2.Models
             VentaId = 0;
             Fecha = DateTime.Now;
             ClienteId = 0;
-            Total = 0.0m;
-            Balance = 0.0m;
+            Total = 0;
+            Balance = 0;
             FechaCreacion = DateTime.Now;
             FechaModificacion = DateTime.Now;
             UsuarioId = 0;

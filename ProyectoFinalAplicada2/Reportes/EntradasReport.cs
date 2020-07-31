@@ -25,23 +25,12 @@ namespace ProyectoFinalAplicada2.Reportes
 
         List<Entradas> listaEntradas = new List<Entradas>();
 
-        private string ObtenerNombre(int id)
-        {
-            Suplidores suplidor = SuplidoresBLL.Buscar(id);
-
-            return suplidor.Nombres;
-        }
-
-        private string ObtenerTipo(int id)
-        {
-            Cacaos cacao = CacaosBLL.Buscar(id);
-
-            return cacao.Tipo;
-        }
-
         public byte[] Reporte(List<Entradas> lista)
         {
-            listaEntradas = lista;
+            if (lista.Count < 1)
+                listaEntradas = EntradasBLL.GetList(c => true);
+            else
+                listaEntradas = lista;
 
             document = new Document(PageSize.Letter, 25f, 25f, 20f, 20f);
             pdfTable = new PdfPTable(columnas);
@@ -414,6 +403,20 @@ namespace ProyectoFinalAplicada2.Reportes
 
             pdfTable.CompleteRow();
             #endregion
+        }
+
+        private string ObtenerNombre(int id)
+        {
+            Suplidores suplidor = SuplidoresBLL.Buscar(id);
+
+            return suplidor.Nombres;
+        }
+
+        private string ObtenerTipo(int id)
+        {
+            Cacaos cacao = CacaosBLL.Buscar(id);
+
+            return cacao.Tipo;
         }
 
         private void CalcularTotal(List<Entradas> listaEntradas)

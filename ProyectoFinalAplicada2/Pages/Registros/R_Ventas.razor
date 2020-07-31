@@ -223,8 +223,8 @@
         ListaContratos.Clear();
         ReiniciarUsuarioCreacion();
 
-        CantidadPendiente = 0.0m;
-        Cantidad = 0.0m;
+        CantidadPendiente = 0;
+        Cantidad = 0;
         Activacion = false;
     }
 
@@ -426,7 +426,7 @@
         if (CacaosBLL.VenderCacao(Venta))
             guardo = VentasBLL.Guardar(Venta);
         else
-            toast.ShowWarning("Ha excedido la cantidad disponible para vender");
+            toast.ShowInfo("Ha excedido la cantidad disponible para vender");
 
         if (guardo)
         {

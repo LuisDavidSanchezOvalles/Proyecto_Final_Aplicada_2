@@ -25,23 +25,12 @@ namespace ProyectoFinalAplicada2.Reportes
 
         List<Ventas> listaVentas = new List<Ventas>();
 
-        private string ObtenerNombre(int id)
-        {
-            Clientes cliente = ClientesBLL.Buscar(id);
-
-            return cliente.Nombres;
-        }
-
-        private string ObtenerTipo(int id)
-        {
-            Cacaos cacao = CacaosBLL.Buscar(id);
-
-            return cacao.Tipo;
-        }
-
         public byte[] Reporte(List<Ventas> lista)
         {
-            listaVentas = lista;
+            if (lista.Count < 1)
+                listaVentas = VentasBLL.GetList(c => true);
+            else
+                listaVentas = lista;
 
             document = new Document(PageSize.Letter, 25f, 25f, 20f, 20f);
             pdfTable = new PdfPTable(columnas);
@@ -354,6 +343,13 @@ namespace ProyectoFinalAplicada2.Reportes
 
             pdfTable.CompleteRow();
             #endregion
+        }
+
+        private string ObtenerNombre(int id)
+        {
+            Clientes cliente = ClientesBLL.Buscar(id);
+
+            return cliente.Nombres;
         }
 
         private void CalcularTotal(List<Ventas> listaVentas)

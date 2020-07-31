@@ -179,16 +179,6 @@ namespace ProyectoFinalAplicada2.BLL
             return Lista;
         }
 
-        public static bool ExisteVenta()
-        {
-            List<Ventas> ventas = GetList(c => true);
-
-            if (ventas.Count > 0)
-                return true;
-            else
-                return false;
-        }
-
         public static bool ContratoDisponible(Ventas ventas)
         {
             //verifica si el contrato ya esta utilizado

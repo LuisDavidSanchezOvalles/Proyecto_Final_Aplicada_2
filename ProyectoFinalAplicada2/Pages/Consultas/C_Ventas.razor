@@ -93,7 +93,7 @@
                         </thead>
                         @*Asignacion de Datos*@
                         <tbody class="bg-white">
-                            @foreach (var item in ListaVentas)
+                            @foreach (var item in AuxListaVentas)
                             {
                                 <tr>
                                     <td>@item.VentaId</td>
@@ -201,13 +201,6 @@
         Nuevo();
     }
 
-    private string ObtenerNombre(int id)
-    {
-        Clientes cliente = ClientesBLL.Buscar(id);
-
-        return cliente.Nombres;
-    }
-
     private void Nuevo()
     {
         ListaVentas = new List<Ventas>();
@@ -310,6 +303,21 @@
         pagina.pagina = NumeroPagina;
     }
 
+    private void CalcularTotal(List<Ventas> listaVentas)
+    {
+        foreach (var ventas in listaVentas)
+        {
+            Total += ventas.Total;
+        }
+    }
+
+    private string ObtenerNombre(int id)
+    {
+        Clientes cliente = ClientesBLL.Buscar(id);
+
+        return cliente.Nombres;
+    }
+
     private void NavegateTo(string direccion)
     {
         if (direccion == "Anterior" && pagina.pagina != 0)
@@ -320,13 +328,7 @@
         ActualizarLista(pagina.pagina);
     }
 
-    private void CalcularTotal(List<Ventas> listaVentas)
-    {
-        foreach (var ventas in listaVentas)
-        {
-            Total += ventas.Total;
-        }
-    }
+
 
     private void GenerarReporte()
     {

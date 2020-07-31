@@ -27,7 +27,10 @@ namespace ProyectoFinalAplicada2.Reportes
 
         public byte[] Reporte(List<Pagos> lista)
         {
-            listaPagos = lista;
+            if (lista.Count < 1)
+                listaPagos = PagosBLL.GetList(c => true);
+            else
+                listaPagos = lista;
 
             document = new Document(PageSize.Letter, 25f, 25f, 20f, 20f);
             pdfTable = new PdfPTable(columnas);
@@ -282,6 +285,13 @@ namespace ProyectoFinalAplicada2.Reportes
             pdfTable.AddCell(pdfCell);
 
             pdfCell = new PdfPCell(new Phrase(TotalSumatoria.ToString("n2"), fontStyle));
+            pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+            pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+            pdfCell.BackgroundColor = BaseColor.White;
+            pdfCell.Border = 0;
+            pdfTable.AddCell(pdfCell);
+
+            pdfCell = new PdfPCell(new Phrase("            ", fontStyle));
             pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
             pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
             pdfCell.BackgroundColor = BaseColor.White;

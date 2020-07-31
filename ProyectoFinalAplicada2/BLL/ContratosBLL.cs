@@ -145,16 +145,6 @@ namespace ProyectoFinalAplicada2.BLL
             return Lista;
         }
 
-        public static bool ExisteContrato()
-        {
-            List<Contratos> contratos = GetList(c => true);
-
-            if (contratos.Count > 0)
-                return true;
-            else
-                return false;
-        }
-
         public static void EvaluarCantidad(int id, decimal cantidad)
         {
             Contratos contrato = Buscar(id);

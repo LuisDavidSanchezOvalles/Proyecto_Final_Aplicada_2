@@ -157,16 +157,6 @@ namespace ProyectoFinalAplicada2.BLL
             return Lista;
         }
 
-        public static bool ExisteAlgunCacao()
-        {
-            List<Cacaos> cacaos = GetList(c => true);
-
-            if (cacaos.Count > 0)
-                return true;
-            else
-                return false;
-        }
-
         public static bool ActualizarCacao(Entradas entrada)
         {
             Entradas AnteriorEntrada = EntradasBLL.Buscar(entrada.EntradaId);
@@ -253,19 +243,6 @@ namespace ProyectoFinalAplicada2.BLL
             cacao.Cantidad += cantidad;
 
             Modificar(cacao);
-        }
-
-        public static bool cacaoDisponible()
-        {
-            List<Cacaos> cacaos = GetList(c => true);
-
-            foreach (var item in cacaos)
-            {
-                if (item.Cantidad > 0)
-                    return true;
-            }
-
-            return false;
         }
     }
 }

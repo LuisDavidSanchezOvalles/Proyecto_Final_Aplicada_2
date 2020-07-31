@@ -3,6 +3,7 @@
 
 @using Models
 @using BLL
+@using Reportes;
 @using System.Web;
 @using System.Security.Claims;
 
@@ -163,7 +164,15 @@
                     <button type="button" class="btn btn-lg btn-primary oi oi-file" @onclick="Nuevo"> Nuevo</button>
                     <button type="submit" class="btn btn-lg btn-success oi oi-cloud-upload"> Guardar</button>
                     <button type="button" class="btn btn-lg btn-danger oi oi-trash" @onclick="Eliminar"> Eliminar</button>
+                    <button type="button" class="btn btn-lg btn-warning oi oi-print" @onclick="Facturar"> Facturar</button>
                 </div>
+
+                <form>
+                    @if (Data is { })
+                    {
+                        <object data="@pdfContent" width="1000" height="500"></object>
+                    }
+                </form>
             </div>
         </div>
     </EditForm>
@@ -191,6 +200,9 @@
 
     private bool Activacion { get; set; }
 
+    byte[] Data;
+    string pdfContent = "";
+
     protected override void OnInitialized()
     {
         Nuevo();
@@ -208,8 +220,8 @@
 
         ReiniciarUsuarioCreacion();
 
-        Balance = 0.0m;
-        Monto = 0.0m;
+        Balance = 0;
+        Monto = 0;
 
         Activacion = false;
     }
@@ -417,5 +429,15 @@
             else
                 toast.ShowError("No fue posible eliminar");
         }
+    }
+
+    public void Facturar()
+    {
+        FacturaReport pagos = new FacturaReport();
+
+        Data = pagos.Reporte(Pago);
+
+        pdfContent = "data:application/pdf;base64,";
+        pdfContent += System.Convert.ToBase64String(Data);
     }
 }

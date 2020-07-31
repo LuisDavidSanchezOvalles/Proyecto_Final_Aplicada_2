@@ -25,7 +25,10 @@ namespace ProyectoFinalAplicada2.Reportes
 
         public byte[] Reporte(List<Usuarios> lista)
         {
-            listaUsuarios = lista;
+            if (lista.Count < 1)
+                listaUsuarios = UsuariosBLL.GetList(c => true);
+            else
+                listaUsuarios = lista;
 
             document = new Document(PageSize.Letter, 25f, 25f, 20f, 20f);
             pdfTable = new PdfPTable(columnas);

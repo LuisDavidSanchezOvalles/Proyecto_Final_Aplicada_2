@@ -5,26 +5,10 @@
     <Authorized>
         <b>User: @context.User.Identity.Name</b>
 
-        <a class="ml-md-auto btn btn-primary"
+        <a class="ml-md-auto btn btn-success"
            href="/logout?returnUrl=/"
-           target="_top">Logout</a>
+           target="_top">Logout<span class="oi oi-account-logout"></span></a>
     </Authorized>
-    <NotAuthorized>
-        <input type="text"
-               placeholder="Nombre Usuario"
-               @bind="@nombreUsuario" />
-        &nbsp;&nbsp;
-
-        <input type="password"
-               placeholder="Clave"
-               @bind="@clave" />
-
-        <a class="ml-md-auto btn btn-primary"
-           href="/login?paramUsername=@encode(nombreUsuario)&paramPassword=@encode(clave)"
-           target="_top">Login</a>
-
-
-    </NotAuthorized>
 </AuthorizeView>
 
 @code {

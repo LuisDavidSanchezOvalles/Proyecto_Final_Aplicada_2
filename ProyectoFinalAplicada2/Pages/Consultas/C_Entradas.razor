@@ -97,7 +97,7 @@
                     </thead>
                     @*Asignacion de Datos*@
                     <tbody class="bg-white">
-                        @foreach (var item in ListaEntradas)
+                        @foreach (var item in AuxListaEntradas)
                         {
                             <tr>
                                 <td>@item.EntradaId</td>
@@ -216,20 +216,6 @@
         Criterio = string.Empty;
     }
 
-    private string ObtenerNombre(int id)
-    {
-        Suplidores suplidor = SuplidoresBLL.Buscar(id);
-
-        return suplidor.Nombres;
-    }
-
-    private string ObtenerTipo(int id)
-    {
-        Cacaos cacao = CacaosBLL.Buscar(id);
-
-        return cacao.Tipo;
-    }
-
     public void Consultar(int pag)
     {
         switch (Filtro)
@@ -342,6 +328,28 @@
         pagina.pagina = NumeroPagina;
     }
 
+    private void CalcularTotal(List<Entradas> listaEntradas)
+    {
+        foreach (var entradas in listaEntradas)
+        {
+            Total += entradas.Total;
+        }
+    }
+
+    private string ObtenerNombre(int id)
+    {
+        Suplidores suplidor = SuplidoresBLL.Buscar(id);
+
+        return suplidor.Nombres;
+    }
+
+    private string ObtenerTipo(int id)
+    {
+        Cacaos cacao = CacaosBLL.Buscar(id);
+
+        return cacao.Tipo;
+    }
+
     private void NavegateTo(string direccion)
     {
         if (direccion == "Anterior" && pagina.pagina != 0)
@@ -350,14 +358,6 @@
             pagina.pagina += 1;
 
         ActualizarLista(pagina.pagina);
-    }
-
-    private void CalcularTotal(List<Entradas> listaEntradas)
-    {
-        foreach (var entradas in listaEntradas)
-        {
-            Total += entradas.Total;
-        }
     }
 
     private void GenerarReporte()

@@ -144,15 +144,5 @@ namespace ProyectoFinalAplicada2.BLL
             }
             return Lista;
         }
-
-        public static bool ExisteSuplidor()
-        {
-            List<Suplidores> suplidores = GetList(s => true);
-
-            if (suplidores.Count > 0)
-                return true;
-            else
-                return false;
-        }
     }
 }

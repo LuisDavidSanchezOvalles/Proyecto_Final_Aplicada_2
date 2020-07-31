@@ -155,26 +155,6 @@ namespace ProyectoFinalAplicada2.BLL
             return Lista;
         }
 
-        public static Pagos PagoDeVenta(int ventaId)
-        {
-            Pagos pago = new Pagos();
-            Contexto contexto = new Contexto();
-
-            try
-            {
-                pago = contexto.Pagos.Include(p => p.PagoDetalle).Where(p => p.PagoDetalle[0].VentaId == ventaId).SingleOrDefault();
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            finally
-            {
-                contexto.Dispose();
-            }
-            return pago;
-        }
-
         public static bool VentaDisponible(Pagos pagos)
         {
             //verifica si la venta ya esta utilizada en algun otro pago

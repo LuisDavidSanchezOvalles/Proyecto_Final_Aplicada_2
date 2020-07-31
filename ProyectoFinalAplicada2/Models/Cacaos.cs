@@ -36,9 +36,9 @@ namespace ProyectoFinalAplicada2.Models
             CacaoId = 0;
             Fecha = DateTime.Now;
             Tipo = string.Empty;
-            Cantidad = 0.0m;
-            Costo = 0.0m;
-            Precio = 0.0m;
+            Cantidad = 0;
+            Costo = 0;
+            Precio = 0;
             FechaCreacion = DateTime.Now;
             FechaModificacion = DateTime.Now;
             UsuarioId = 0;

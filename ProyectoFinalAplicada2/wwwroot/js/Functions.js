@@ -20,6 +20,26 @@
     });
 }
 
+function Confirmation(titulo, mensaje, tipo) {
+    return new Promise((resolve) => {
+
+        Swal.fire({
+            title: titulo,
+            text: mensaje,
+            icon: tipo,
+            showCancelButton: false,
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK',
+        }).then((result) => {
+            if (result.value) {
+                resolve(true);
+            } else {
+                resolve(false);
+            }
+        });
+    });
+}
+
 function SavePrumpt(posicion, icono, titulo, texto, confbtn, timer) {
     return new Promise((resolve) => {
 

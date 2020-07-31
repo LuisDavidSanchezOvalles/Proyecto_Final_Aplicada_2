@@ -20,8 +20,8 @@ namespace ProyectoFinalAplicada2.Models
             PagoDetalleId = 0;
             PagoId = 0;
             VentaId = 0;
-            Monto = 0.0m;
-            Saldo = 0.0m;
+            Monto = 0;
+            Saldo = 0;
         }
     }
 }

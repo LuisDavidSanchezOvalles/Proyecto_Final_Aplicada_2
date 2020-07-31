@@ -28,7 +28,10 @@ namespace ProyectoFinalAplicada2.Reportes
 
         public byte[] Reporte(List<Cacaos> lista)
         {
-            listaCacaos = lista;
+            if (lista.Count < 1)
+                listaCacaos = CacaosBLL.GetList(c => true);
+            else
+                listaCacaos = lista;
 
             document = new Document(PageSize.Letter, 25f, 25f, 20f, 20f);
             pdfTable = new PdfPTable(columnas);

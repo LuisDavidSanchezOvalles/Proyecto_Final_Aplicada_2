@@ -81,7 +81,7 @@
                         <div class="form-row">
                             <div class="col">
                                 <label>Cacao</label>
-                                <select class="form-control" @bind="Contrato.CacaoId" @onclick="BuscarPrecio">
+                                <select class="form-control" @bind="Contrato.CacaoId" @onclick="BuscarPrecioYCosto">
                                     <option value="" disabled selected>Tipos de Cacaos Disponibles</option>
                                     @foreach (var item in ListaCacaos)
                                     {
@@ -90,6 +90,12 @@
                                 </select>
                             </div>
                         </div>
+                    </div>
+
+                    @*Costo*@
+                    <div class="form-group">
+                        <label>Costo del Cacao</label>
+                        <InputNumber @bind-Value="Costo" class="form-control" readonly="true" />
                     </div>
 
                     @*Cantidad*@
@@ -102,7 +108,8 @@
                     @*Precio*@
                     <div class="form-group">
                         <label>Precio</label>
-                        <InputNumber @bind-Value="Contrato.Precio" class="form-control" readonly="true" />
+                        <InputNumber @bind-Value="Contrato.Precio" class="form-control" />
+                        <ValidationMessage For="@(() => Contrato.Precio)" />
                     </div>
 
                     @*Total*@
@@ -173,6 +180,8 @@
 
     private List<Clientes> ListaClientes = new List<Clientes>();
     private List<Cacaos> ListaCacaos = new List<Cacaos>();
+
+    private decimal Costo { get; set; }
 
     private bool Activacion { get; set; }
 
@@ -258,11 +267,12 @@
         usuarioIdCreacion = Contrato.UsuarioId.ToString();
     }
 
-    private void BuscarPrecio()
+    private void BuscarPrecioYCosto()
     {
         Cacaos cacao = CacaosBLL.Buscar(Contrato.CacaoId);
         if (cacao != null)
         {
+            Costo = cacao.Costo;
             Contrato.Precio = cacao.Precio;
         }
     }
@@ -288,6 +298,12 @@
             return;
         }
 
+        if (CompararCosto())
+        {
+            toast.ShowInfo("Debe ingresar un precio mayor al costo");
+            return;
+        }
+
         Contrato.UsuarioId = Convert.ToInt32(usuarioIdCreacion);
         Contrato.FechaModificacion = DateTime.Now;
 
@@ -303,6 +319,16 @@
         }
         else
             toast.ShowError("No fue posible guardar");
+    }
+
+    private bool CompararCosto()
+    {
+        Cacaos cacao = CacaosBLL.Buscar(Contrato.CacaoId);
+
+        if (cacao.Costo < Contrato.Precio)
+            return false;
+
+        return true;
     }
 
     public async Task Eliminar()

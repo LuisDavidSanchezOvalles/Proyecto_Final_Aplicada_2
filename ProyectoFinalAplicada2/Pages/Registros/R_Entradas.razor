@@ -274,7 +274,7 @@
         if (CacaosBLL.ActualizarCacao(Entrada))
             guardo = EntradasBLL.Guardar(Entrada);
         else
-            toast.ShowError("La existencia del cacao resulto menor o igual a cero");
+            toast.ShowInfo("La existencia del cacao resulto menor o igual a cero");
 
         if (guardo)
         {

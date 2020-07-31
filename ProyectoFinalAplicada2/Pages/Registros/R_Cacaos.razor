@@ -211,7 +211,7 @@
         if (Cacao.Precio > Cacao.Costo)
             guardo = CacaosBLL.Guardar(Cacao);
         else
-            toast.ShowWarning("Precio debe ser Mayor que Costo");
+            toast.ShowInfo("Precio debe ser Mayor que Costo");
 
         if (guardo)
         {
