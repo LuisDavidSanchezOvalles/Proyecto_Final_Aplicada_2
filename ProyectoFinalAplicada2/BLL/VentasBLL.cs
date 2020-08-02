@@ -20,7 +20,7 @@ namespace ProyectoFinalAplicada2.BLL
                 return Modificar(venta);
         }
 
-        public static bool Insertar(Ventas venta)
+        private static bool Insertar(Ventas venta)
         {
             if (venta.VentaId != 0)
                 return false;
@@ -43,7 +43,7 @@ namespace ProyectoFinalAplicada2.BLL
             return paso;
         }
 
-        public static bool Modificar(Ventas venta)
+        private static bool Modificar(Ventas venta)
         {
             bool paso = false;
             Contexto db = new Contexto();
@@ -139,7 +139,7 @@ namespace ProyectoFinalAplicada2.BLL
             return venta;
         }
 
-        public static bool Existe(int id)
+        private static bool Existe(int id)
         {
             bool encontrado = false;
             Contexto db = new Contexto();

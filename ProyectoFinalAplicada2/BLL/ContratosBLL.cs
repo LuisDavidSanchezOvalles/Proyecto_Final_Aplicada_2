@@ -19,7 +19,7 @@ namespace ProyectoFinalAplicada2.BLL
                 return Modificar(contrato);
         }
 
-        public static bool Insertar(Contratos contrato)
+        private static bool Insertar(Contratos contrato)
         {
             if (contrato.ContratoId != 0)
                 return false;
@@ -42,7 +42,7 @@ namespace ProyectoFinalAplicada2.BLL
             return paso;
         }
 
-        public static bool Modificar(Contratos contrato)
+        private static bool Modificar(Contratos contrato)
         {
             bool paso = false;
             Contexto db = new Contexto();
@@ -105,7 +105,7 @@ namespace ProyectoFinalAplicada2.BLL
             return contrato;
         }
 
-        public static bool Existe(int id)
+        private static bool Existe(int id)
         {
             bool encontrado = false;
             Contexto db = new Contexto();

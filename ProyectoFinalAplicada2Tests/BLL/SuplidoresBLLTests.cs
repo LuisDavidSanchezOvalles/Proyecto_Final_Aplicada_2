@@ -13,76 +13,22 @@ namespace ProyectoFinalAplicada2.BLL.Tests
         [TestMethod()]
         public void GuardarTest()
         {
-            bool paso = false;
             Suplidores s = new Suplidores();
             s.SuplidorId = 0;
             s.Fecha = DateTime.Now;
-            s.Nombres = "Luis David";
-            s.Direccion = " Duarte ";
-            s.Email = "ag@dn.com";
-            s.Telefono = " 829566 ";
-            s.Celular = "33333333";
-            s.Cedula = " 056 ";
+            s.Nombres = "Luis David Sánchez Ovalles";
+            s.Direccion = "Duarte ";
+            s.Email = "luisdavidsanchez149@gmail.com";
+            s.Telefono = "8295678989";
+            s.Celular = "8095667788";
+            s.Cedula = "40278989911";
             s.FechaCreacion = DateTime.Now;
             s.FechaModificacion = DateTime.Now;
             s.UsuarioId = 1;
 
-            if (!SuplidoresBLL.Existe(s.SuplidorId))
-            {
-                SuplidoresBLL.Insertar(s);
-                paso = true;
-            }
-            else
-            {
-                SuplidoresBLL.Modificar(s);
-                paso = true;
-            }
+            bool paso = SuplidoresBLL.Guardar(s);
 
-            Assert.AreEqual(paso, true);
-        }
-
-        [TestMethod()]
-        public void InsertarTest()
-        {
-            bool paso;
-            Suplidores s = new Suplidores();
-            s.SuplidorId = 0;
-            s.Fecha = DateTime.Now;
-            s.Nombres = "Luis David";
-            s.Direccion = " Duarte ";
-            s.Email = "ag@dn.com";
-            s.Telefono = " 829566 ";
-            s.Celular = "33333333";
-            s.Cedula = " 056 ";
-            s.FechaCreacion = DateTime.Now;
-            s.FechaModificacion = DateTime.Now;
-            s.UsuarioId = 1;
-            paso = SuplidoresBLL.Insertar(s);
-
-            Assert.AreEqual(paso, true);
-        }
-
-        [TestMethod()]
-        public void ModificarTest()
-        {
-            bool paso;
-
-            Suplidores s = new Suplidores();
-            s.SuplidorId = 1;
-            s.Fecha = DateTime.Now;
-            s.Nombres = "Luis David";
-            s.Direccion = " Duarte ";
-            s.Email = "Klk@outlook.com";
-            s.Telefono = " 829566 ";
-            s.Celular = "33333333";
-            s.Cedula = " 056 ";
-            s.FechaCreacion = DateTime.Now;
-            s.FechaModificacion = DateTime.Now;
-            s.UsuarioId = 1;
-
-            paso = SuplidoresBLL.Modificar(s);
-
-            Assert.AreEqual(paso, true);
+            Assert.IsTrue(paso);
         }
 
         [TestMethod()]
@@ -97,28 +43,17 @@ namespace ProyectoFinalAplicada2.BLL.Tests
         [TestMethod()]
         public void BuscarTest()
         {
-            Suplidores s = new Suplidores();
-            s = SuplidoresBLL.Buscar(2);
+            Suplidores suplidor = SuplidoresBLL.Buscar(1);
 
-            Assert.AreEqual(s, s);
-        }
-
-        [TestMethod()]
-        public void ExisteTest()
-        {
-            bool paso;
-
-            paso = SuplidoresBLL.Existe(1);
-
-            Assert.IsTrue(paso);
+            Assert.IsNotNull(suplidor);
         }
 
         [TestMethod()]
         public void GetListTest()
         {
-            var listado = new List<Suplidores>();
-            listado = SuplidoresBLL.GetList(s => true);
-            Assert.AreEqual(listado, listado);
+            List<Suplidores> listaSuplidor = SuplidoresBLL.GetList(s => true);
+
+            Assert.IsNotNull(listaSuplidor);
         }
     }
 }
