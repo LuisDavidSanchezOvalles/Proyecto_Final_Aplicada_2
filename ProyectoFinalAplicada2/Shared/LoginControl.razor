@@ -9,12 +9,14 @@
            href="/logout?returnUrl=/"
            target="_top">Logout<span class="oi oi-account-logout"></span></a>
     </Authorized>
+    <NotAuthorized>
+        <div>
+            <h2>Agrocontsa, srl</h2>
+        </div>
+    </NotAuthorized>
 </AuthorizeView>
 
 @code {
-
-    string nombreUsuario = "";
-    string clave = "";
 
     private string encode(string param)
     {
