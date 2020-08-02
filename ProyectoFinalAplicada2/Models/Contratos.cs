@@ -31,8 +31,10 @@ namespace ProyectoFinalAplicada2.Models
         public int CacaoId { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo ''")]
-        [CantidadValidacion]
+        [Range(0.1, 100000, ErrorMessage = "La cantidad debe ser mayor que cero.")]
         public decimal Cantidad { get; set; }
+        [Required(ErrorMessage = "Es obligatorio introducir el campo ''")]
+        [Range(0.1, 100000, ErrorMessage = "El precio debe ser mayor que cero.")]
         public decimal Precio { get; set; }
         public decimal Total { get; set; }
         public decimal CantidadPendiente { get; set; }

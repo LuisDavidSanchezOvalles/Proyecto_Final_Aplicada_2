@@ -11,10 +11,11 @@ namespace ProyectoFinalAplicada2.Models
     public class Pagos
     {
         [Key]
-        [IdValidacion]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'PagoId'")]
+        [Range(0, 100000, ErrorMessage = "El id debe ser mayor o igual a cero.")]
         public int PagoId { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir una fecha")]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Fecha'")]
         [FechaValidacion]
         public DateTime Fecha { get; set; }
         public int ClienteId { get; set; }

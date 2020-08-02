@@ -10,22 +10,23 @@ namespace ProyectoFinalAplicada2.Models
     public class Cacaos
     {
         [Key]
-        [IdValidacion]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'CacaoId'")]
+        [Range(0, 100000, ErrorMessage = "El id debe ser mayor o igual a cero.")]
         public int CacaoId { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir una fecha")]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Fecha'")]
         [FechaValidacion]
         public DateTime Fecha { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir un tipo")]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Tipo'")]
         public string Tipo { get; set; }
 
         public decimal Cantidad { get; set; }
 
         public decimal Costo { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir un precio")]
-        [PrecioValidacion]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Precio'")]
+        [Range(0.1, 100000, ErrorMessage = "El precio debe ser mayor que cero.")]
         public decimal Precio { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaModificacion { get; set; }

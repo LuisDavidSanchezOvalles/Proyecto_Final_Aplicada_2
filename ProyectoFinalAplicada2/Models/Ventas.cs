@@ -11,15 +11,13 @@ namespace ProyectoFinalAplicada2.Models
     public class Ventas
     {
         [Key]
-        [IdValidacion]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'VentaId'")]
+        [Range(0, 100000, ErrorMessage = "El id debe ser mayor o igual a cero.")]
         public int VentaId { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Fecha'")]
         [FechaValidacion]
         public DateTime Fecha { get; set; }
-
-        [Required(ErrorMessage = "Es obligatorio introducir el campo 'ClienteId'")]
-        [IdValidacion]
         public int ClienteId { get; set; }
         public decimal Total { get; set; }
         public decimal Balance { get; set; }

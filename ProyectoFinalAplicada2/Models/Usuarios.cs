@@ -10,25 +10,26 @@ namespace ProyectoFinalAplicada2.Models
     public class Usuarios
     {
         [Key]
-        [IdValidacion]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'UsuarioId'")]
+        [Range(0, 100000, ErrorMessage = "El id debe ser mayor o igual a cero.")]
         public int UsuarioId { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir una fecha")]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Fecha'")]
         [FechaValidacion]
         public DateTime Fecha { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir un nombre")]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Nombres'")]
         [NombresValidacion]
         public string Nombres { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir un nombre de usuario")]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Nombre Usuario'")]
         public string NombreUsuario { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir una clave")]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Clave'")]
         public string Clave { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir un E-Mail")]
-        [EmailValidacion]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Email'")]
+        [EmailAddress(ErrorMessage = "Email no valido")]
         public string Email { get; set; }
 
         public DateTime FechaCreacion { get; set; }

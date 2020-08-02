@@ -10,7 +10,8 @@ namespace ProyectoFinalAplicada2.Models
     public class Suplidores
     {
         [Key]
-        [IdValidacion]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'SuplidorId'")]
+        [Range(0, 100000, ErrorMessage = "El id debe ser mayor o igual a cero.")]
         public int SuplidorId { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Fecha'")]
@@ -25,19 +26,19 @@ namespace ProyectoFinalAplicada2.Models
         public string Direccion { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Email'")]
-        [EmailAddress]
+        [EmailAddress(ErrorMessage = "Email no valido")]
         public string Email { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Telefono'")]
-        [TelefonoValidacion]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Teléfono'")]
+        [RegularExpression(@"^[01]?[- .]?(\([2-9]\d{2}\)|[2-9]\d{2})[- .]?\d{3}[- .]?\d{4}$", ErrorMessage = "Teléfono no valido")]
         public string Telefono { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Celular'")]
-        [CelularValidacion]
+        [RegularExpression(@"^[01]?[- .]?(\([2-9]\d{2}\)|[2-9]\d{2})[- .]?\d{3}[- .]?\d{4}$", ErrorMessage = "Celular no valido")]
         public string Celular { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Cedula'")]
-        [CedulaValidacion]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Cédula'")]
+        [RegularExpression(@"^\d{3}[- ]?\d{7}[- ]?\d{1}$", ErrorMessage = "Cédula no valida")]
         public string Cedula { get; set; }
         public DateTime FechaCreacion { get; set; }
         public DateTime FechaModificacion { get; set; }

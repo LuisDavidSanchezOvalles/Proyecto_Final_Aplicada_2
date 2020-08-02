@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using ProyectoFinalAplicada2.Validaciones;
 
@@ -10,27 +11,24 @@ namespace ProyectoFinalAplicada2.Models
     public class Entradas
     {
         [Key]
-        [IdValidacion]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'EntradaId'")]
+        [Range(0, 100000, ErrorMessage = "El id debe ser mayor o igual a cero.")]
         public int EntradaId { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Fecha'")]
         [FechaValidacion]
         public DateTime Fecha { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir el campo 'SuplidorId'")]
-        [IdValidacion]
         public int SuplidorId { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir el campo 'CacaoId'")]
-        [IdValidacion]
         public int CacaoId { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Cantidad'")]
-        [CantidadValidacion]
+        [Range(0.1, 100000, ErrorMessage = "La cantidad debe ser mayor que cero.")]
         public decimal Cantidad { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Costo'")]
-        [CostoValidacion]
+        [Range(0.1, 100000, ErrorMessage = "El costo debe ser mayor que cero.")]
         public decimal Costo { get; set; }
 
         public decimal Total { get; set; }
