@@ -313,9 +313,11 @@
         TotalPaginas = (int)Math.Ceiling(ListaSuplidores.Count() / (decimal)pagina.mostrarCantidad);
         ActualizarLista(pag);
 
+        TotalRegistros = ListaSuplidores.Count();
+
         Filtro = "0";
         FiltroFecha = "0";
-        TotalRegistros = ListaSuplidores.Count();
+        Criterio = "";
     }
 
     private void ActualizarLista(int NumeroPagina)
