@@ -230,7 +230,7 @@ namespace ProyectoFinalAplicada2.BLL
             Contratos contrato = ContratosBLL.Buscar(venta.VentaDetalle[0].ContratoId);
             Cacaos cacao = Buscar(contrato.CacaoId);
 
-            if (cacao == null)
+            if (cacao == null)//por si no existe el cacao para devolverle
                 return;
 
             decimal cantidad = 0;
