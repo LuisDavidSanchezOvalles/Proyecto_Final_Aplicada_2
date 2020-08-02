@@ -19,7 +19,7 @@ namespace ProyectoFinalAplicada2.BLL
                 return Modificar(entrada);
         }
 
-        public static bool Insertar(Entradas entrada)
+        private static bool Insertar(Entradas entrada)
         {
             if (entrada.EntradaId != 0)
                 return false;
@@ -42,7 +42,7 @@ namespace ProyectoFinalAplicada2.BLL
             return paso;
         }
 
-        public static bool Modificar(Entradas entrada)
+        private static bool Modificar(Entradas entrada)
         {
             bool paso = false;
             Contexto db = new Contexto();
@@ -105,7 +105,7 @@ namespace ProyectoFinalAplicada2.BLL
             return entrada;
         }
 
-        public static bool Existe(int id)
+        private static bool Existe(int id)
         {
             bool encontrado = false;
             Contexto db = new Contexto();

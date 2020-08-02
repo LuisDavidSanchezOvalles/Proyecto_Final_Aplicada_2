@@ -13,8 +13,6 @@ namespace ProyectoFinalAplicada2.BLL.Tests
         [TestMethod()]
         public void GuardarTest()
         {
-            bool paso = false;
-
             Ventas v = new Ventas();
 
             v.VentaId = 1;
@@ -34,74 +32,7 @@ namespace ProyectoFinalAplicada2.BLL.Tests
                 Precio = 300,
             });
 
-            if (!VentasBLL.Existe(v.VentaId))
-            {
-                VentasBLL.Insertar(v);
-                paso = true;
-            }
-            else
-            {
-                VentasBLL.Modificar(v);
-                paso = true;
-            }
-
-            Assert.AreEqual(paso, true);
-        }
-
-        [TestMethod()]
-        public void InsertarTest()
-        {
-            bool paso = false;
-
-            Ventas v = new Ventas();
-
-            v.VentaId = 1;
-            v.Fecha = DateTime.Now;
-            v.ClienteId = 1;
-            v.Total = 100;
-            v.Balance = 100;
-            v.FechaCreacion = DateTime.Now;
-            v.FechaModificacion = DateTime.Now;
-            v.UsuarioId = 1;
-            v.VentaDetalle.Add(new VentasDetalle
-            {
-                VentaDetalleId = 0,
-                VentaId = v.VentaId,
-                ContratoId = 1,
-                Cantidad = 500,
-                Precio = 300,
-            });
-
-            paso = VentasBLL.Insertar(v);
-
-            Assert.IsTrue(paso);
-        }
-
-        [TestMethod()]
-        public void ModificarTest()
-        {
-            bool paso = false;
-
-            Ventas v = new Ventas();
-
-            v.VentaId = 0;
-            v.Fecha = DateTime.Now;
-            v.ClienteId = 1;
-            v.Total = 1000;
-            v.Balance = 100;
-            v.FechaCreacion = DateTime.Now;
-            v.FechaModificacion = DateTime.Now;
-            v.UsuarioId = 1;
-            v.VentaDetalle.Add(new VentasDetalle
-            {
-                VentaDetalleId = 0,
-                VentaId = v.VentaId,
-                ContratoId = 1,
-                Cantidad = 500,
-                Precio = 300,
-            });
-
-            paso = VentasBLL.Modificar(v);
+            bool paso = VentasBLL.Guardar(v);
 
             Assert.IsTrue(paso);
         }
@@ -118,36 +49,25 @@ namespace ProyectoFinalAplicada2.BLL.Tests
         [TestMethod()]
         public void BuscarTest()
         {
-            Ventas v = VentasBLL.Buscar(1);
+            Ventas venta = VentasBLL.Buscar(1);
 
-            Assert.AreEqual(v, v);
-        }
-
-        [TestMethod()]
-        public void ExisteTest()
-        {
-            bool paso;
-
-            paso = VentasBLL.Existe(1);
-
-            Assert.IsTrue(paso);
+            Assert.IsNotNull(venta);
         }
 
         [TestMethod()]
         public void GetListTest()
         {
-            var listado = new List<Ventas>();
-            listado = VentasBLL.GetList(s => true);
-            Assert.AreEqual(listado, listado);
+            List<Ventas> listaVenta = VentasBLL.GetList(v => true);
+
+            Assert.IsNotNull(listaVenta);
         }
 
         [TestMethod()]
         public void ContratoDisponibleTest()
         {
-            bool paso = false;
+            Ventas venta = VentasBLL.Buscar(1);
 
-            if (1 != 0)
-                paso = true;
+            bool paso = VentasBLL.ContratoDisponible(venta);
 
             Assert.IsTrue(paso);
         }

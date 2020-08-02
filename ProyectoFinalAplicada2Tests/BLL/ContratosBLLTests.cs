@@ -13,7 +13,6 @@ namespace ProyectoFinalAplicada2.BLL.Tests
         [TestMethod()]
         public void GuardarTest()
         {
-            bool paso = false;
             Contratos c = new Contratos();
 
             c.ContratoId = 1;
@@ -27,58 +26,7 @@ namespace ProyectoFinalAplicada2.BLL.Tests
             c.FechaModificacion = DateTime.Now;
             c.UsuarioId = 1;
 
-            if (!ContratosBLL.Existe(c.ContratoId))
-            {
-                ContratosBLL.Insertar(c);
-                paso = true;
-            }
-            else
-            {
-                ContratosBLL.Modificar(c);
-                paso = true;
-            }
-
-            Assert.IsTrue(paso);
-        }
-
-        [TestMethod()]
-        public void InsertarTest()
-        {
-            bool paso = false;
-
-            Contratos c = new Contratos();
-            c.ContratoId = 1;
-            c.Fecha = DateTime.Now;
-            c.ClienteId = 1;
-            c.FechaVencimiento = Convert.ToDateTime("8/09/2020");
-            c.CacaoId = 1;
-            c.Cantidad = 500;
-            c.Precio = 300;
-            c.FechaCreacion = DateTime.Now;
-            c.FechaModificacion = DateTime.Now;
-            c.UsuarioId = 1;
-
-            paso = ContratosBLL.Guardar(c);
-
-            Assert.IsTrue(paso);
-        }
-
-        [TestMethod()]
-        public void ModificarTest()
-        {
-            bool paso = false;
-
-            Contratos c = new Contratos();
-            c.ContratoId = 1;
-            c.Fecha = DateTime.Now;
-            c.ClienteId = 1;
-            c.FechaVencimiento = Convert.ToDateTime("27/10/2020");
-            c.CacaoId = 1;
-            c.Cantidad = 500;
-            c.Precio = 300;
-            c.FechaCreacion = DateTime.Now;
-            c.FechaModificacion = DateTime.Now;
-            c.UsuarioId = 1;
+            bool paso = ContratosBLL.Guardar(c);
 
             Assert.IsTrue(paso);
         }
@@ -97,25 +45,15 @@ namespace ProyectoFinalAplicada2.BLL.Tests
         {
             Contratos c = ContratosBLL.Buscar(1);
 
-            Assert.AreEqual(c, c);
-        }
-
-        [TestMethod()]
-        public void ExisteTest()
-        {
-            bool paso;
-
-            paso = ContratosBLL.Existe(1);
-
-            Assert.IsTrue(paso);
+            Assert.IsNotNull(c);
         }
 
         [TestMethod()]
         public void GetListTest()
         {
-            var listado = new List<Contratos>();
-            listado = ContratosBLL.GetList(c => true);
-            Assert.AreEqual(listado, listado);
+            List<Contratos> listaContrato = ContratosBLL.GetList(c => true);
+
+            Assert.IsNotNull(listaContrato);
         }
 
         [TestMethod()]

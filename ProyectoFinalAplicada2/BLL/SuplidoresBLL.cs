@@ -19,7 +19,7 @@ namespace ProyectoFinalAplicada2.BLL
                 return Modificar(suplidor);
         }
 
-        public static bool Insertar(Suplidores suplidor)
+        private static bool Insertar(Suplidores suplidor)
         {
             if (suplidor.SuplidorId != 0)
                 return false;
@@ -42,7 +42,7 @@ namespace ProyectoFinalAplicada2.BLL
             return paso;
         }
 
-        public static bool Modificar(Suplidores suplidor)
+        private static bool Modificar(Suplidores suplidor)
         {
             bool paso = false;
             Contexto db = new Contexto();
@@ -105,7 +105,7 @@ namespace ProyectoFinalAplicada2.BLL
             return suplidor;
         }
 
-        public static bool Existe(int id)
+        private static bool Existe(int id)
         {
             bool encontrado = false;
             Contexto db = new Contexto();
