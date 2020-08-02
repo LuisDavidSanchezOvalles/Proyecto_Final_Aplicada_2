@@ -29,7 +29,7 @@ namespace ProyectoFinalAplicada2.Models
         public string Clave { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Email'")]
-        [EmailAddress(ErrorMessage = "Email no valido")]
+        [EmailValidacion]
         public string Email { get; set; }
 
         public DateTime FechaCreacion { get; set; }
