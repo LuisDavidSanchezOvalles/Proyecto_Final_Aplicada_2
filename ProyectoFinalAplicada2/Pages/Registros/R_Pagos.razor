@@ -201,7 +201,7 @@
     private bool Activacion { get; set; }
 
     byte[] Data;
-    string pdfContent = "";
+    string pdfContent;
 
     protected override void OnInitialized()
     {
@@ -224,6 +224,8 @@
         Monto = 0;
 
         Activacion = false;
+
+        pdfContent = "";
     }
 
     private async void ReiniciarUsuarioCreacion()
@@ -327,7 +329,7 @@
 
     public void AgregarDetalle()
     {
-        if (VentaIdSeleccionado < 0)
+        if (VentaIdSeleccionado < 1)
         {
             toast.ShowInfo("Ingrese alguna venta");
             return;
