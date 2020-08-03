@@ -303,6 +303,10 @@
 
         if (contrato != null)
         {
+            if (Venta.VentaDetalle.Count() > 0)
+                if(Venta.VentaDetalle[0].ContratoId == contrato.ContratoId)
+                    return;
+
             CantidadPendiente = contrato.CantidadPendiente;
 
             if (Venta.VentaId == 0)
