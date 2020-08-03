@@ -426,7 +426,7 @@
         if (CacaosBLL.VenderCacao(Venta))
             guardo = VentasBLL.Guardar(Venta);
         else
-            toast.ShowInfo("Ha excedido la cantidad disponible para vender");
+            toast.ShowInfo("Ha excedido la cantidad de cacao disponible para vender");
 
         if (guardo)
         {
