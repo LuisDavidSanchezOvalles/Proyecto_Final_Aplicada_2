@@ -246,8 +246,7 @@
             if (encontrado != null)
             {
                 this.Pago = encontrado;
-                AsignarCliente();
-                AsignarVenta();
+                ObtenerClienteVentaSeleccionado();
                 AsignarUsuarioCreacion();
                 ObtenerBalance();
                 Activacion = true;
@@ -266,8 +265,7 @@
             if (encontrado != null)
             {
                 this.Pago = encontrado;
-                AsignarCliente();
-                AsignarVenta();
+                ObtenerClienteVentaSeleccionado();
                 AsignarUsuarioCreacion();
                 ObtenerBalance();
                 Activacion = true;
@@ -277,18 +275,19 @@
         }
     }
 
-    private void AsignarCliente()
+    private void ObtenerClienteVentaSeleccionado()
     {
         Clientes.Clear();
-        var cliente = ClientesBLL.Buscar(Pago.ClienteId);
-        Clientes.Add(cliente);
-    }
-
-    private void AsignarVenta()
-    {
         Ventas.Clear();
-        var venta = VentasBLL.Buscar(Pago.PagoDetalle[0].VentaId);
+
+        Clientes cliente = ClientesBLL.Buscar(Pago.ClienteId);
+        Ventas venta =VentasBLL.Buscar(Pago.PagoDetalle[0].VentaId);
+
+        Clientes.Add(cliente);
         Ventas.Add(venta);
+
+        Balance = venta.Balance;
+
         VentaIdSeleccionado = venta.VentaId;
     }
 
@@ -320,6 +319,10 @@
 
         if (venta != null)
         {
+            if (Pago.PagoDetalle.Count() > 0)
+                if (Pago.PagoDetalle[0].VentaId == venta.VentaId)
+                    return;
+
             Balance = venta.Balance;
 
             if (Pago.PagoId == 0)
@@ -331,7 +334,7 @@
     {
         if (VentaIdSeleccionado < 1)
         {
-            toast.ShowInfo("Ingrese alguna venta");
+            toast.ShowInfo("Seleccione alguna venta");
             return;
         }
 

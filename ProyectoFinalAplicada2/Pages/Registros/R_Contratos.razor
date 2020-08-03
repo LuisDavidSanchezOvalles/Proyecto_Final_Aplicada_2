@@ -312,6 +312,8 @@
 
         if (Contrato.ContratoId == 0)
             Contrato.CantidadPendiente = Contrato.Cantidad;
+        else
+            CalcularCantidadPendiente();
 
         guardo = ContratosBLL.Guardar(Contrato);
 
@@ -332,6 +334,15 @@
             return false;
 
         return true;
+    }
+
+    private void CalcularCantidadPendiente()
+    {
+        Contratos contrato = ContratosBLL.Buscar(Contrato.ContratoId);
+
+        decimal diferenciaCantidad = Contrato.Cantidad - contrato.Cantidad;
+
+        Contrato.CantidadPendiente += diferenciaCantidad;
     }
 
     public async Task Eliminar()
