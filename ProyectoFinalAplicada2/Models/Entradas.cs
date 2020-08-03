@@ -12,7 +12,7 @@ namespace ProyectoFinalAplicada2.Models
     {
         [Key]
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'EntradaId'")]
-        [Range(0, 100000, ErrorMessage = "El id debe ser mayor o igual a cero.")]
+        [Range(0, 2000000, ErrorMessage = "El id debe ser mayor o igual a cero.")]
         public int EntradaId { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Fecha'")]
@@ -24,11 +24,11 @@ namespace ProyectoFinalAplicada2.Models
         public int CacaoId { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Cantidad'")]
-        [Range(0.1, 100000, ErrorMessage = "La cantidad debe ser mayor que cero.")]
+        [Range(0.1, 10000000, ErrorMessage = "La cantidad debe ser mayor que cero.")]
         public decimal Cantidad { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Costo'")]
-        [Range(0.1, 100000, ErrorMessage = "El costo debe ser mayor que cero.")]
+        [Range(0.1, 10000000, ErrorMessage = "El costo debe ser mayor que cero.")]
         public decimal Costo { get; set; }
 
         public decimal Total { get; set; }

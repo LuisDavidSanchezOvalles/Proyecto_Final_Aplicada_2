@@ -11,30 +11,28 @@ namespace ProyectoFinalAplicada2.Models
     public class Contratos
     {
         [Key]
-        [IdValidacion]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'ContratoId'")]
+        [Range(0, 2000000, ErrorMessage = "El id debe ser mayor o igual a cero.")]
         public int ContratoId { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Fecha'")]
         [FechaValidacion]
         public DateTime Fecha { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir el campo 'ClienteId'")]
-        [IdValidacion]
         public int ClienteId { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'FechaVencimiento'")]
         [FechaVencimientoValidacion]
         public DateTime FechaVencimiento { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir el campo 'CacaoId'")]
-        [IdValidacion]
         public int CacaoId { get; set; }
 
-        [Required(ErrorMessage = "Es obligatorio introducir el campo ''")]
-        [Range(0.1, 100000, ErrorMessage = "La cantidad debe ser mayor que cero.")]
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Cantidad'")]
+        [Range(0.1, 10000000, ErrorMessage = "La cantidad debe ser mayor que cero.")]
         public decimal Cantidad { get; set; }
-        [Required(ErrorMessage = "Es obligatorio introducir el campo ''")]
-        [Range(0.1, 100000, ErrorMessage = "El precio debe ser mayor que cero.")]
+
+        [Required(ErrorMessage = "Es obligatorio introducir el campo 'Precio'")]
+        [Range(0.1, 10000000, ErrorMessage = "El precio debe ser mayor que cero.")]
         public decimal Precio { get; set; }
         public decimal Total { get; set; }
         public decimal CantidadPendiente { get; set; }

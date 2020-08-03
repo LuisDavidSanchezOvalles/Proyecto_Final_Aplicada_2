@@ -280,6 +280,18 @@ namespace ProyectoFinalAplicada2.Reportes
                 pdfCell.BackgroundColor = BaseColor.White;
                 pdfTable.AddCell(pdfCell);
 
+                pdfCell = new PdfPCell(new Phrase(item.FechaCreacion.ToString("dd/MM/yyyy"), _fontStyle));
+                pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                pdfCell.BackgroundColor = BaseColor.White;
+                pdfTable.AddCell(pdfCell);
+
+                pdfCell = new PdfPCell(new Phrase(item.FechaModificacion.ToString("dd/MM/yyyy"), _fontStyle));
+                pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
+                pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;
+                pdfCell.BackgroundColor = BaseColor.White;
+                pdfTable.AddCell(pdfCell);
+
                 pdfCell = new PdfPCell(new Phrase(item.UsuarioId.ToString(), _fontStyle));
                 pdfCell.HorizontalAlignment = Element.ALIGN_CENTER;
                 pdfCell.VerticalAlignment = Element.ALIGN_MIDDLE;

@@ -11,7 +11,7 @@ namespace ProyectoFinalAplicada2.Models
     {
         [Key]
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'ClienteId'")]
-        [Range(0, 100000, ErrorMessage = "El id debe ser mayor o igual a cero.")]
+        [Range(0, 2000000, ErrorMessage = "El id debe ser mayor o igual a cero.")]
         public int ClienteId { get; set; }
 
         [Required(ErrorMessage = "Es obligatorio introducir el campo 'Fecha'")]
