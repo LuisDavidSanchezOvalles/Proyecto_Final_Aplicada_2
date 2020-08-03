@@ -272,8 +272,11 @@
         Cacaos cacao = CacaosBLL.Buscar(Contrato.CacaoId);
         if (cacao != null)
         {
-            Costo = cacao.Costo;
-            Contrato.Precio = cacao.Precio;
+            if(Contrato.ContratoId == 0)
+            {
+                Costo = cacao.Costo;
+                Contrato.Precio = cacao.Precio;
+            }
         }
     }
 
