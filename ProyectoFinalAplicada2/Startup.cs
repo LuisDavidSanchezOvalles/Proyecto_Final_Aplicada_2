@@ -9,11 +9,11 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ProyectoFinalAplicada2.Data;
 using Blazored.Toast;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http;
-using ProyectoFinalAplicada2.Models;
 
 namespace ProyectoFinalAplicada2
 {
@@ -44,20 +44,13 @@ namespace ProyectoFinalAplicada2
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddBlazoredToast();
+            services.AddSingleton<WeatherForecastService>();
 
             services.AddHttpContextAccessor();
             services.AddScoped<HttpContextAccessor>();
             services.AddHttpClient();
             services.AddScoped<HttpClient>();
 
-            services.AddScoped<Cacaos>();
-            services.AddScoped<Clientes>();
-            services.AddScoped<Contratos>();
-            services.AddScoped<Entradas>();
-            services.AddScoped<Pagos>();
-            services.AddScoped<Suplidores>();
-            services.AddScoped<Usuarios>();
-            services.AddScoped<Ventas>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
