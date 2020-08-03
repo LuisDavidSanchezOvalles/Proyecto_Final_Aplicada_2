@@ -12,7 +12,7 @@ namespace ProyectoFinalAplicada2.Migrations
                 columns: table => new
                 {
                     CacaoId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Fecha = table.Column<DateTime>(nullable: false),
                     Tipo = table.Column<string>(nullable: false),
                     Cantidad = table.Column<decimal>(nullable: false),
@@ -32,7 +32,7 @@ namespace ProyectoFinalAplicada2.Migrations
                 columns: table => new
                 {
                     ClienteId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Fecha = table.Column<DateTime>(nullable: false),
                     Nombres = table.Column<string>(nullable: false),
                     Cedula = table.Column<string>(nullable: false),
@@ -54,7 +54,7 @@ namespace ProyectoFinalAplicada2.Migrations
                 columns: table => new
                 {
                     ContratoId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Fecha = table.Column<DateTime>(nullable: false),
                     ClienteId = table.Column<int>(nullable: false),
                     FechaVencimiento = table.Column<DateTime>(nullable: false),
@@ -77,7 +77,7 @@ namespace ProyectoFinalAplicada2.Migrations
                 columns: table => new
                 {
                     EntradaId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Fecha = table.Column<DateTime>(nullable: false),
                     SuplidorId = table.Column<int>(nullable: false),
                     CacaoId = table.Column<int>(nullable: false),
@@ -98,7 +98,7 @@ namespace ProyectoFinalAplicada2.Migrations
                 columns: table => new
                 {
                     PagoId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Fecha = table.Column<DateTime>(nullable: false),
                     ClienteId = table.Column<int>(nullable: false),
                     Total = table.Column<decimal>(nullable: false),
@@ -116,7 +116,7 @@ namespace ProyectoFinalAplicada2.Migrations
                 columns: table => new
                 {
                     SuplidorId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Fecha = table.Column<DateTime>(nullable: false),
                     Nombres = table.Column<string>(nullable: false),
                     Direccion = table.Column<string>(nullable: false),
@@ -138,7 +138,7 @@ namespace ProyectoFinalAplicada2.Migrations
                 columns: table => new
                 {
                     UsuarioId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Fecha = table.Column<DateTime>(nullable: false),
                     Nombres = table.Column<string>(nullable: false),
                     NombreUsuario = table.Column<string>(nullable: false),
@@ -158,7 +158,7 @@ namespace ProyectoFinalAplicada2.Migrations
                 columns: table => new
                 {
                     VentaId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Fecha = table.Column<DateTime>(nullable: false),
                     ClienteId = table.Column<int>(nullable: false),
                     Total = table.Column<decimal>(nullable: false),
@@ -177,7 +177,7 @@ namespace ProyectoFinalAplicada2.Migrations
                 columns: table => new
                 {
                     PagoDetalleId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     PagoId = table.Column<int>(nullable: false),
                     VentaId = table.Column<int>(nullable: false),
                     Monto = table.Column<decimal>(nullable: false),
@@ -205,7 +205,7 @@ namespace ProyectoFinalAplicada2.Migrations
                 columns: table => new
                 {
                     VentaDetalleId = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     VentaId = table.Column<int>(nullable: false),
                     ContratoId = table.Column<int>(nullable: false),
                     Cantidad = table.Column<decimal>(nullable: false),
@@ -231,7 +231,7 @@ namespace ProyectoFinalAplicada2.Migrations
             migrationBuilder.InsertData(
                 table: "Usuarios",
                 columns: new[] { "UsuarioId", "Clave", "Email", "Fecha", "FechaCreacion", "FechaModificacion", "NombreUsuario", "Nombres", "UsuarioIdCreacion" },
-                values: new object[] { 1, "YQBkAG0AaQBuAA==", "Admin@outlook.com", new DateTime(2020, 7, 17, 15, 30, 36, 482, DateTimeKind.Local).AddTicks(9557), new DateTime(2020, 7, 17, 15, 30, 36, 483, DateTimeKind.Local).AddTicks(2092), new DateTime(2020, 7, 17, 15, 30, 36, 483, DateTimeKind.Local).AddTicks(2111), "admin", "Administrador", 1 });
+                values: new object[] { 1, "YQBkAG0AaQBuAA==", "Admin@outlook.com", new DateTime(2020, 8, 3, 18, 42, 20, 55, DateTimeKind.Local).AddTicks(111), new DateTime(2020, 8, 3, 18, 42, 20, 55, DateTimeKind.Local).AddTicks(3856), new DateTime(2020, 8, 3, 18, 42, 20, 55, DateTimeKind.Local).AddTicks(3886), "admin", "Administrador", 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_PagosDetalle_PagoId",
